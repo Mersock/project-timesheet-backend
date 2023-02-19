@@ -18,13 +18,12 @@ func NewRolesRepo(db *sql.DB) *RolesRepo {
 
 // GetRows -.
 func (r *RolesRepo) GetRows() (int, error) {
-	sqlRaw := "SELECT  COUNT(*) FROM `roles` "
 	var count int
+	sqlRaw := "SELECT  COUNT(*) FROM `roles` "
 	err := r.DB.QueryRow(sqlRaw).Scan(&count)
 	if err != nil {
 		return count, fmt.Errorf("RolesRepo - GetRows - r.DB.QueryRow: %w", err)
 	}
-	defer r.DB.Close()
 
 	return count, nil
 }
@@ -37,7 +36,6 @@ func (r *RolesRepo) GetRole() ([]entity.Roles, error) {
 	if err != nil {
 		return nil, fmt.Errorf("RolesRepo - GetRole - r.DB.Query: %w", err)
 	}
-	defer results.Close()
 
 	for results.Next() {
 		var e entity.Roles

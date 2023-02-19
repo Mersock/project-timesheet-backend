@@ -28,15 +28,26 @@ func newRolesRoutes(handler *gin.RouterGroup, ru usecase.Roles, l logger.Interfa
 // rolesResponse -.
 type rolesResponse struct {
 	Roles []entity.Roles `json:"data"`
+	Total int            `json:"total"`
 }
 
 // getRoles -.
 func (r rolesRoutes) getRoles(c *gin.Context) {
+	total, err := r.ru.GetRowsRoles()
+	if err != nil {
+		r.l.Error(err, "http - v1 - Roles")
+		errorResponse(c, http.StatusInternalServerError, "database error")
+		return
+	}
+
 	roles, err := r.ru.GetAllRoles()
 	if err != nil {
 		r.l.Error(err, "http - v1 - Roles")
 		errorResponse(c, http.StatusInternalServerError, "database error")
 		return
 	}
-	c.JSON(http.StatusOK, rolesResponse{roles})
+	c.JSON(http.StatusOK, rolesResponse{
+		Roles: roles,
+		Total: total,
+	})
 }

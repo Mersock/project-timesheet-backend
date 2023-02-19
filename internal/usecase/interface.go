@@ -5,6 +5,7 @@ import "github.com/Mersock/project-timesheet-backend/internal/entity"
 type (
 	// Roles -.
 	Roles interface {
+		GetRowsRoles() (int, error)
 		GetAllRoles() ([]entity.Roles, error)
 	}
 

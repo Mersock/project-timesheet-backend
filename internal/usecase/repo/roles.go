@@ -16,6 +16,7 @@ func NewRolesRepo(db *sql.DB) *RolesRepo {
 	return &RolesRepo{db}
 }
 
+// GetRows -.
 func (r *RolesRepo) GetRows() (int, error) {
 	sqlRaw := "SELECT  COUNT(*) FROM `roles` "
 	var count int
@@ -23,6 +24,8 @@ func (r *RolesRepo) GetRows() (int, error) {
 	if err != nil {
 		return count, fmt.Errorf("RolesRepo - GetRows - r.DB.QueryRow: %w", err)
 	}
+	defer r.DB.Close()
+
 	return count, nil
 }
 

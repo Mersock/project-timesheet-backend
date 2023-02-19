@@ -15,6 +15,15 @@ func NewRolesUseCase(r RolesRepo) *RolesUseCase {
 	return &RolesUseCase{repo: r}
 }
 
+// GetRowsRoles -.
+func (uc *RolesUseCase) GetRowsRoles() (int, error) {
+	rows, err := uc.repo.GetRows()
+	if err != nil {
+		return rows, fmt.Errorf("RolesUseCase - GetRowsRoles - uc.repo.GetRows: %w", err)
+	}
+	return rows, nil
+}
+
 // GetAllRoles -.
 func (uc *RolesUseCase) GetAllRoles() ([]entity.Roles, error) {
 	roles, err := uc.repo.GetRole()

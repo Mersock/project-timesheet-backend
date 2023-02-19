@@ -11,5 +11,6 @@ type (
 	//RolesRepo -.
 	RolesRepo interface {
 		GetRole() ([]entity.Roles, error)
+		GetRows() (int, error)
 	}
 )

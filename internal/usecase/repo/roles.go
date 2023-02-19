@@ -19,7 +19,8 @@ func NewRolesRepo(db *sql.DB) *RolesRepo {
 // GetRole -.
 func (r *RolesRepo) GetRole() ([]entity.Roles, error) {
 	var entities []entity.Roles
-	results, err := r.DB.Query("SELECT id, name, created_at, updated_at FROM roles")
+	sql := "SELECT `id`, `name`, `created_at`, `updated_at` FROM `roles` ORDER BY `id`"
+	results, err := r.DB.Query(sql)
 	if err != nil {
 		return nil, fmt.Errorf("RolesRepo - GetRole - r.DB.Query: %w", err)
 	}

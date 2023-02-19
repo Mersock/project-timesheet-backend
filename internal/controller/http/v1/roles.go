@@ -14,6 +14,7 @@ type rolesRoutes struct {
 	l  logger.Interface
 }
 
+// newRolesRoutes -.
 func newRolesRoutes(handler *gin.RouterGroup, ru usecase.Roles, l logger.Interface) {
 	r := rolesRoutes{ru, l}
 
@@ -24,10 +25,12 @@ func newRolesRoutes(handler *gin.RouterGroup, ru usecase.Roles, l logger.Interfa
 
 }
 
+// rolesResponse -.
 type rolesResponse struct {
 	Roles []entity.Roles `json:"data"`
 }
 
+// getRoles -.
 func (r rolesRoutes) getRoles(c *gin.Context) {
 	roles, err := r.ru.GetAllRoles()
 	if err != nil {

@@ -13,12 +13,12 @@ func NewRouter(handler *gin.Engine, l logger.Interface, ru usecase.Roles) {
 	handler.Use(gin.Recovery())
 
 	//healthcheck
-	handler.GET("/healthz", func(c *gin.Context) {
+	handler.GET("/api/healthz", func(c *gin.Context) {
 		c.Status(http.StatusOK)
 	})
 
 	//routers
-	h := handler.Group("/v1")
+	h := handler.Group("/api/v1")
 	{
 		newRolesRoutes(h, ru, l)
 	}

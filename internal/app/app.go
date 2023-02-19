@@ -3,6 +3,10 @@ package app
 import (
 	"fmt"
 	"github.com/Mersock/project-timesheet-backend/config"
+	v1 "github.com/Mersock/project-timesheet-backend/internal/controller/http/v1"
+	"github.com/Mersock/project-timesheet-backend/internal/usecase"
+	"github.com/Mersock/project-timesheet-backend/internal/usecase/repo"
+	"github.com/Mersock/project-timesheet-backend/pkg/httpserver"
 	"github.com/Mersock/project-timesheet-backend/pkg/logger"
 	"github.com/Mersock/project-timesheet-backend/pkg/mysql"
 	"github.com/gin-gonic/gin"
@@ -19,13 +23,28 @@ func Run(cfg *config.Config) {
 	}
 	defer sql.Close()
 
+	//Use case
+	rolesUseCase := usecase.NewRolesUseCase(
+		repo.NewRolesRepo(sql),
+	)
+
 	//HTTP server
-	gin.New()
+	handler := gin.New()
+	v1.NewRouter(handler, l, rolesUseCase)
+	httpServer := httpserver.New(handler, httpserver.Port(cfg.HTTP.Port))
 
 	//signal interrupt
 	interrupt := make(chan os.Signal, 1)
 	select {
 	case s := <-interrupt:
-		l.Info("app - RUN -signal: " + s.String())
+		l.Info("app - RUN - signal: " + s.String())
+	case err = <-httpServer.Notify():
+		l.Error(fmt.Errorf("app - Run - httpServer.Notify: %w", err))
+	}
+
+	// Shutdown httpserver
+	err = httpServer.Shutdown()
+	if err != nil {
+		l.Error(fmt.Errorf("app - Run - httpServer.Shutdown: %w", err))
 	}
 }

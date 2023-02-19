@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS `roles`(
     id int NOT NULL AUTO_INCREMENT,
     name varchar(255) UNIQUE NOT NULL,
     created_at timestamp NOT NULL,
-    updateed_at timestamp,
+    updated_at timestamp,
     CONSTRAINT PK_Roles PRIMARY KEY (id)
 );
 

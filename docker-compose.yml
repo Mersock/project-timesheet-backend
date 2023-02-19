@@ -1,0 +1,33 @@
+services:
+  mysql:
+    container_name:  project-timesheet-db
+    image: mysql:8.0.30
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: project_timesheet
+      MYSQL_PASSWORD: P@ssw0rd
+      MYSQL_USER: project_timesheet_admin
+      MYSQL_ROOT_PASSWORD: r00t@1234
+    ports:
+      - 3306:3306
+    volumes:
+      - ./pkg/mysql/init-user.sql:/docker-entrypoint-initdb.d/init-user.sql
+    networks:
+      - project-timesheet-db
+
+  adminer:
+    container_name:  project-timesheet-adminer-db
+    image: adminer
+    restart: unless-stopped
+    ports:
+      - 8081:8080
+    environment:
+      ADMINER_DEFAULT_SERVER: mysql
+    networks:
+      - project-timesheet-db
+
+networks:
+  project-timesheet-db:
+    name: project-timesheet-db
+    driver: bridge
+

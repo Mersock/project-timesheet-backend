@@ -1,6 +1,7 @@
 package v1
 
 import (
+	"database/sql"
 	"errors"
 	"github.com/Mersock/project-timesheet-backend/internal/request"
 	"github.com/Mersock/project-timesheet-backend/internal/response"
@@ -22,16 +23,17 @@ type rolesRoutes struct {
 func newRolesRoutes(handler *gin.RouterGroup, ru usecase.Roles, l logger.Interface) {
 	r := rolesRoutes{ru, l}
 
-	h := handler.Group("/roles")
+	h := handler.Group("/role")
 	{
 		h.GET("", r.getRoles)
+		h.GET("/:id", r.getRoleByID)
 	}
 
 }
 
 // getRoles -.
 func (r rolesRoutes) getRoles(c *gin.Context) {
-	var req request.RolesReq
+	var req request.GetRolesReq
 
 	//validator
 	if err := c.ShouldBind(&req); err != nil {
@@ -54,18 +56,18 @@ func (r rolesRoutes) getRoles(c *gin.Context) {
 	total, err := r.ru.GetCount(req)
 	if err != nil {
 		r.l.Error(err, "http - v1 - Roles")
-		errorResponse(c, http.StatusInternalServerError, "Database error")
+		errorResponse(c, http.StatusInternalServerError, _defaultInternalServerErr)
 		return
 	}
 
 	roles, err := r.ru.GetAllRoles(req)
 	if err != nil {
 		r.l.Error(err, "http - v1 - Roles")
-		errorResponse(c, http.StatusInternalServerError, "Database error")
+		errorResponse(c, http.StatusInternalServerError, _defaultInternalServerErr)
 		return
 	}
 
-	c.JSON(http.StatusOK, response.RolesRes{
+	c.JSON(http.StatusOK, response.GetRolesRes{
 		Roles: roles,
 		Total: total,
 		PaginationRes: utils.PaginationRes{
@@ -73,5 +75,37 @@ func (r rolesRoutes) getRoles(c *gin.Context) {
 			Page:     paginate.Page,
 			LastPage: utils.GetPageCount(total, paginate.Limit),
 		},
+	})
+}
+
+// getRoleByID -.
+func (r rolesRoutes) getRoleByID(c *gin.Context) {
+	var req request.GetRoleByIDReq
+
+	//validator
+	if err := c.ShouldBindUri(&req); err != nil {
+		var ve validator.ValidationErrors
+		r.l.Error(err, "http - v1 - Roles")
+		if errors.As(err, &ve) {
+			errorValidateRes(c, ve)
+			return
+		}
+		errorResponse(c, http.StatusBadRequest, _defaultBadReq)
+		return
+	}
+
+	role, err := r.ru.GetRoleByID(req.ID)
+	if err != nil {
+		r.l.Error(err, "http - v1 - Roles")
+		if errors.Is(err, sql.ErrNoRows) {
+			errorResponse(c, http.StatusNotFound, _defaultNotFoundErr)
+			return
+		}
+		errorResponse(c, http.StatusInternalServerError, _defaultInternalServerErr)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.GetRoleByIDRes{
+		Role: role,
 	})
 }

@@ -7,6 +7,12 @@ import (
 	"net/http"
 )
 
+const (
+	_defaultInternalServerErr = "Internal server error"
+	_defaultNotFoundErr       = "Not found"
+	_defaultBadReq            = "Bad request"
+)
+
 // response -.
 type errRes struct {
 	Error string `json:"error" example:"message"`

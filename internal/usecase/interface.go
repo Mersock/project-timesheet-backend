@@ -8,13 +8,15 @@ import (
 type (
 	// Roles -.
 	Roles interface {
-		GetCount(req request.RolesReq) (int, error)
-		GetAllRoles(req request.RolesReq) ([]entity.Roles, error)
+		GetCount(req request.GetRolesReq) (int, error)
+		GetAllRoles(req request.GetRolesReq) ([]entity.Roles, error)
+		GetRoleByID(roleID int) (entity.Roles, error)
 	}
 
 	//RolesRepo -.
 	RolesRepo interface {
-		Count(req request.RolesReq) (int, error)
-		Select(req request.RolesReq) ([]entity.Roles, error)
+		Count(req request.GetRolesReq) (int, error)
+		Select(req request.GetRolesReq) ([]entity.Roles, error)
+		SelectById(roleID int) (entity.Roles, error)
 	}
 )

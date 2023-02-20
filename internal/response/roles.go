@@ -5,9 +5,13 @@ import (
 	"github.com/Mersock/project-timesheet-backend/internal/utils"
 )
 
-// RolesRes -.
-type RolesRes struct {
+// GetRolesRes -.
+type GetRolesRes struct {
 	Roles []entity.Roles `json:"data"`
 	Total int            `json:"total"`
 	utils.PaginationRes
+}
+
+type GetRoleByIDRes struct {
+	Role entity.Roles `json:"data"`
 }

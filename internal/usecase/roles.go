@@ -1,9 +1,14 @@
 package usecase
 
 import (
+	"errors"
 	"fmt"
 	"github.com/Mersock/project-timesheet-backend/internal/entity"
 	"github.com/Mersock/project-timesheet-backend/internal/request"
+)
+
+var (
+	errDuplicateRow = errors.New("duplicate")
 )
 
 // RolesUseCase -.
@@ -47,7 +52,17 @@ func (uc *RolesUseCase) GetRoleByID(roleID int) (entity.Roles, error) {
 // CreateRole -.
 func (uc *RolesUseCase) CreateRole(req request.CreateRoleReq) (int64, error) {
 	var roleID int64
-	roleID, err := uc.repo.Insert(req)
+
+	count, err := uc.repo.ChkUniqueInsert(req)
+	if err != nil {
+		return roleID, fmt.Errorf("RolesUseCase - CreateRole - uc.repo.ChkUniqueInsert: %w", err)
+	}
+
+	if count > 0 {
+		return roleID, errDuplicateRow
+	}
+
+	roleID, err = uc.repo.Insert(req)
 	if err != nil {
 		return roleID, fmt.Errorf("RolesUseCase - CreateRole - uc.repo.Insert: %w", err)
 	}

@@ -116,7 +116,7 @@ func (r rolesRoutes) createRole(c *gin.Context) {
 	var req request.CreateRoleReq
 
 	//validator
-	if err := c.ShouldBindJSON(&req); err != nil {
+	if err := c.ShouldBind(&req); err != nil {
 		var ve validator.ValidationErrors
 		r.l.Error(err, "http - v1 - Roles")
 		if errors.As(err, &ve) {
@@ -130,6 +130,10 @@ func (r rolesRoutes) createRole(c *gin.Context) {
 	roleID, err := r.ru.CreateRole(req)
 	if err != nil {
 		r.l.Error(err, "http - v1 - Roles")
+		if errors.As(err, &errDuplicateRow) {
+			errorResponse(c, http.StatusConflict, _defaultConflict)
+			return
+		}
 		errorResponse(c, http.StatusInternalServerError, _defaultInternalServerErr)
 		return
 	}

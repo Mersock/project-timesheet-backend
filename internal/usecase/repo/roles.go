@@ -21,7 +21,7 @@ func NewRolesRepo(db *sql.DB) *RolesRepo {
 // Count -.
 func (r *RolesRepo) Count(req request.GetRolesReq) (int, error) {
 	var count int
-	sqlRaw := "SELECT  COUNT(*) FROM `roles` WHERE 1=1"
+	sqlRaw := "SELECT  COUNT(*) FROM `roles` "
 	sqlCount := genRawSelectWithReq(sqlRaw, req)
 	err := r.DB.QueryRow(sqlCount).Scan(&count)
 	if err != nil {
@@ -80,6 +80,18 @@ func (r *RolesRepo) Insert(req request.CreateRoleReq) (int64, error) {
 	}
 
 	return insertId, nil
+}
+
+// ChkUniqueInsert -.
+func (r *RolesRepo) ChkUniqueInsert(req request.CreateRoleReq) (int, error) {
+	var count int
+	sqlRaw := fmt.Sprintf("SELECT  COUNT(*) FROM `roles` WHERE name = '%s' ", req.Name)
+	err := r.DB.QueryRow(sqlRaw).Scan(&count)
+	if err != nil {
+		return count, fmt.Errorf("RolesRepo - Count - r.DB.QueryRow: %w", err)
+	}
+
+	return count, nil
 }
 
 // genRawSelectWithReq -.

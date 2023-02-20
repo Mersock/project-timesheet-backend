@@ -1,6 +1,7 @@
 package v1
 
 import (
+	"errors"
 	"github.com/Mersock/project-timesheet-backend/internal/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
@@ -11,7 +12,10 @@ const (
 	_defaultInternalServerErr = "Internal server error"
 	_defaultNotFoundErr       = "Not found"
 	_defaultBadReq            = "Bad request"
+	_defaultConflict          = "Conflict"
 )
+
+var errDuplicateRow = errors.New("duplicate")
 
 // response -.
 type errRes struct {

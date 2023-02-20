@@ -43,3 +43,13 @@ func (uc *RolesUseCase) GetRoleByID(roleID int) (entity.Roles, error) {
 	}
 	return role, nil
 }
+
+// CreateRole -.
+func (uc *RolesUseCase) CreateRole(req request.CreateRoleReq) (int64, error) {
+	var roleID int64
+	roleID, err := uc.repo.Insert(req)
+	if err != nil {
+		return roleID, fmt.Errorf("RolesUseCase - CreateRole - uc.repo.Insert: %w", err)
+	}
+	return roleID, nil
+}

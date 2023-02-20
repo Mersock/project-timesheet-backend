@@ -1,6 +1,7 @@
 package repo
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"github.com/Mersock/project-timesheet-backend/internal/entity"
@@ -22,10 +23,9 @@ func (r *RolesRepo) Count(req request.GetRolesReq) (int, error) {
 	var count int
 	sqlRaw := "SELECT  COUNT(*) FROM `roles` WHERE 1=1"
 	sqlCount := genRawSelectWithReq(sqlRaw, req)
-	fmt.Println(sqlCount)
 	err := r.DB.QueryRow(sqlCount).Scan(&count)
 	if err != nil {
-		return count, fmt.Errorf("RolesRepo - GetRows - r.DB.QueryRow: %w", err)
+		return count, fmt.Errorf("RolesRepo - Count - r.DB.QueryRow: %w", err)
 	}
 
 	return count, nil
@@ -38,10 +38,9 @@ func (r *RolesRepo) Select(req request.GetRolesReq) ([]entity.Roles, error) {
 	sqlRaw := "SELECT `id`, `name`, `created_at`, `updated_at` FROM `roles` WHERE 1=1 "
 	sqlSelect := genRawSelectWithReq(sqlRaw, req)
 	mainQuery := genPaginateQuery(sqlSelect, req)
-	fmt.Println(mainQuery)
 	results, err := r.DB.Query(mainQuery)
 	if err != nil {
-		return nil, fmt.Errorf("RolesRepo - GetRole - r.DB.Query: %w", err)
+		return nil, fmt.Errorf("RolesRepo - Select - r.DB.Query: %w", err)
 	}
 
 	for results.Next() {
@@ -60,10 +59,27 @@ func (r *RolesRepo) SelectById(roleID int) (entity.Roles, error) {
 	sqlRaw := "SELECT `id`, `name`, `created_at`, `updated_at` FROM `roles` WHERE `id` = ?"
 	err := r.DB.QueryRow(sqlRaw, roleID).Scan(&entity.ID, &entity.Name, &entity.CreateAt, &entity.UpdateAt)
 	if err != nil {
-		return entity, fmt.Errorf("RolesRepo - GetRole - r.DB.QueryRow: %w", err)
+		return entity, fmt.Errorf("RolesRepo - SelectById - r.DB.QueryRow: %w", err)
 	}
 
 	return entity, nil
+}
+
+// Insert -.
+func (r *RolesRepo) Insert(req request.CreateRoleReq) (int64, error) {
+	var insertId int64
+
+	sqlRaw := "INSERT INTO roles (name,created_at) values (?,NOW()) "
+	result, err := r.DB.ExecContext(context.Background(), sqlRaw, req.Name)
+	if err != nil {
+		return insertId, fmt.Errorf("RolesRepo - Insert - r.DB.ExecContext: %w", err)
+	}
+	insertId, err = result.LastInsertId()
+	if err != nil {
+		return insertId, fmt.Errorf("RolesRepo - Insert - result.LastInsertId: %w", err)
+	}
+
+	return insertId, nil
 }
 
 // genRawSelectWithReq -.

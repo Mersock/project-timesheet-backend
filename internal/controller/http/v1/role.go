@@ -27,6 +27,7 @@ func newRolesRoutes(handler *gin.RouterGroup, ru usecase.Roles, l logger.Interfa
 	{
 		h.GET("", r.getRoles)
 		h.GET("/:id", r.getRoleByID)
+		h.POST("", r.createRole)
 	}
 
 }
@@ -107,5 +108,33 @@ func (r rolesRoutes) getRoleByID(c *gin.Context) {
 
 	c.JSON(http.StatusOK, response.GetRoleByIDRes{
 		Role: role,
+	})
+}
+
+// createRole -.
+func (r rolesRoutes) createRole(c *gin.Context) {
+	var req request.CreateRoleReq
+
+	//validator
+	if err := c.ShouldBindJSON(&req); err != nil {
+		var ve validator.ValidationErrors
+		r.l.Error(err, "http - v1 - Roles")
+		if errors.As(err, &ve) {
+			errorValidateRes(c, ve)
+			return
+		}
+		errorResponse(c, http.StatusBadRequest, _defaultBadReq)
+		return
+	}
+
+	roleID, err := r.ru.CreateRole(req)
+	if err != nil {
+		r.l.Error(err, "http - v1 - Roles")
+		errorResponse(c, http.StatusInternalServerError, _defaultInternalServerErr)
+		return
+	}
+
+	c.JSON(http.StatusCreated, response.CreateRoleRes{
+		ID: roleID,
 	})
 }

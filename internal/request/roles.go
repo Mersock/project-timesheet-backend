@@ -1,6 +1,8 @@
 package request
 
-import "github.com/Mersock/project-timesheet-backend/internal/utils"
+import (
+	"github.com/Mersock/project-timesheet-backend/internal/utils"
+)
 
 // GetRolesReq -.
 type GetRolesReq struct {
@@ -13,4 +15,9 @@ type GetRolesReq struct {
 // GetRoleByIDReq -.
 type GetRoleByIDReq struct {
 	ID int `uri:"id" binding:"required,numeric"`
+}
+
+// CreateRoleReq -.
+type CreateRoleReq struct {
+	Name string `form:"name" json:"name" binding:"required"`
 }

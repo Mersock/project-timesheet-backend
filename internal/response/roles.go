@@ -12,6 +12,11 @@ type GetRolesRes struct {
 	utils.PaginationRes
 }
 
+// GetRoleByIDRes -.
 type GetRoleByIDRes struct {
 	Role entity.Roles `json:"data"`
+}
+
+type CreateRoleRes struct {
+	ID int64 `json:"id"`
 }

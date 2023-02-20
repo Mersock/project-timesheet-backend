@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"database/sql"
 	"errors"
 	"fmt"
 	"github.com/Mersock/project-timesheet-backend/internal/entity"
@@ -72,6 +73,14 @@ func (uc *RolesUseCase) CreateRole(req request.CreateRoleReq) (int64, error) {
 // UpdateRole -.
 func (uc *RolesUseCase) UpdateRole(req request.UpdateRoleReq) (int64, error) {
 	var rowAffected int64
+
+	_, err := uc.repo.SelectById(req.ID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return rowAffected, sql.ErrNoRows
+		}
+		return rowAffected, fmt.Errorf("RolesUseCase - UpdateRole - uc.repo.SelectById: %w", err)
+	}
 
 	count, err := uc.repo.ChkUniqueUpdate(req)
 	if err != nil {

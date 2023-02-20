@@ -101,7 +101,7 @@ func (r rolesRoutes) getRoleByID(c *gin.Context) {
 	if err != nil {
 		r.l.Error(err, "http - v1 - Roles")
 		if errors.Is(err, sql.ErrNoRows) {
-			errorResponse(c, http.StatusNotFound, _defaultNotFoundErr)
+			errorResponse(c, http.StatusNotFound, _defaultNotFound)
 			return
 		}
 		errorResponse(c, http.StatusInternalServerError, _defaultInternalServerErr)
@@ -165,6 +165,11 @@ func (r rolesRoutes) updateRole(c *gin.Context) {
 	rowAffected, err := r.ru.UpdateRole(req)
 	if err != nil {
 		r.l.Error(err, "http - v1 - Roles")
+		if errors.Is(err, sql.ErrNoRows) {
+			errorResponse(c, http.StatusNotFound, _defaultNotFound)
+			return
+		}
+
 		if errors.As(err, &errDuplicateRow) {
 			errorResponse(c, http.StatusConflict, _defaultConflict)
 			return

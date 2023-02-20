@@ -10,7 +10,7 @@ import (
 
 const (
 	_defaultInternalServerErr = "Internal server error"
-	_defaultNotFoundErr       = "Not found"
+	_defaultNotFound          = "Not found"
 	_defaultBadReq            = "Bad request"
 	_defaultConflict          = "Conflict"
 )

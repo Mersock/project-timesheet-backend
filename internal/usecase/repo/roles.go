@@ -85,7 +85,7 @@ func (r *RolesRepo) Insert(req request.CreateRoleReq) (int64, error) {
 func (r *RolesRepo) Update(req request.UpdateRoleReq) (int64, error) {
 	var rowAffected int64
 	sqlRaw := "UPDATE `roles` SET name = ?, updated_at = NOW() WHERE `id` = ?"
-	result, err := r.DB.Exec(sqlRaw, req.Name)
+	result, err := r.DB.Exec(sqlRaw, req.Name, req.ID)
 	if err != nil {
 		return rowAffected, fmt.Errorf("RolesRepo - Update - r.DB.Exec: %w", err)
 	}
@@ -112,11 +112,11 @@ func (r *RolesRepo) ChkUniqueInsert(req request.CreateRoleReq) (int, error) {
 func (r *RolesRepo) ChkUniqueUpdate(req request.UpdateRoleReq) (int, error) {
 	var count int
 	sqlRaw := fmt.Sprintf("SELECT  COUNT(*) FROM `roles` WHERE name = '%s' AND id != %d", req.Name, req.ID)
+	fmt.Println(sqlRaw)
 	err := r.DB.QueryRow(sqlRaw).Scan(&count)
 	if err != nil {
 		return count, fmt.Errorf("RolesRepo - ChkUniqueUpdate - r.DB.QueryRow: %w", err)
 	}
-
 	return count, nil
 }
 

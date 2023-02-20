@@ -20,7 +20,7 @@ func NewRolesRepo(db *sql.DB) *RolesRepo {
 // Count -.
 func (r *RolesRepo) Count(req request.GetRolesReq) (int, error) {
 	var count int
-	sqlRaw := "SELECT  COUNT(*) FROM roles "
+	sqlRaw := "SELECT  COUNT(*) FROM roles WHERE 1=1 "
 	sqlCount := r.genRawSelectWithReq(sqlRaw, req)
 	err := r.DB.QueryRow(sqlCount).Scan(&count)
 	if err != nil {

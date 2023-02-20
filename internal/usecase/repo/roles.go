@@ -20,7 +20,7 @@ func NewRolesRepo(db *sql.DB) *RolesRepo {
 // Count -.
 func (r *RolesRepo) Count(req request.GetRolesReq) (int, error) {
 	var count int
-	sqlRaw := "SELECT  COUNT(*) FROM `roles` "
+	sqlRaw := "SELECT  COUNT(*) FROM roles "
 	sqlCount := r.genRawSelectWithReq(sqlRaw, req)
 	err := r.DB.QueryRow(sqlCount).Scan(&count)
 	if err != nil {
@@ -34,7 +34,7 @@ func (r *RolesRepo) Count(req request.GetRolesReq) (int, error) {
 func (r *RolesRepo) Select(req request.GetRolesReq) ([]entity.Roles, error) {
 	var entities []entity.Roles
 
-	sqlRaw := "SELECT `id`, `name`, `created_at`, `updated_at` FROM `roles` WHERE 1=1 "
+	sqlRaw := "SELECT id, name, created_at, updated_at FROM roles WHERE 1=1 "
 	sqlSelect := r.genRawSelectWithReq(sqlRaw, req)
 	mainQuery := r.genPaginateQuery(sqlSelect, req)
 	results, err := r.DB.Query(mainQuery)
@@ -55,7 +55,7 @@ func (r *RolesRepo) Select(req request.GetRolesReq) ([]entity.Roles, error) {
 func (r *RolesRepo) SelectById(roleID int) (entity.Roles, error) {
 	var entity entity.Roles
 
-	sqlRaw := "SELECT `id`, `name`, `created_at`, `updated_at` FROM `roles` WHERE `id` = ?"
+	sqlRaw := "SELECT id, name, created_at, updated_at FROM roles WHERE id = ?"
 	err := r.DB.QueryRow(sqlRaw, roleID).Scan(&entity.ID, &entity.Name, &entity.CreateAt, &entity.UpdateAt)
 	if err != nil {
 		return entity, fmt.Errorf("RolesRepo - SelectById - r.DB.QueryRow: %w", err)
@@ -84,7 +84,7 @@ func (r *RolesRepo) Insert(req request.CreateRoleReq) (int64, error) {
 // Update -.
 func (r *RolesRepo) Update(req request.UpdateRoleReq) (int64, error) {
 	var rowAffected int64
-	sqlRaw := "UPDATE `roles` SET name = ?, updated_at = NOW() WHERE `id` = ?"
+	sqlRaw := "UPDATE roles SET name = ?, updated_at = NOW() WHERE id = ?"
 	result, err := r.DB.Exec(sqlRaw, req.Name, req.ID)
 	if err != nil {
 		return rowAffected, fmt.Errorf("RolesRepo - Update - r.DB.Exec: %w", err)
@@ -99,7 +99,7 @@ func (r *RolesRepo) Update(req request.UpdateRoleReq) (int64, error) {
 // Delete -.
 func (r *RolesRepo) Delete(req request.DeleteRoleReq) (int64, error) {
 	var rowAffected int64
-	sqlRaw := "DELETE FROM `roles` WHERE `id` = ?"
+	sqlRaw := "DELETE FROM roles WHERE id = ?"
 	result, err := r.DB.Exec(sqlRaw, req.ID)
 	if err != nil {
 		return rowAffected, fmt.Errorf("RolesRepo - Delete - r.DB.Exec: %w", err)
@@ -114,7 +114,7 @@ func (r *RolesRepo) Delete(req request.DeleteRoleReq) (int64, error) {
 // ChkUniqueInsert -.
 func (r *RolesRepo) ChkUniqueInsert(req request.CreateRoleReq) (int, error) {
 	var count int
-	sqlRaw := fmt.Sprintf("SELECT  COUNT(*) FROM `roles` WHERE name = '%s' ", req.Name)
+	sqlRaw := fmt.Sprintf("SELECT  COUNT(*) FROM roles WHERE name = '%s' ", req.Name)
 	err := r.DB.QueryRow(sqlRaw).Scan(&count)
 	if err != nil {
 		return count, fmt.Errorf("RolesRepo - ChkUniqueInsert - r.DB.QueryRow: %w", err)
@@ -126,7 +126,7 @@ func (r *RolesRepo) ChkUniqueInsert(req request.CreateRoleReq) (int, error) {
 // ChkUniqueUpdate -.
 func (r *RolesRepo) ChkUniqueUpdate(req request.UpdateRoleReq) (int, error) {
 	var count int
-	sqlRaw := fmt.Sprintf("SELECT  COUNT(*) FROM `roles` WHERE name = '%s' AND id != %d", req.Name, req.ID)
+	sqlRaw := fmt.Sprintf("SELECT  COUNT(*) FROM roles WHERE name = '%s' AND id != %d", req.Name, req.ID)
 	fmt.Println(sqlRaw)
 	err := r.DB.QueryRow(sqlRaw).Scan(&count)
 	if err != nil {
@@ -138,7 +138,7 @@ func (r *RolesRepo) ChkUniqueUpdate(req request.UpdateRoleReq) (int, error) {
 // genRawSelectWithReq -.
 func (r *RolesRepo) genRawSelectWithReq(sqlRaw string, req request.GetRolesReq) string {
 	if req.Name != "" {
-		sqlRaw = fmt.Sprintf("%s AND `name` LIKE '%%%s%%' ", sqlRaw, req.Name)
+		sqlRaw = fmt.Sprintf("%s AND name LIKE '%%%s%%' ", sqlRaw, req.Name)
 	}
 
 	if req.SortBy != "" && req.SortType != "" {

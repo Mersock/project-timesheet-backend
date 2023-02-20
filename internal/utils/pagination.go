@@ -7,8 +7,8 @@ import (
 
 // PaginationReq -.
 type PaginationReq struct {
-	Limit    string `form:"limit" binding:"numeric,omitempty"`
-	Page     string `form:"page" binding:"numeric,omitempty"`
+	Limit    string `form:"limit" binding:"omitempty,numeric"`
+	Page     string `form:"page" binding:"omitempty,numeric"`
 	SortBy   string `form:"sortBy" json:"-" binding:"omitempty"`
 	SortType string `form:"sortType" json:"-" binding:"omitempty"`
 }

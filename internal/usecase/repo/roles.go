@@ -21,7 +21,7 @@ func NewRolesRepo(db *sql.DB) *RolesRepo {
 func (r *RolesRepo) Count(req request.GetRolesReq) (int, error) {
 	var count int
 	sqlRaw := "SELECT  COUNT(*) FROM `roles` "
-	sqlCount := genRawSelectWithReq(sqlRaw, req)
+	sqlCount := r.genRawSelectWithReq(sqlRaw, req)
 	err := r.DB.QueryRow(sqlCount).Scan(&count)
 	if err != nil {
 		return count, fmt.Errorf("RolesRepo - Count - r.DB.QueryRow: %w", err)
@@ -35,8 +35,8 @@ func (r *RolesRepo) Select(req request.GetRolesReq) ([]entity.Roles, error) {
 	var entities []entity.Roles
 
 	sqlRaw := "SELECT `id`, `name`, `created_at`, `updated_at` FROM `roles` WHERE 1=1 "
-	sqlSelect := genRawSelectWithReq(sqlRaw, req)
-	mainQuery := genPaginateQuery(sqlSelect, req)
+	sqlSelect := r.genRawSelectWithReq(sqlRaw, req)
+	mainQuery := r.genPaginateQuery(sqlSelect, req)
 	results, err := r.DB.Query(mainQuery)
 	if err != nil {
 		return nil, fmt.Errorf("RolesRepo - Select - r.DB.Query: %w", err)
@@ -136,7 +136,7 @@ func (r *RolesRepo) ChkUniqueUpdate(req request.UpdateRoleReq) (int, error) {
 }
 
 // genRawSelectWithReq -.
-func genRawSelectWithReq(sqlRaw string, req request.GetRolesReq) string {
+func (r *RolesRepo) genRawSelectWithReq(sqlRaw string, req request.GetRolesReq) string {
 	if req.Name != "" {
 		sqlRaw = fmt.Sprintf("%s AND `name` LIKE '%%%s%%' ", sqlRaw, req.Name)
 	}
@@ -149,7 +149,7 @@ func genRawSelectWithReq(sqlRaw string, req request.GetRolesReq) string {
 }
 
 // genPaginateQuery -.
-func genPaginateQuery(sqlRaw string, req request.GetRolesReq) string {
+func (r *RolesRepo) genPaginateQuery(sqlRaw string, req request.GetRolesReq) string {
 	if req.Limit != nil && req.Page != nil {
 		offset := (*req.Page - 1) * (*req.Limit)
 		sqlRaw = fmt.Sprintf("%s LIMIT %d OFFSET %d", sqlRaw, *req.Limit, offset)

@@ -10,6 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"net/http"
+	"strings"
 )
 
 // usersRoutes -.
@@ -48,6 +49,9 @@ func (r usersRoutes) getUsers(c *gin.Context) {
 	paginate := utils.GeneratePaginationFromRequest(c)
 	req.Limit = &paginate.Limit
 	req.Page = &paginate.Page
+	if strings.ToLower(req.SortBy) == "id" {
+		req.SortBy = "users.id"
+	}
 
 	//total rows
 	total, err := r.uu.GetCount(req)

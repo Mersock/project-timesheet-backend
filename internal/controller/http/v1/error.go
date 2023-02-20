@@ -1,6 +1,7 @@
 package v1
 
 import (
+	"github.com/Mersock/project-timesheet-backend/internal/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"net/http"
@@ -22,24 +23,11 @@ func errorResponse(c *gin.Context, code int, msg string) {
 	c.AbortWithStatusJSON(code, errRes{msg})
 }
 
+// errorValidateRes -.
 func errorValidateRes(c *gin.Context, ve validator.ValidationErrors) {
 	out := make([]validateRes, len(ve))
 	for i, fe := range ve {
-		out[i] = validateRes{fe.Field(), getValidateTag(fe)}
+		out[i] = validateRes{fe.Field(), utils.GetValidateTag(fe)}
 	}
 	c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"errors": out})
-}
-
-func getValidateTag(fe validator.FieldError) string {
-	switch fe.Tag() {
-	case "required":
-		return "This field is required"
-	case "lte":
-		return "Should be less than " + fe.Param()
-	case "gte":
-		return "Should be greater than " + fe.Param()
-	case "numeric":
-		return "This field is required only numeric"
-	}
-	return "Unknown error"
 }

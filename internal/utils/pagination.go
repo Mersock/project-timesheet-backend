@@ -1,14 +1,15 @@
 package utils
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"strconv"
 )
 
 // PaginationReq -.
 type PaginationReq struct {
-	Limit    *int   `form:"limit" binding:"omitempty,numeric"`
-	Page     *int   `form:"page" binding:"omitempty,numeric"`
+	Limit    *int   `form:"limit" binding:"omitempty,numeric,min=1"`
+	Page     *int   `form:"page" binding:"omitempty,numeric,min=1"`
 	SortBy   string `form:"sortBy" json:"-" binding:"omitempty"`
 	SortType string `form:"sortType" json:"-" binding:"omitempty"`
 }
@@ -46,5 +47,7 @@ func GeneratePaginationFromRequest(c *gin.Context) PaginationRes {
 
 // GetPageCount -.
 func GetPageCount(total, limit int) int {
+	fmt.Println(total, limit)
+
 	return (total + limit - 1) / limit
 }

@@ -11,8 +11,9 @@ services:
     ports:
       - 3306:3306
     volumes:
-      - ./pkg/mysql/init-grant.sql:/docker-entrypoint-initdb.d/init-grant.sql
-      - ./pkg/mysql/init-roles.sql:/docker-entrypoint-initdb.d/init-roles.sql
+      - ./pkg/mysql/1-init-grant.sql:/docker-entrypoint-initdb.d/1-init-grant.sql
+      - ./pkg/mysql/2-init-roles.sql:/docker-entrypoint-initdb.d/2-init-roles.sql
+      - ./pkg/mysql/3-init-users.sql:/docker-entrypoint-initdb.d/3-init-users.sql
     networks:
       - project-timesheet-db
 

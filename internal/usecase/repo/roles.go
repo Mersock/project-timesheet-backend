@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/Mersock/project-timesheet-backend/internal/entity"
+	"github.com/Mersock/project-timesheet-backend/internal/request"
 )
 
 // RolesRepo -.
@@ -17,7 +18,7 @@ func NewRolesRepo(db *sql.DB) *RolesRepo {
 }
 
 // GetRows -.
-func (r *RolesRepo) GetRows() (int, error) {
+func (r *RolesRepo) GetRows(req request.RolesReq) (int, error) {
 	var count int
 	sqlRaw := "SELECT  COUNT(*) FROM `roles` "
 	err := r.DB.QueryRow(sqlRaw).Scan(&count)
@@ -29,7 +30,7 @@ func (r *RolesRepo) GetRows() (int, error) {
 }
 
 // GetRole -.
-func (r *RolesRepo) GetRole() ([]entity.Roles, error) {
+func (r *RolesRepo) GetRole(req request.RolesReq) ([]entity.Roles, error) {
 	var entities []entity.Roles
 	sqlRaw := "SELECT `id`, `name`, `created_at`, `updated_at` FROM `roles` ORDER BY `id`"
 	results, err := r.DB.Query(sqlRaw)

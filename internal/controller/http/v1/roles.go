@@ -33,7 +33,7 @@ func newRolesRoutes(handler *gin.RouterGroup, ru usecase.Roles, l logger.Interfa
 type rolesResponse struct {
 	Roles []entity.Roles `json:"data"`
 	Total int            `json:"total"`
-	utils.Pagination
+	utils.PaginationRes
 }
 
 // getRoles -.
@@ -73,7 +73,7 @@ func (r rolesRoutes) getRoles(c *gin.Context) {
 	c.JSON(http.StatusOK, rolesResponse{
 		Roles: roles,
 		Total: total,
-		Pagination: utils.Pagination{
+		PaginationRes: utils.PaginationRes{
 			Limit: paginate.Limit,
 			Page:  paginate.Page,
 		},

@@ -2,46 +2,43 @@ package utils
 
 import (
 	"github.com/gin-gonic/gin"
+	"strconv"
 )
 
-// Pagination -.
-type Pagination struct {
-	Limit    string `form:"limit" json:"limit" binding:"numeric,omitempty"`
-	Page     string `form:"page" json:"page" binding:"numeric,omitempty"`
+// PaginationReq -.
+type PaginationReq struct {
+	Limit    string `form:"limit" binding:"numeric,omitempty"`
+	Page     string `form:"page" binding:"numeric,omitempty"`
 	SortBy   string `form:"sortBy" json:"-" binding:"omitempty"`
 	SortType string `form:"sortType" json:"-" binding:"omitempty"`
-	Total    string `json:"total"`
+}
+
+// PaginationRes -.
+type PaginationRes struct {
+	Limit int `json:"limit"`
+	Page  int `json:"page"`
+	Total int `json:"total"`
 }
 
 // GeneratePaginationFromRequest -.
-func GeneratePaginationFromRequest(c *gin.Context) Pagination {
-	limit := "10"
-	page := "1"
-	sortBy := ""
-	sortType := ""
+func GeneratePaginationFromRequest(c *gin.Context) PaginationRes {
+	limit := 10
+	page := 1
 	query := c.Request.URL.Query()
 	for key, value := range query {
 		queryValue := value[len(value)-1]
 		switch key {
 		case "limit":
-			limit = queryValue
+			limit, _ = strconv.Atoi(queryValue)
 			break
 		case "page":
-			page = queryValue
-			break
-		case "sortBy":
-			sortBy = queryValue
-			break
-		case "sortType":
-			sortType = queryValue
+			page, _ = strconv.Atoi(queryValue)
 			break
 		}
 	}
-	return Pagination{
-		Limit:    limit,
-		Page:     page,
-		SortBy:   sortBy,
-		SortType: sortType,
+	return PaginationRes{
+		Limit: limit,
+		Page:  page,
 	}
 
 }

@@ -6,6 +6,18 @@ import (
 )
 
 type (
+	//User -.
+	User interface {
+		GetCount(req request.GetRolesReq) (int, error)
+		GetAllUsers(req request.GetRolesReq) ([]entity.Users, error)
+	}
+
+	//UserRepo -.
+	UserRepo interface {
+		Count(req request.GetUsersReq) (int, error)
+		Select(req request.GetUsersReq) ([]entity.Users, error)
+	}
+
 	// Roles -.
 	Roles interface {
 		GetCount(req request.GetRolesReq) (int, error)

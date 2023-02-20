@@ -17,6 +17,12 @@ type GetRoleByIDRes struct {
 	Role entity.Roles `json:"data"`
 }
 
+// CreateRoleRes -.
 type CreateRoleRes struct {
 	ID int64 `json:"id"`
+}
+
+// UpdateRoleRes -.
+type UpdateRoleRes struct {
+	RowAffected int64 `json:"row_affected"`
 }

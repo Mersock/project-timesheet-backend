@@ -1,7 +1,6 @@
 package repo
 
 import (
-	"context"
 	"database/sql"
 	"fmt"
 	"github.com/Mersock/project-timesheet-backend/internal/entity"
@@ -70,9 +69,9 @@ func (r *RolesRepo) Insert(req request.CreateRoleReq) (int64, error) {
 	var insertId int64
 
 	sqlRaw := "INSERT INTO roles (name,created_at) values (?,NOW()) "
-	result, err := r.DB.ExecContext(context.Background(), sqlRaw, req.Name)
+	result, err := r.DB.Exec(sqlRaw, req.Name)
 	if err != nil {
-		return insertId, fmt.Errorf("RolesRepo - Insert - r.DB.ExecContext: %w", err)
+		return insertId, fmt.Errorf("RolesRepo - Insert - r.DB.Exec: %w", err)
 	}
 	insertId, err = result.LastInsertId()
 	if err != nil {
@@ -82,13 +81,40 @@ func (r *RolesRepo) Insert(req request.CreateRoleReq) (int64, error) {
 	return insertId, nil
 }
 
+// Update -.
+func (r *RolesRepo) Update(req request.UpdateRoleReq) (int64, error) {
+	var rowAffected int64
+	sqlRaw := "UPDATE `roles` SET name = ?, updated_at = NOW() WHERE `id` = ?"
+	result, err := r.DB.Exec(sqlRaw, req.Name)
+	if err != nil {
+		return rowAffected, fmt.Errorf("RolesRepo - Update - r.DB.Exec: %w", err)
+	}
+	rowAffected, err = result.RowsAffected()
+	if err != nil {
+		return rowAffected, fmt.Errorf("RolesRepo - Update - result.rowAffected: %w", err)
+	}
+	return rowAffected, nil
+}
+
 // ChkUniqueInsert -.
 func (r *RolesRepo) ChkUniqueInsert(req request.CreateRoleReq) (int, error) {
 	var count int
 	sqlRaw := fmt.Sprintf("SELECT  COUNT(*) FROM `roles` WHERE name = '%s' ", req.Name)
 	err := r.DB.QueryRow(sqlRaw).Scan(&count)
 	if err != nil {
-		return count, fmt.Errorf("RolesRepo - Count - r.DB.QueryRow: %w", err)
+		return count, fmt.Errorf("RolesRepo - ChkUniqueInsert - r.DB.QueryRow: %w", err)
+	}
+
+	return count, nil
+}
+
+// ChkUniqueUpdate -.
+func (r *RolesRepo) ChkUniqueUpdate(req request.UpdateRoleReq) (int, error) {
+	var count int
+	sqlRaw := fmt.Sprintf("SELECT  COUNT(*) FROM `roles` WHERE name = '%s' AND id != %d", req.Name, req.ID)
+	err := r.DB.QueryRow(sqlRaw).Scan(&count)
+	if err != nil {
+		return count, fmt.Errorf("RolesRepo - ChkUniqueUpdate - r.DB.QueryRow: %w", err)
 	}
 
 	return count, nil

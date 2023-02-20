@@ -25,7 +25,7 @@ func NewRolesUseCase(r RolesRepo) *RolesUseCase {
 func (uc *RolesUseCase) GetCount(req request.GetRolesReq) (int, error) {
 	rows, err := uc.repo.Count(req)
 	if err != nil {
-		return rows, fmt.Errorf("RolesUseCase - GetRowsRoles - uc.repo.GetRows: %w", err)
+		return rows, fmt.Errorf("RolesUseCase - GetCount - uc.repo.GetRows: %w", err)
 	}
 	return rows, nil
 }
@@ -67,4 +67,24 @@ func (uc *RolesUseCase) CreateRole(req request.CreateRoleReq) (int64, error) {
 		return roleID, fmt.Errorf("RolesUseCase - CreateRole - uc.repo.Insert: %w", err)
 	}
 	return roleID, nil
+}
+
+// UpdateRole -.
+func (uc *RolesUseCase) UpdateRole(req request.UpdateRoleReq) (int64, error) {
+	var rowAffected int64
+
+	count, err := uc.repo.ChkUniqueUpdate(req)
+	if err != nil {
+		return rowAffected, fmt.Errorf("RolesUseCase - UpdateRole - uc.repo.ChkUniqueUpdate: %w", err)
+	}
+
+	if count > 0 {
+		return rowAffected, errDuplicateRow
+	}
+
+	rowAffected, err = uc.repo.Update(req)
+	if err != nil {
+		return rowAffected, fmt.Errorf("RolesUseCase - UpdateRole - uc.repo.Update: %w", err)
+	}
+	return rowAffected, nil
 }

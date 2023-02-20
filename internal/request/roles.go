@@ -21,3 +21,9 @@ type GetRoleByIDReq struct {
 type CreateRoleReq struct {
 	Name string `form:"name" json:"name" binding:"required"`
 }
+
+// UpdateRoleReq -.
+type UpdateRoleReq struct {
+	ID   int    `binding:"required,numeric"`
+	Name string `form:"name" json:"name" binding:"required"`
+}

@@ -12,6 +12,7 @@ type (
 		GetAllRoles(req request.GetRolesReq) ([]entity.Roles, error)
 		GetRoleByID(roleID int) (entity.Roles, error)
 		CreateRole(req request.CreateRoleReq) (int64, error)
+		UpdateRole(req request.UpdateRoleReq) (int64, error)
 	}
 
 	//RolesRepo -.
@@ -20,6 +21,8 @@ type (
 		Select(req request.GetRolesReq) ([]entity.Roles, error)
 		SelectById(roleID int) (entity.Roles, error)
 		Insert(req request.CreateRoleReq) (int64, error)
+		Update(req request.UpdateRoleReq) (int64, error)
 		ChkUniqueInsert(req request.CreateRoleReq) (int, error)
+		ChkUniqueUpdate(req request.UpdateRoleReq) (int, error)
 	}
 )

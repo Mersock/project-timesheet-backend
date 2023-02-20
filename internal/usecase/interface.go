@@ -8,8 +8,8 @@ import (
 type (
 	//User -.
 	User interface {
-		GetCount(req request.GetRolesReq) (int, error)
-		GetAllUsers(req request.GetRolesReq) ([]entity.Users, error)
+		GetCount(req request.GetUsersReq) (int, error)
+		GetAllUsers(req request.GetUsersReq) ([]entity.Users, error)
 	}
 
 	//UserRepo -.

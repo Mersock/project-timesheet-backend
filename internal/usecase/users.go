@@ -26,7 +26,7 @@ func (uc *UsersUseCase) GetCount(req request.GetUsersReq) (int, error) {
 }
 
 // GetAllRoles -.
-func (uc *UsersUseCase) GetAllRoles(req request.GetUsersReq) ([]entity.Users, error) {
+func (uc *UsersUseCase) GetAllUsers(req request.GetUsersReq) ([]entity.Users, error) {
 	users, err := uc.repo.Select(req)
 	if err != nil {
 		return nil, fmt.Errorf("UsersUseCase - GetAllRoles - uc.repo.Select: %w", err)

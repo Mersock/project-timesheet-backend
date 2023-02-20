@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func NewRouter(handler *gin.Engine, l logger.Interface, ru usecase.Roles) {
+func NewRouter(handler *gin.Engine, l logger.Interface, ru usecase.Roles, uu usecase.User) {
 	//options
 	handler.Use(gin.Logger())
 	handler.Use(gin.Recovery())

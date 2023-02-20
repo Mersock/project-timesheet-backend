@@ -27,10 +27,13 @@ func Run(cfg *config.Config) {
 	rolesUseCase := usecase.NewRolesUseCase(
 		repo.NewRolesRepo(sql),
 	)
+	userUseCase := usecase.NewUsersUseCase(
+		repo.NewUsersRepo(sql),
+	)
 
 	//HTTP server
 	handler := gin.New()
-	v1.NewRouter(handler, l, rolesUseCase)
+	v1.NewRouter(handler, l, rolesUseCase, userUseCase)
 	httpServer := httpserver.New(handler, httpserver.Port(cfg.HTTP.Port))
 
 	//signal interrupt

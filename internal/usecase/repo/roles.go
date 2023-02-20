@@ -96,6 +96,21 @@ func (r *RolesRepo) Update(req request.UpdateRoleReq) (int64, error) {
 	return rowAffected, nil
 }
 
+// Delete -.
+func (r *RolesRepo) Delete(req request.DeleteRoleReq) (int64, error) {
+	var rowAffected int64
+	sqlRaw := "DELETE FROM `roles` WHERE `id` = ?"
+	result, err := r.DB.Exec(sqlRaw, req.ID)
+	if err != nil {
+		return rowAffected, fmt.Errorf("RolesRepo - Delete - r.DB.Exec: %w", err)
+	}
+	rowAffected, err = result.RowsAffected()
+	if err != nil {
+		return rowAffected, fmt.Errorf("RolesRepo - Delete - result.rowAffected: %w", err)
+	}
+	return rowAffected, nil
+}
+
 // ChkUniqueInsert -.
 func (r *RolesRepo) ChkUniqueInsert(req request.CreateRoleReq) (int, error) {
 	var count int

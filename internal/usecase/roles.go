@@ -97,3 +97,23 @@ func (uc *RolesUseCase) UpdateRole(req request.UpdateRoleReq) (int64, error) {
 	}
 	return rowAffected, nil
 }
+
+// DeleteRole -.
+func (uc *RolesUseCase) DeleteRole(req request.DeleteRoleReq) (int64, error) {
+	var rowAffected int64
+
+	_, err := uc.repo.SelectById(req.ID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return rowAffected, sql.ErrNoRows
+		}
+		return rowAffected, fmt.Errorf("RolesUseCase - DeleteRole - uc.repo.SelectById: %w", err)
+	}
+
+	rowAffected, err = uc.repo.Delete(req)
+	if err != nil {
+		return rowAffected, fmt.Errorf("RolesUseCase - DeleteRole - uc.repo.Delete: %w", err)
+	}
+
+	return rowAffected, nil
+}

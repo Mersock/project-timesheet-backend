@@ -30,6 +30,7 @@ func newRolesRoutes(handler *gin.RouterGroup, ru usecase.Roles, l logger.Interfa
 		h.GET("/:id", r.getRoleByID)
 		h.POST("", r.createRole)
 		h.PATCH("/:id", r.updateRole)
+		h.DELETE("/:id", r.deleteRole)
 	}
 
 }
@@ -179,6 +180,38 @@ func (r rolesRoutes) updateRole(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, response.UpdateRoleRes{
+		RowAffected: rowAffected,
+	})
+}
+
+// deleteRole -.
+func (r rolesRoutes) deleteRole(c *gin.Context) {
+	var req request.DeleteRoleReq
+
+	//validator
+	if err := c.ShouldBindUri(&req); err != nil {
+		var ve validator.ValidationErrors
+		r.l.Error(err, "http - v1 - Roles")
+		if errors.As(err, &ve) {
+			errorValidateRes(c, ve)
+			return
+		}
+		errorResponse(c, http.StatusBadRequest, _defaultBadReq)
+		return
+	}
+
+	rowAffected, err := r.ru.DeleteRole(req)
+	if err != nil {
+		r.l.Error(err, "http - v1 - Roles")
+		if errors.Is(err, sql.ErrNoRows) {
+			errorResponse(c, http.StatusNotFound, _defaultNotFound)
+			return
+		}
+		errorResponse(c, http.StatusInternalServerError, _defaultInternalServerErr)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.UpdateRoleRes{
 		RowAffected: rowAffected,
 	})
 }

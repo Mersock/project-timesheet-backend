@@ -27,3 +27,8 @@ type UpdateRoleReq struct {
 	ID   int    `binding:"required,numeric"`
 	Name string `form:"name" json:"name" binding:"required"`
 }
+
+// DeleteRoleReq -.
+type DeleteRoleReq struct {
+	ID int `uri:"id" binding:"required,numeric"`
+}

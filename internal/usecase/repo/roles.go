@@ -17,8 +17,8 @@ func NewRolesRepo(db *sql.DB) *RolesRepo {
 	return &RolesRepo{db}
 }
 
-// GetRows -.
-func (r *RolesRepo) GetRows(req request.RolesReq) (int, error) {
+// Count -.
+func (r *RolesRepo) Count(req request.RolesReq) (int, error) {
 	var count int
 	sqlRaw := "SELECT  COUNT(*) FROM `roles`"
 	sqlCount := genRawSelectWithReq(sqlRaw, req)
@@ -31,8 +31,8 @@ func (r *RolesRepo) GetRows(req request.RolesReq) (int, error) {
 	return count, nil
 }
 
-// GetRole -.
-func (r *RolesRepo) GetRole(req request.RolesReq) ([]entity.Roles, error) {
+// Select -.
+func (r *RolesRepo) Select(req request.RolesReq) ([]entity.Roles, error) {
 	var entities []entity.Roles
 
 	sqlRaw := "SELECT `id`, `name`, `created_at`, `updated_at` FROM `roles` WHERE 1=1 "

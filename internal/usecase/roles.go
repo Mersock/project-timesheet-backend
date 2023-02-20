@@ -26,7 +26,7 @@ func NewRolesUseCase(r RolesRepo) *RolesUseCase {
 func (uc *RolesUseCase) GetCount(req request.GetRolesReq) (int, error) {
 	rows, err := uc.repo.Count(req)
 	if err != nil {
-		return rows, fmt.Errorf("RolesUseCase - GetCount - uc.repo.GetRows: %w", err)
+		return rows, fmt.Errorf("RolesUseCase - GetCount - uc.repo.Count: %w", err)
 	}
 	return rows, nil
 }
@@ -35,7 +35,7 @@ func (uc *RolesUseCase) GetCount(req request.GetRolesReq) (int, error) {
 func (uc *RolesUseCase) GetAllRoles(req request.GetRolesReq) ([]entity.Roles, error) {
 	roles, err := uc.repo.Select(req)
 	if err != nil {
-		return nil, fmt.Errorf("RolesUseCase - GetAllRoles - uc.repo.GetRole: %w", err)
+		return nil, fmt.Errorf("RolesUseCase - GetAllRoles - uc.repo.Select: %w", err)
 	}
 	return roles, nil
 }

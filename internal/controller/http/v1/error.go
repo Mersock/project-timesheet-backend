@@ -7,7 +7,7 @@ import (
 )
 
 // response -.
-type response struct {
+type errRes struct {
 	Error string `json:"error" example:"message"`
 }
 
@@ -19,7 +19,7 @@ type validateRes struct {
 
 // errorResponse-.
 func errorResponse(c *gin.Context, code int, msg string) {
-	c.AbortWithStatusJSON(code, response{msg})
+	c.AbortWithStatusJSON(code, errRes{msg})
 }
 
 func errorValidateRes(c *gin.Context, ve validator.ValidationErrors) {

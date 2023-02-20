@@ -20,8 +20,10 @@ func NewRolesRepo(db *sql.DB) *RolesRepo {
 // GetRows -.
 func (r *RolesRepo) GetRows(req request.RolesReq) (int, error) {
 	var count int
-	sqlRaw := "SELECT  COUNT(*) FROM `roles` "
-	err := r.DB.QueryRow(sqlRaw).Scan(&count)
+	sqlRaw := "SELECT  COUNT(*) FROM `roles`"
+	sqlCount := genRawSelectWithReq(sqlRaw, req)
+	fmt.Println(sqlCount)
+	err := r.DB.QueryRow(sqlCount).Scan(&count)
 	if err != nil {
 		return count, fmt.Errorf("RolesRepo - GetRows - r.DB.QueryRow: %w", err)
 	}
@@ -32,8 +34,12 @@ func (r *RolesRepo) GetRows(req request.RolesReq) (int, error) {
 // GetRole -.
 func (r *RolesRepo) GetRole(req request.RolesReq) ([]entity.Roles, error) {
 	var entities []entity.Roles
-	sqlRaw := "SELECT `id`, `name`, `created_at`, `updated_at` FROM `roles` ORDER BY `id`"
-	results, err := r.DB.Query(sqlRaw)
+
+	sqlRaw := "SELECT `id`, `name`, `created_at`, `updated_at` FROM `roles` WHERE 1=1 "
+	sqlSelect := genRawSelectWithReq(sqlRaw, req)
+	mainQuery := genPaginateQuery(sqlSelect, req)
+	fmt.Println(mainQuery)
+	results, err := r.DB.Query(mainQuery)
 	if err != nil {
 		return nil, fmt.Errorf("RolesRepo - GetRole - r.DB.Query: %w", err)
 	}
@@ -45,4 +51,26 @@ func (r *RolesRepo) GetRole(req request.RolesReq) ([]entity.Roles, error) {
 	}
 
 	return entities, nil
+}
+
+// genRawSelectWithReq -.
+func genRawSelectWithReq(sqlRaw string, req request.RolesReq) string {
+	if req.Name != "" {
+		sqlRaw = fmt.Sprintf("%s AND `name` LIKE '%%%s%%' ", sqlRaw, req.Name)
+	}
+
+	if req.SortBy != "" && req.SortType != "" {
+		sqlRaw = fmt.Sprintf("%s ORDER BY %s %s", sqlRaw, req.SortBy, req.SortType)
+	}
+
+	return sqlRaw
+}
+
+// genPaginateQuery -.
+func genPaginateQuery(sqlRaw string, req request.RolesReq) string {
+	if req.Limit != nil && req.Page != nil {
+		offset := (*req.Page - 1) * (*req.Limit)
+		sqlRaw = fmt.Sprintf("%s LIMIT %d OFFSET %d", sqlRaw, *req.Limit, offset)
+	}
+	return sqlRaw
 }

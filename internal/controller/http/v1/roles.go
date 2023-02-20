@@ -2,8 +2,8 @@ package v1
 
 import (
 	"errors"
-	"github.com/Mersock/project-timesheet-backend/internal/entity"
 	"github.com/Mersock/project-timesheet-backend/internal/request"
+	"github.com/Mersock/project-timesheet-backend/internal/response"
 	"github.com/Mersock/project-timesheet-backend/internal/usecase"
 	"github.com/Mersock/project-timesheet-backend/internal/utils"
 	"github.com/Mersock/project-timesheet-backend/pkg/logger"
@@ -29,13 +29,6 @@ func newRolesRoutes(handler *gin.RouterGroup, ru usecase.Roles, l logger.Interfa
 
 }
 
-// rolesResponse -.
-type rolesResponse struct {
-	Roles []entity.Roles `json:"data"`
-	Total int            `json:"total"`
-	utils.PaginationRes
-}
-
 // getRoles -.
 func (r rolesRoutes) getRoles(c *gin.Context) {
 	var req request.RolesReq
@@ -54,6 +47,8 @@ func (r rolesRoutes) getRoles(c *gin.Context) {
 
 	//pagination
 	paginate := utils.GeneratePaginationFromRequest(c)
+	req.Limit = &paginate.Limit
+	req.Page = &paginate.Page
 
 	//total rows
 	total, err := r.ru.GetRowsRoles(req)
@@ -70,12 +65,13 @@ func (r rolesRoutes) getRoles(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, rolesResponse{
+	c.JSON(http.StatusOK, response.RolesRes{
 		Roles: roles,
 		Total: total,
 		PaginationRes: utils.PaginationRes{
-			Limit: paginate.Limit,
-			Page:  paginate.Page,
+			Limit:    paginate.Limit,
+			Page:     paginate.Page,
+			LastPage: utils.GetPageCount(total, paginate.Limit),
 		},
 	})
 }

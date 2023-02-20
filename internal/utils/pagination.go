@@ -7,17 +7,18 @@ import (
 
 // PaginationReq -.
 type PaginationReq struct {
-	Limit    string `form:"limit" binding:"omitempty,numeric"`
-	Page     string `form:"page" binding:"omitempty,numeric"`
+	Limit    *int   `form:"limit" binding:"omitempty,numeric"`
+	Page     *int   `form:"page" binding:"omitempty,numeric"`
 	SortBy   string `form:"sortBy" json:"-" binding:"omitempty"`
 	SortType string `form:"sortType" json:"-" binding:"omitempty"`
 }
 
 // PaginationRes -.
 type PaginationRes struct {
-	Limit int `json:"limit"`
-	Page  int `json:"page"`
-	Total int `json:"total"`
+	Limit    int `json:"limit"`
+	Page     int `json:"page"`
+	Total    int `json:"total"`
+	LastPage int `json:"last_page"`
 }
 
 // GeneratePaginationFromRequest -.
@@ -41,4 +42,9 @@ func GeneratePaginationFromRequest(c *gin.Context) PaginationRes {
 		Page:  page,
 	}
 
+}
+
+// GetPageCount -.
+func GetPageCount(total, limit int) int {
+	return (total + limit - 1) / limit
 }

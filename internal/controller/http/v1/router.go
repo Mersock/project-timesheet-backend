@@ -21,5 +21,6 @@ func NewRouter(handler *gin.Engine, l logger.Interface, ru usecase.Roles, uu use
 	h := handler.Group("/api/v1")
 	{
 		newRolesRoutes(h, ru, l)
+		newUsersRoutes(h, uu, l)
 	}
 }

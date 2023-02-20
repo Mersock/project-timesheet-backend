@@ -7,7 +7,7 @@ import (
 
 // GetUsersRes -.
 type GetUsersRes struct {
-	Users []entity.Roles `json:"data"`
+	Users []entity.Users `json:"data"`
 	Total int            `json:"total"`
 	utils.PaginationRes
 }

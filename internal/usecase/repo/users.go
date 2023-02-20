@@ -20,8 +20,15 @@ func NewUsersRepo(db *sql.DB) *UsersRepo {
 // Count -.
 func (r *UsersRepo) Count(req request.GetUsersReq) (int, error) {
 	var count int
-	sqlRaw := "SELECT  COUNT(*) FROM users "
+
+	sqlRaw := "SELECT COUNT(*) "
+	sqlRaw += "FROM users "
+	sqlRaw += "INNER JOIN roles ON roles.id = users.id "
+	sqlRaw += "WHERE 1=1 "
 	sqlCount := r.genRawSelectWithReq(sqlRaw, req)
+
+	fmt.Println(sqlCount)
+
 	err := r.DB.QueryRow(sqlCount).Scan(&count)
 	if err != nil {
 		return count, fmt.Errorf("UsersRepo - Count - r.DB.QueryRow: %w", err)
@@ -35,8 +42,8 @@ func (r *UsersRepo) Select(req request.GetUsersReq) ([]entity.Users, error) {
 	var entities []entity.Users
 
 	sqlRaw := "SELECT users.id, email, firstname, lastname, users.created_at, users.updated_at,roles.name as role "
-	sqlRaw += "FROM users"
-	sqlRaw += "INNER JOIN roles ON roles.id = users.id"
+	sqlRaw += "FROM users "
+	sqlRaw += "INNER JOIN roles ON roles.id = users.id "
 	sqlRaw += "WHERE 1=1 "
 	sqlSelect := r.genRawSelectWithReq(sqlRaw, req)
 	mainQuery := r.genPaginateQuery(sqlSelect, req)
@@ -70,7 +77,7 @@ func (r *UsersRepo) genRawSelectWithReq(sqlRaw string, req request.GetUsersReq) 
 	}
 
 	if req.Role != "" {
-		sqlRaw = fmt.Sprintf("%s AND roles.name LIKE '%%%s%%' ", sqlRaw, req.Lastname)
+		sqlRaw = fmt.Sprintf("%s AND roles.name LIKE '%%%s%%' ", sqlRaw, req.Role)
 	}
 
 	if req.SortBy != "" && req.SortType != "" {

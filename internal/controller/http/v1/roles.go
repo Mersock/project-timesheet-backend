@@ -1,11 +1,14 @@
 package v1
 
 import (
+	"errors"
 	"github.com/Mersock/project-timesheet-backend/internal/entity"
+	"github.com/Mersock/project-timesheet-backend/internal/request"
 	"github.com/Mersock/project-timesheet-backend/internal/usecase"
 	"github.com/Mersock/project-timesheet-backend/internal/utils"
 	"github.com/Mersock/project-timesheet-backend/pkg/logger"
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
 	"net/http"
 )
 
@@ -35,6 +38,20 @@ type rolesResponse struct {
 
 // getRoles -.
 func (r rolesRoutes) getRoles(c *gin.Context) {
+	var req request.RolesReq
+
+	//validator
+	if err := c.ShouldBind(&req); err != nil {
+		var ve validator.ValidationErrors
+		r.l.Error(err, "http - v1 - Roles")
+		if errors.As(err, &ve) {
+			errorValidateRes(c, ve)
+			return
+		}
+		errorResponse(c, http.StatusBadRequest, "Bad request")
+		return
+	}
+
 	//pagination
 	paginate := utils.GeneratePaginationFromRequest(c)
 
@@ -42,14 +59,14 @@ func (r rolesRoutes) getRoles(c *gin.Context) {
 	total, err := r.ru.GetRowsRoles()
 	if err != nil {
 		r.l.Error(err, "http - v1 - Roles")
-		errorResponse(c, http.StatusInternalServerError, "database error")
+		errorResponse(c, http.StatusInternalServerError, "Database error")
 		return
 	}
 
 	roles, err := r.ru.GetAllRoles()
 	if err != nil {
 		r.l.Error(err, "http - v1 - Roles")
-		errorResponse(c, http.StatusInternalServerError, "database error")
+		errorResponse(c, http.StatusInternalServerError, "Database error")
 		return
 	}
 

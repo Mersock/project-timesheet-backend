@@ -1,17 +1,20 @@
 package usecase
 
-import "github.com/Mersock/project-timesheet-backend/internal/entity"
+import (
+	"github.com/Mersock/project-timesheet-backend/internal/entity"
+	"github.com/Mersock/project-timesheet-backend/internal/request"
+)
 
 type (
 	// Roles -.
 	Roles interface {
-		GetRowsRoles() (int, error)
-		GetAllRoles() ([]entity.Roles, error)
+		GetRowsRoles(req request.RolesReq) (int, error)
+		GetAllRoles(req request.RolesReq) ([]entity.Roles, error)
 	}
 
 	//RolesRepo -.
 	RolesRepo interface {
-		GetRole() ([]entity.Roles, error)
-		GetRows() (int, error)
+		GetRole(req request.RolesReq) ([]entity.Roles, error)
+		GetRows(req request.RolesReq) (int, error)
 	}
 )

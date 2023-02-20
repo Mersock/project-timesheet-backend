@@ -3,6 +3,7 @@ package usecase
 import (
 	"fmt"
 	"github.com/Mersock/project-timesheet-backend/internal/entity"
+	"github.com/Mersock/project-timesheet-backend/internal/request"
 )
 
 // RolesUseCase -.
@@ -16,8 +17,8 @@ func NewRolesUseCase(r RolesRepo) *RolesUseCase {
 }
 
 // GetRowsRoles -.
-func (uc *RolesUseCase) GetRowsRoles() (int, error) {
-	rows, err := uc.repo.GetRows()
+func (uc *RolesUseCase) GetRowsRoles(req request.RolesReq) (int, error) {
+	rows, err := uc.repo.GetRows(req)
 	if err != nil {
 		return rows, fmt.Errorf("RolesUseCase - GetRowsRoles - uc.repo.GetRows: %w", err)
 	}
@@ -25,8 +26,8 @@ func (uc *RolesUseCase) GetRowsRoles() (int, error) {
 }
 
 // GetAllRoles -.
-func (uc *RolesUseCase) GetAllRoles() ([]entity.Roles, error) {
-	roles, err := uc.repo.GetRole()
+func (uc *RolesUseCase) GetAllRoles(req request.RolesReq) ([]entity.Roles, error) {
+	roles, err := uc.repo.GetRole(req)
 	if err != nil {
 		return nil, fmt.Errorf("RolesUseCase - GetAllRoles - uc.repo.GetRole: %w", err)
 	}

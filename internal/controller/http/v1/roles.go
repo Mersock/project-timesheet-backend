@@ -56,14 +56,14 @@ func (r rolesRoutes) getRoles(c *gin.Context) {
 	paginate := utils.GeneratePaginationFromRequest(c)
 
 	//total rows
-	total, err := r.ru.GetRowsRoles()
+	total, err := r.ru.GetRowsRoles(req)
 	if err != nil {
 		r.l.Error(err, "http - v1 - Roles")
 		errorResponse(c, http.StatusInternalServerError, "Database error")
 		return
 	}
 
-	roles, err := r.ru.GetAllRoles()
+	roles, err := r.ru.GetAllRoles(req)
 	if err != nil {
 		r.l.Error(err, "http - v1 - Roles")
 		errorResponse(c, http.StatusInternalServerError, "Database error")

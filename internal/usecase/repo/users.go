@@ -62,6 +62,29 @@ func (r *UsersRepo) Select(req request.GetUsersReq) ([]entity.Users, error) {
 	return entities, nil
 }
 
+// SelectById -.
+func (r *UsersRepo) SelectById(userID int) (entity.Users, error) {
+	var entity entity.Users
+
+	sqlRaw := "SELECT users.id, email, firstname, lastname, users.created_at, users.updated_at,roles.name as role "
+	sqlRaw += "FROM users "
+	sqlRaw += "INNER JOIN roles ON roles.id = users.id "
+	sqlRaw += "WHERE users.id = ? "
+	err := r.DB.QueryRow(sqlRaw, userID).Scan(&entity.ID,
+		&entity.Email,
+		&entity.Firstname,
+		&entity.Lastname,
+		&entity.CreateAt,
+		&entity.UpdateAt,
+		&entity.Role,
+	)
+	if err != nil {
+		return entity, fmt.Errorf("UsersRepo - SelectById - r.DB.QueryRow: %w", err)
+	}
+
+	return entity, nil
+}
+
 // genRawSelectWithReq -.
 func (r *UsersRepo) genRawSelectWithReq(sqlRaw string, req request.GetUsersReq) string {
 	if req.Email != "" {

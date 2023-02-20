@@ -10,12 +10,14 @@ type (
 	User interface {
 		GetCount(req request.GetUsersReq) (int, error)
 		GetAllUsers(req request.GetUsersReq) ([]entity.Users, error)
+		GetUserByID(userID int) (entity.Users, error)
 	}
 
 	//UserRepo -.
 	UserRepo interface {
 		Count(req request.GetUsersReq) (int, error)
 		Select(req request.GetUsersReq) ([]entity.Users, error)
+		SelectById(userID int) (entity.Users, error)
 	}
 
 	// Roles -.

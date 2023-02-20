@@ -11,3 +11,8 @@ type GetUsersRes struct {
 	Total int            `json:"total"`
 	utils.PaginationRes
 }
+
+// GetUserByIDRes -.
+type GetUserByIDRes struct {
+	User entity.Users `json:"data"`
+}

@@ -14,3 +14,8 @@ type GetUsersReq struct {
 	SortType  string `form:"sortType" json:"-" binding:"omitempty"`
 	utils.PaginationReq
 }
+
+// GetUserByIDReq -.
+type GetUserByIDReq struct {
+	ID int `uri:"id" binding:"required,numeric"`
+}

@@ -29,7 +29,17 @@ func (uc *UsersUseCase) GetCount(req request.GetUsersReq) (int, error) {
 func (uc *UsersUseCase) GetAllUsers(req request.GetUsersReq) ([]entity.Users, error) {
 	users, err := uc.repo.Select(req)
 	if err != nil {
-		return nil, fmt.Errorf("UsersUseCase - GetAllRoles - uc.repo.Select: %w", err)
+		return nil, fmt.Errorf("UsersUseCase - GetAllUsers - uc.repo.Select: %w", err)
 	}
 	return users, nil
+}
+
+// GetUserByID -.
+func (uc *UsersUseCase) GetUserByID(userID int) (entity.Users, error) {
+	var user entity.Users
+	user, err := uc.repo.SelectById(userID)
+	if err != nil {
+		return user, fmt.Errorf("UsersUseCase - GetUserByID - uc.repo.SelectById: %w", err)
+	}
+	return user, nil
 }

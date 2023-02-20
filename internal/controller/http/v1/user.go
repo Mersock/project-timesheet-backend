@@ -1,6 +1,7 @@
 package v1
 
 import (
+	"database/sql"
 	"errors"
 	"github.com/Mersock/project-timesheet-backend/internal/request"
 	"github.com/Mersock/project-timesheet-backend/internal/response"
@@ -26,6 +27,7 @@ func newUsersRoutes(handler *gin.RouterGroup, uu usecase.User, l logger.Interfac
 	h := handler.Group("/user")
 	{
 		h.GET("", u.getUsers)
+		h.GET("/:id", u.getUserByID)
 	}
 }
 
@@ -76,5 +78,37 @@ func (r usersRoutes) getUsers(c *gin.Context) {
 			Page:     paginate.Page,
 			LastPage: utils.GetPageCount(total, paginate.Limit),
 		},
+	})
+}
+
+// getUserByID -.
+func (r usersRoutes) getUserByID(c *gin.Context) {
+	var req request.GetUserByIDReq
+
+	//validator
+	if err := c.ShouldBindUri(&req); err != nil {
+		var ve validator.ValidationErrors
+		r.l.Error(err, "http - v1 - Users")
+		if errors.As(err, &ve) {
+			errorValidateRes(c, ve)
+			return
+		}
+		errorResponse(c, http.StatusBadRequest, _defaultBadReq)
+		return
+	}
+
+	user, err := r.uu.GetUserByID(req.ID)
+	if err != nil {
+		r.l.Error(err, "http - v1 - Users")
+		if errors.Is(err, sql.ErrNoRows) {
+			errorResponse(c, http.StatusNotFound, _defaultNotFound)
+			return
+		}
+		errorResponse(c, http.StatusInternalServerError, _defaultInternalServerErr)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.GetUserByIDRes{
+		User: user,
 	})
 }

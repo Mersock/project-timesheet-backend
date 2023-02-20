@@ -2,13 +2,12 @@ package utils
 
 import (
 	"github.com/gin-gonic/gin"
-	"strconv"
 )
 
 // GeneratePaginationFromRequest -.
 func GeneratePaginationFromRequest(c *gin.Context) Pagination {
-	limit := 10
-	page := 1
+	limit := "10"
+	page := "1"
 	sortBy := ""
 	sortType := ""
 	query := c.Request.URL.Query()
@@ -16,10 +15,10 @@ func GeneratePaginationFromRequest(c *gin.Context) Pagination {
 		queryValue := value[len(value)-1]
 		switch key {
 		case "limit":
-			limit, _ = strconv.Atoi(queryValue)
+			limit = queryValue
 			break
 		case "page":
-			page, _ = strconv.Atoi(queryValue)
+			page = queryValue
 			break
 		case "sortBy":
 			sortBy = queryValue

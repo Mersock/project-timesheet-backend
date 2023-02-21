@@ -10,7 +10,7 @@ var ErrExpiredToken = errors.New("token expire")
 var ErrInvalidToken = errors.New("invalid token")
 
 type Payload struct {
-	ID       uuid.UUID `json:"id"`
+	SUB      uuid.UUID `json:"sub"`
 	UserID   int       `json:"user_id"`
 	Username string    `json:"username"`
 	Role     string    `json:"role"`
@@ -25,7 +25,7 @@ func NewPayload(userID int, username string, role string, duration time.Duration
 		return nil, err
 	}
 	payload := &Payload{
-		ID:       tokenID,
+		SUB:      tokenID,
 		UserID:   userID,
 		Username: username,
 		Role:     role,

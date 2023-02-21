@@ -36,5 +36,6 @@ func NewRouter(
 	{
 		newRolesRoutes(h, ru, l)
 		newUsersRoutes(h, uu, l)
+		newProjectsRoutes(h, pu, l)
 	}
 }

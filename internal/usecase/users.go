@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/Mersock/project-timesheet-backend/internal/entity"
 	"github.com/Mersock/project-timesheet-backend/internal/request"
+	"github.com/Mersock/project-timesheet-backend/internal/utils"
 )
 
 // UsersUseCase -.
@@ -85,6 +86,13 @@ func (uc *UsersUseCase) UpdateUserPassword(req request.UpdateUserPasswordReq) (i
 		}
 		return rowAffected, fmt.Errorf("UsersUseCase - UpdateUserPassword - uc.repo.SelectById: %w", err)
 	}
+
+	hashPassword, err := utils.HashPassword(req.Password)
+	if err != nil {
+		return rowAffected, fmt.Errorf("AuthUseCase - Signup - utils.HashPassword: %w", err)
+	}
+
+	req.Password = hashPassword
 
 	rowAffected, err = uc.repo.UpdatePassword(req)
 	if err != nil {

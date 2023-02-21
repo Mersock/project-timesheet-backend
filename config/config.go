@@ -12,6 +12,7 @@ type (
 		HTTP  `yaml:"http"`
 		MYSQL `yaml:"mysql"`
 		LOG   `yaml:"logger"`
+		KEY   `yaml:"key"`
 	}
 
 	//APP -.
@@ -33,6 +34,11 @@ type (
 	//LOG -.
 	LOG struct {
 		Level string `env-required:"true" yaml:"log_level" env:"LOG_LEVEL"`
+	}
+
+	//KEY -.
+	KEY struct {
+		TokenSymmetric string `env-required:"true" yaml:"token_symmetric" env:"TOKEN_SYMMETRIC"`
 	}
 )
 

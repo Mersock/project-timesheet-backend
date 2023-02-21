@@ -7,8 +7,8 @@ import (
 // GetRolesReq -.
 type GetRolesReq struct {
 	Name     string `form:"name" binding:"omitempty"`
-	SortBy   string `form:"sortBy" json:"-" binding:"omitempty"`
-	SortType string `form:"sortType" json:"-" binding:"omitempty"`
+	SortBy   string `form:"sortBy" json:"-" binding:"omitempty,oneof=id name created_at updated_at"`
+	SortType string `form:"sortType" json:"-" binding:"omitempty,oneof=asc desc"`
 	utils.PaginationReq
 }
 

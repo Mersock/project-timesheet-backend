@@ -14,6 +14,8 @@ func GetValidateTag(fe validator.FieldError) string {
 		return "This field is required only numeric"
 	case "min":
 		return "This field is required minimum " + fe.Param()
+	case "oneof":
+		return "this field is allow only value in (" + fe.Param() + ")"
 	}
 	return "Unknown error"
 }

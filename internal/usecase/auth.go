@@ -79,12 +79,12 @@ func (au *AuthUseCase) SignIn(req request.SignInReq) (response.SignInRes, error)
 	if err != nil {
 		return session, fmt.Errorf("AuthUseCase - SignIn - uc.repo.CheckPassword: %w", err)
 	}
-	accessToken, accessTokenPayload, err := au.tokenMaker.CreateToken(*user.Email, au.cfg.AccessTokenDuration)
+	accessToken, accessTokenPayload, err := au.tokenMaker.CreateToken(*user.ID, *user.Email, *user.Role, au.cfg.AccessTokenDuration)
 	if err != nil {
 		return session, fmt.Errorf("AuthUseCase - SignIn - au.tokenMaker.CreateToken - accessToken: %w", err)
 	}
 
-	refreshToken, refreshTokenPayload, err := au.tokenMaker.CreateToken(*user.Email, au.cfg.RefreshTokenDuration)
+	refreshToken, refreshTokenPayload, err := au.tokenMaker.CreateToken(*user.ID, *user.Email, *user.Role, au.cfg.RefreshTokenDuration)
 	if err != nil {
 		return session, fmt.Errorf("AuthUseCase - SignIn - au.tokenMaker.CreateToken- refreshToken: %w", err)
 	}
@@ -108,7 +108,7 @@ func (au *AuthUseCase) RenewAccess(req request.RenewTokenReq) (response.RenewTok
 		return session, fmt.Errorf("AuthUseCase - RenewAccess - au.tokenMaker.VerifyToken: %w", err)
 	}
 
-	accessToken, accessTokenPayload, err := au.tokenMaker.CreateToken(refreshPayload.Username, au.cfg.AccessTokenDuration)
+	accessToken, accessTokenPayload, err := au.tokenMaker.CreateToken(refreshPayload.UserID, refreshPayload.Username, refreshPayload.Role, au.cfg.AccessTokenDuration)
 	if err != nil {
 		return session, fmt.Errorf("AuthUseCase - RenewAccess - au.tokenMaker.CreateToken: %w", err)
 	}

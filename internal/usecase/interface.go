@@ -3,6 +3,7 @@ package usecase
 import (
 	"github.com/Mersock/project-timesheet-backend/internal/entity"
 	"github.com/Mersock/project-timesheet-backend/internal/request"
+	"github.com/Mersock/project-timesheet-backend/internal/response"
 )
 
 type (
@@ -10,6 +11,7 @@ type (
 	//Auth -.
 	Auth interface {
 		Signup(req request.SignUpReq) (int64, error)
+		SignIn(req request.SignInReq) (response.SignInRes, error)
 	}
 
 	//User -.

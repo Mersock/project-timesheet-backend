@@ -3,6 +3,7 @@ package usecase
 import (
 	"fmt"
 	"github.com/Mersock/project-timesheet-backend/internal/request"
+	"github.com/Mersock/project-timesheet-backend/internal/response"
 	"github.com/Mersock/project-timesheet-backend/internal/utils"
 )
 
@@ -51,4 +52,11 @@ func (au *AuthUseCase) Signup(req request.SignUpReq) (int64, error) {
 		return userID, fmt.Errorf("AuthUseCase - Signup - uc.repo.Insert: %w", err)
 	}
 	return userID, nil
+}
+
+// SignIn -.
+func (au *AuthUseCase) SignIn(req request.SignInReq) (response.SignInRes, error) {
+	var res response.SignInRes
+
+	return res, nil
 }

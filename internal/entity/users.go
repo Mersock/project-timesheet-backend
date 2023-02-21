@@ -4,6 +4,7 @@ package entity
 type Users struct {
 	ID        *int    `json:"id"`
 	Email     *string `json:"email"`
+	Password  *string `json:"-"`
 	Firstname *string `json:"firstname"`
 	Lastname  *string `json:"lastname"`
 	CreateAt  *string `json:"created_at"`

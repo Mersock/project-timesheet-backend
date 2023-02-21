@@ -27,8 +27,6 @@ func (r *UsersRepo) Count(req request.GetAllUsersReq) (int, error) {
 	sqlRaw += "WHERE 1=1 "
 	sqlCount := r.genRawSelectWithReq(sqlRaw, req)
 
-	fmt.Println(sqlCount)
-
 	err := r.DB.QueryRow(sqlCount).Scan(&count)
 	if err != nil {
 		return count, fmt.Errorf("UsersRepo - Count - r.DB.QueryRow: %w", err)

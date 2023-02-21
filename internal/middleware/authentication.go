@@ -3,7 +3,7 @@ package middleware
 import (
 	"errors"
 	"fmt"
-	"github.com/Mersock/project-timesheet-backend/pkg/jwt"
+	token "github.com/Mersock/project-timesheet-backend/pkg/jwt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strings"
@@ -16,7 +16,7 @@ const (
 )
 
 // AuthMiddleware -.
-func AuthMiddleware(tokenMaker jwt.JWT) gin.HandlerFunc {
+func AuthMiddleware(tokenMaker token.JWT) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		authorizationHeader := ctx.GetHeader(authorizationHeaderKey)
 		if len(authorizationHeader) == 0 {

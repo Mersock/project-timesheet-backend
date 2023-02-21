@@ -45,10 +45,10 @@ func (r usersRoutes) getUsers(c *gin.Context) {
 		var ve validator.ValidationErrors
 		r.l.Error(err, "http - v1 - Users")
 		if errors.As(err, &ve) {
-			errorValidateRes(c, ve)
+			response.ErrorValidateRes(c, ve)
 			return
 		}
-		errorResponse(c, http.StatusBadRequest, "Bad request")
+		response.ErrorResponse(c, http.StatusBadRequest, "Bad request")
 		return
 	}
 
@@ -69,14 +69,14 @@ func (r usersRoutes) getUsers(c *gin.Context) {
 	total, err := r.uu.GetCount(req)
 	if err != nil {
 		r.l.Error(err, "http - v1 - Users")
-		errorResponse(c, http.StatusInternalServerError, _defaultInternalServerErr)
+		response.ErrorResponse(c, http.StatusInternalServerError, _defaultInternalServerErr)
 		return
 	}
 
 	users, err := r.uu.GetAllUsers(req)
 	if err != nil {
 		r.l.Error(err, "http - v1 - Users")
-		errorResponse(c, http.StatusInternalServerError, _defaultInternalServerErr)
+		response.ErrorResponse(c, http.StatusInternalServerError, _defaultInternalServerErr)
 		return
 	}
 
@@ -100,10 +100,10 @@ func (r usersRoutes) getUserByID(c *gin.Context) {
 		var ve validator.ValidationErrors
 		r.l.Error(err, "http - v1 - Users")
 		if errors.As(err, &ve) {
-			errorValidateRes(c, ve)
+			response.ErrorValidateRes(c, ve)
 			return
 		}
-		errorResponse(c, http.StatusBadRequest, _defaultBadReq)
+		response.ErrorResponse(c, http.StatusBadRequest, _defaultBadReq)
 		return
 	}
 
@@ -111,10 +111,10 @@ func (r usersRoutes) getUserByID(c *gin.Context) {
 	if err != nil {
 		r.l.Error(err, "http - v1 - Users")
 		if errors.Is(err, sql.ErrNoRows) {
-			errorResponse(c, http.StatusNotFound, _defaultNotFound)
+			response.ErrorResponse(c, http.StatusNotFound, _defaultNotFound)
 			return
 		}
-		errorResponse(c, http.StatusInternalServerError, _defaultInternalServerErr)
+		response.ErrorResponse(c, http.StatusInternalServerError, _defaultInternalServerErr)
 		return
 	}
 
@@ -132,10 +132,10 @@ func (r usersRoutes) createUser(c *gin.Context) {
 		var ve validator.ValidationErrors
 		r.l.Error(err, "http - v1 - Roles")
 		if errors.As(err, &ve) {
-			errorValidateRes(c, ve)
+			response.ErrorValidateRes(c, ve)
 			return
 		}
-		errorResponse(c, http.StatusBadRequest, _defaultBadReq)
+		response.ErrorResponse(c, http.StatusBadRequest, _defaultBadReq)
 		return
 	}
 
@@ -143,10 +143,10 @@ func (r usersRoutes) createUser(c *gin.Context) {
 	if err != nil {
 		r.l.Error(err, "http - v1 - Roles")
 		if errors.As(err, &ErrDuplicateRow) {
-			errorResponse(c, http.StatusConflict, _defaultConflict)
+			response.ErrorResponse(c, http.StatusConflict, _defaultConflict)
 			return
 		}
-		errorResponse(c, http.StatusInternalServerError, _defaultInternalServerErr)
+		response.ErrorResponse(c, http.StatusInternalServerError, _defaultInternalServerErr)
 		return
 	}
 
@@ -163,10 +163,10 @@ func (r usersRoutes) updateUser(c *gin.Context) {
 		var ve validator.ValidationErrors
 		r.l.Error(err, "http - v1 - Roles")
 		if errors.As(err, &ve) {
-			errorValidateRes(c, ve)
+			response.ErrorValidateRes(c, ve)
 			return
 		}
-		errorResponse(c, http.StatusBadRequest, _defaultBadReq)
+		response.ErrorResponse(c, http.StatusBadRequest, _defaultBadReq)
 		return
 	}
 
@@ -174,15 +174,15 @@ func (r usersRoutes) updateUser(c *gin.Context) {
 	if err != nil {
 		r.l.Error(err, "http - v1 - Roles")
 		if errors.Is(err, sql.ErrNoRows) {
-			errorResponse(c, http.StatusNotFound, _defaultNotFound)
+			response.ErrorResponse(c, http.StatusNotFound, _defaultNotFound)
 			return
 		}
 
 		if errors.As(err, &ErrDuplicateRow) {
-			errorResponse(c, http.StatusConflict, _defaultConflict)
+			response.ErrorResponse(c, http.StatusConflict, _defaultConflict)
 			return
 		}
-		errorResponse(c, http.StatusInternalServerError, _defaultInternalServerErr)
+		response.ErrorResponse(c, http.StatusInternalServerError, _defaultInternalServerErr)
 		return
 	}
 
@@ -199,10 +199,10 @@ func (r usersRoutes) updateUserPassword(c *gin.Context) {
 		var ve validator.ValidationErrors
 		r.l.Error(err, "http - v1 - Roles")
 		if errors.As(err, &ve) {
-			errorValidateRes(c, ve)
+			response.ErrorValidateRes(c, ve)
 			return
 		}
-		errorResponse(c, http.StatusBadRequest, _defaultBadReq)
+		response.ErrorResponse(c, http.StatusBadRequest, _defaultBadReq)
 		return
 	}
 
@@ -210,10 +210,10 @@ func (r usersRoutes) updateUserPassword(c *gin.Context) {
 	if err != nil {
 		r.l.Error(err, "http - v1 - Roles")
 		if errors.Is(err, sql.ErrNoRows) {
-			errorResponse(c, http.StatusNotFound, _defaultNotFound)
+			response.ErrorResponse(c, http.StatusNotFound, _defaultNotFound)
 			return
 		}
-		errorResponse(c, http.StatusInternalServerError, _defaultInternalServerErr)
+		response.ErrorResponse(c, http.StatusInternalServerError, _defaultInternalServerErr)
 		return
 	}
 
@@ -229,10 +229,10 @@ func (r usersRoutes) deleteRole(c *gin.Context) {
 		var ve validator.ValidationErrors
 		r.l.Error(err, "http - v1 - Users")
 		if errors.As(err, &ve) {
-			errorValidateRes(c, ve)
+			response.ErrorValidateRes(c, ve)
 			return
 		}
-		errorResponse(c, http.StatusBadRequest, _defaultBadReq)
+		response.ErrorResponse(c, http.StatusBadRequest, _defaultBadReq)
 		return
 	}
 
@@ -240,10 +240,10 @@ func (r usersRoutes) deleteRole(c *gin.Context) {
 	if err != nil {
 		r.l.Error(err, "http - v1 - Users")
 		if errors.Is(err, sql.ErrNoRows) {
-			errorResponse(c, http.StatusNotFound, _defaultNotFound)
+			response.ErrorResponse(c, http.StatusNotFound, _defaultNotFound)
 			return
 		}
-		errorResponse(c, http.StatusInternalServerError, _defaultInternalServerErr)
+		response.ErrorResponse(c, http.StatusInternalServerError, _defaultInternalServerErr)
 		return
 	}
 

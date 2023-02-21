@@ -150,7 +150,7 @@ func (r usersRoutes) createUser(c *gin.Context) {
 		return
 	}
 
-	response.ResponseByID(c, http.StatusCreated, userID)
+	response.ResByID(c, http.StatusCreated, userID)
 }
 
 // updateUser -.
@@ -186,7 +186,7 @@ func (r usersRoutes) updateUser(c *gin.Context) {
 		return
 	}
 
-	response.ResponseByRowAffect(c, http.StatusOK, rowAffected)
+	response.ResRowAffect(c, http.StatusOK, rowAffected)
 }
 
 // updateUserPassword -.
@@ -217,7 +217,7 @@ func (r usersRoutes) updateUserPassword(c *gin.Context) {
 		return
 	}
 
-	response.ResponseByRowAffect(c, http.StatusOK, rowAffected)
+	response.ResRowAffect(c, http.StatusOK, rowAffected)
 }
 
 // deleteRole -.
@@ -247,5 +247,5 @@ func (r usersRoutes) deleteRole(c *gin.Context) {
 		return
 	}
 
-	response.ResponseByRowAffect(c, http.StatusOK, rowAffected)
+	response.ResRowAffect(c, http.StatusOK, rowAffected)
 }

@@ -29,17 +29,17 @@ type validateRes struct {
 	Message string `json:"message"`
 }
 
-// ResponseByID -.
-func ResponseByID(c *gin.Context, code int, id int64) {
+// ResByID -.
+func ResByID(c *gin.Context, code int, id int64) {
 	c.JSON(code, IDRes{ID: id})
 }
 
-// ResponseByRowAffect -.
-func ResponseByRowAffect(c *gin.Context, code int, rowAffected int64) {
+// ResRowAffect -.
+func ResRowAffect(c *gin.Context, code int, rowAffected int64) {
 	c.JSON(code, RowAffectRes{RowAffected: rowAffected})
 }
 
-// ErrorResponse-.
+// ErrorResponse -.
 func ErrorResponse(c *gin.Context, code int, msg string) {
 	c.AbortWithStatusJSON(code, errRes{msg})
 }

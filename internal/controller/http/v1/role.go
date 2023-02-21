@@ -141,7 +141,7 @@ func (r rolesRoutes) createRole(c *gin.Context) {
 		return
 	}
 
-	response.ResponseByID(c, http.StatusCreated, roleID)
+	response.ResByID(c, http.StatusCreated, roleID)
 }
 
 // updateRole -.
@@ -177,7 +177,7 @@ func (r rolesRoutes) updateRole(c *gin.Context) {
 		return
 	}
 
-	response.ResponseByRowAffect(c, http.StatusOK, rowAffected)
+	response.ResRowAffect(c, http.StatusOK, rowAffected)
 }
 
 // deleteRole -.
@@ -207,5 +207,5 @@ func (r rolesRoutes) deleteRole(c *gin.Context) {
 		return
 	}
 
-	response.ResponseByRowAffect(c, http.StatusOK, rowAffected)
+	response.ResRowAffect(c, http.StatusOK, rowAffected)
 }

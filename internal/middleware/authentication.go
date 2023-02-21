@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/Mersock/project-timesheet-backend/internal/response"
-	token "github.com/Mersock/project-timesheet-backend/pkg/token"
+	"github.com/Mersock/project-timesheet-backend/pkg/token"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strings"
@@ -49,12 +49,5 @@ func AuthMiddleware(tokenMaker token.Maker) gin.HandlerFunc {
 		ctx.Set(authorizationPayloadKey, payload)
 
 		ctx.Next()
-	}
-}
-
-// errRes -.
-func errRes(err error) gin.H {
-	return gin.H{
-		"errors": err.Error(),
 	}
 }

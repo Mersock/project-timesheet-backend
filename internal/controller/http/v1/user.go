@@ -26,15 +26,15 @@ func newUsersRoutes(handler *gin.RouterGroup, uu usecase.User, l logger.Interfac
 
 	h := handler.Group("/user")
 	{
-		h.GET("", u.getUsers)
-		h.GET("/:id", u.getUserByID)
+		h.GET("", u.getAllUsers)
+		h.GET("/:id", u.getUser)
 		h.DELETE("/:id", u.deleteRole)
 	}
 }
 
 // getUsers -.
-func (r usersRoutes) getUsers(c *gin.Context) {
-	var req request.GetUsersReq
+func (r usersRoutes) getAllUsers(c *gin.Context) {
+	var req request.GetAllUsersReq
 
 	//validator
 	if err := c.ShouldBind(&req); err != nil {
@@ -87,9 +87,9 @@ func (r usersRoutes) getUsers(c *gin.Context) {
 	})
 }
 
-// getUserByID -.
-func (r usersRoutes) getUserByID(c *gin.Context) {
-	var req request.GetUserByIDReq
+// getUser -.
+func (r usersRoutes) getUser(c *gin.Context) {
+	var req request.GetUserReq
 
 	//validator
 	if err := c.ShouldBindUri(&req); err != nil {
@@ -103,7 +103,7 @@ func (r usersRoutes) getUserByID(c *gin.Context) {
 		return
 	}
 
-	user, err := r.uu.GetUserByID(req.ID)
+	user, err := r.uu.GetUser(req)
 	if err != nil {
 		r.l.Error(err, "http - v1 - Users")
 		if errors.Is(err, sql.ErrNoRows) {

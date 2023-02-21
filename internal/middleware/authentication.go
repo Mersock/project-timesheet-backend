@@ -3,7 +3,7 @@ package middleware
 import (
 	"errors"
 	"fmt"
-	token "github.com/Mersock/project-timesheet-backend/pkg/jwt"
+	token "github.com/Mersock/project-timesheet-backend/pkg/token"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strings"

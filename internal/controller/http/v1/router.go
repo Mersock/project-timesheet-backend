@@ -22,5 +22,6 @@ func NewRouter(handler *gin.Engine, l logger.Interface, ru usecase.Roles, uu use
 	{
 		newRolesRoutes(h, ru, l)
 		newUsersRoutes(h, uu, l)
+		newAuthRoutes(h, uu, l)
 	}
 }

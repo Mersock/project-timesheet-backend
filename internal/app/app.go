@@ -9,6 +9,7 @@ import (
 	"github.com/Mersock/project-timesheet-backend/pkg/httpserver"
 	"github.com/Mersock/project-timesheet-backend/pkg/logger"
 	"github.com/Mersock/project-timesheet-backend/pkg/mysql"
+	"github.com/Mersock/project-timesheet-backend/pkg/token"
 	"github.com/gin-gonic/gin"
 	"os"
 )
@@ -23,6 +24,10 @@ func Run(cfg *config.Config) {
 	}
 	defer sql.Close()
 
+	tokenMaker, err := token.NewJWTMaker(cfg.KEY.TokenSymmetric)
+	if err != nil {
+		l.Fatal(fmt.Errorf("app - RUN - token.NewJWTMaker: %w", err))
+	}
 	//Use case
 	rolesUseCase := usecase.NewRolesUseCase(
 		repo.NewRolesRepo(sql),
@@ -32,6 +37,8 @@ func Run(cfg *config.Config) {
 	)
 	authUseCase := usecase.NewAuthUseCase(
 		repo.NewUsersRepo(sql),
+		tokenMaker,
+		cfg,
 	)
 
 	//HTTP server

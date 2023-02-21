@@ -124,6 +124,21 @@ func (r *UsersRepo) Insert(req request.CreateUserReq) (int64, error) {
 	return insertId, nil
 }
 
+// Update -.
+func (r *UsersRepo) Update(req request.UpdateUserReq) (int64, error) {
+	var rowAffected int64
+	sqlRaw := "UPDATE users SET email = ?, firstname = ?, lastname = ?, role_id = ?, updated_at = NOW() WHERE id = ?"
+	result, err := r.DB.Exec(sqlRaw, req.Email, req.Firstname, req.Lastname, req.RoleID, req.ID)
+	if err != nil {
+		return rowAffected, fmt.Errorf("RolesRepo - Update - r.DB.Exec: %w", err)
+	}
+	rowAffected, err = result.RowsAffected()
+	if err != nil {
+		return rowAffected, fmt.Errorf("RolesRepo - Update - result.rowAffected: %w", err)
+	}
+	return rowAffected, nil
+}
+
 // Delete -.
 func (r *UsersRepo) Delete(req request.DeleteUserReq) (int64, error) {
 	var rowAffected int64
@@ -137,6 +152,18 @@ func (r *UsersRepo) Delete(req request.DeleteUserReq) (int64, error) {
 		return rowAffected, fmt.Errorf("UsersRepo - Delete - result.rowAffected: %w", err)
 	}
 	return rowAffected, nil
+}
+
+// ChkUniqueUpdate -.
+func (r *UsersRepo) ChkUniqueUpdate(req request.UpdateUserReq) (int, error) {
+	var count int
+	sqlRaw := fmt.Sprintf("SELECT  COUNT(*) FROM users WHERE email = '%s' AND id != %d", req.Email, req.ID)
+	fmt.Println(sqlRaw)
+	err := r.DB.QueryRow(sqlRaw).Scan(&count)
+	if err != nil {
+		return count, fmt.Errorf("RolesRepo - ChkUniqueUpdate - r.DB.QueryRow: %w", err)
+	}
+	return count, nil
 }
 
 // ChkUniqueInsert -.

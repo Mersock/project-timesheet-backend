@@ -20,6 +20,7 @@ type (
 		GetCount(req request.GetUsersReq) (int, error)
 		GetAllUsers(req request.GetUsersReq) ([]entity.Users, error)
 		GetUserByID(userID int) (entity.Users, error)
+		UpdateUser(req request.UpdateUserReq) (int64, error)
 		DeleteUser(req request.DeleteUserReq) (int64, error)
 	}
 
@@ -31,6 +32,8 @@ type (
 		SelectByEmail(email string) (entity.Users, error)
 		Insert(req request.CreateUserReq) (int64, error)
 		Delete(req request.DeleteUserReq) (int64, error)
+		Update(req request.UpdateUserReq) (int64, error)
+		ChkUniqueUpdate(req request.UpdateUserReq) (int, error)
 		ChkUniqueInsert(req request.CreateUserReq) (int, error)
 	}
 

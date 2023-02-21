@@ -11,6 +11,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"net/http"
+	"strconv"
 	"strings"
 )
 
@@ -28,6 +29,7 @@ func newUsersRoutes(handler *gin.RouterGroup, uu usecase.User, l logger.Interfac
 	{
 		h.GET("", u.getUsers)
 		h.GET("/:id", u.getUserByID)
+		h.PUT("/:id", u.updateUser)
 		h.DELETE("/:id", u.deleteRole)
 	}
 }
@@ -116,6 +118,44 @@ func (r usersRoutes) getUserByID(c *gin.Context) {
 
 	c.JSON(http.StatusOK, response.GetUserByIDRes{
 		User: user,
+	})
+}
+
+// updateUser -.
+func (r usersRoutes) updateUser(c *gin.Context) {
+	var req request.UpdateUserReq
+	req.ID, _ = strconv.Atoi(c.Param("id"))
+
+	//validator
+	if err := c.ShouldBind(&req); err != nil {
+		var ve validator.ValidationErrors
+		r.l.Error(err, "http - v1 - Roles")
+		if errors.As(err, &ve) {
+			errorValidateRes(c, ve)
+			return
+		}
+		errorResponse(c, http.StatusBadRequest, _defaultBadReq)
+		return
+	}
+
+	rowAffected, err := r.uu.UpdateUser(req)
+	if err != nil {
+		r.l.Error(err, "http - v1 - Roles")
+		if errors.Is(err, sql.ErrNoRows) {
+			errorResponse(c, http.StatusNotFound, _defaultNotFound)
+			return
+		}
+
+		if errors.As(err, &ErrDuplicateRow) {
+			errorResponse(c, http.StatusConflict, _defaultConflict)
+			return
+		}
+		errorResponse(c, http.StatusInternalServerError, _defaultInternalServerErr)
+		return
+	}
+
+	c.JSON(http.StatusCreated, response.UpdateRoleRes{
+		RowAffected: rowAffected,
 	})
 }
 

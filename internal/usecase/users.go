@@ -46,6 +46,34 @@ func (uc *UsersUseCase) GetUserByID(userID int) (entity.Users, error) {
 	return user, nil
 }
 
+// UpdateUser -.
+func (uc *UsersUseCase) UpdateUser(req request.UpdateUserReq) (int64, error) {
+	var rowAffected int64
+
+	_, err := uc.repo.SelectById(req.ID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return rowAffected, sql.ErrNoRows
+		}
+		return rowAffected, fmt.Errorf("UsersUseCase - UpdateUser - uc.repo.SelectById: %w", err)
+	}
+
+	count, err := uc.repo.ChkUniqueUpdate(req)
+	if err != nil {
+		return rowAffected, fmt.Errorf("UsersUseCase - UpdateRole - uc.repo.ChkUniqueUpdate: %w", err)
+	}
+
+	if count > 0 {
+		return rowAffected, ErrDuplicateRow
+	}
+
+	rowAffected, err = uc.repo.Update(req)
+	if err != nil {
+		return rowAffected, fmt.Errorf("UsersUseCase - UpdateRole - uc.repo.Update: %w", err)
+	}
+	return rowAffected, nil
+}
+
 // DeleteUser -.
 func (uc *UsersUseCase) DeleteUser(req request.DeleteUserReq) (int64, error) {
 	var rowAffected int64

@@ -51,8 +51,13 @@ func (r usersRoutes) getUsers(c *gin.Context) {
 	paginate := utils.GeneratePaginationFromRequest(c)
 	req.Limit = &paginate.Limit
 	req.Page = &paginate.Page
+
+	//sortBy
 	if strings.ToLower(req.SortBy) == "id" {
 		req.SortBy = "users.id"
+	}
+	if strings.ToLower(req.SortBy) == "role" {
+		req.SortBy = "roles.name"
 	}
 
 	//total rows

@@ -10,8 +10,8 @@ type GetUsersReq struct {
 	Lastname  string `form:"lastname" binding:"omitempty"`
 	Email     string `form:"email" binding:"omitempty"`
 	Role      string `form:"role" binding:"omitempty"`
-	SortBy    string `form:"sortBy" json:"-" binding:"omitempty"`
-	SortType  string `form:"sortType" json:"-" binding:"omitempty"`
+	SortBy    string `form:"sortBy" json:"-" binding:"omitempty,oneof=id email firstname lastname created_at updated_at role"`
+	SortType  string `form:"sortType" json:"-" binding:"omitempty,oneof=asc desc"`
 	utils.PaginationReq
 }
 

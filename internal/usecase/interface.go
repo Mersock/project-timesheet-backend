@@ -12,6 +12,7 @@ type (
 	Auth interface {
 		Signup(req request.SignUpReq) (int64, error)
 		SignIn(req request.SignInReq) (response.SignInRes, error)
+		RenewAccess(req request.RenewTokenReq) (response.RenewTokenRes, error)
 	}
 
 	//User -.

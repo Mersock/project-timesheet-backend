@@ -24,6 +24,7 @@ func newAuthRoutes(h *gin.RouterGroup, au usecase.Auth, l logger.Interface) {
 	{
 		h.POST("/signup", a.singUp)
 		h.POST("/signin", a.singIn)
+		h.POST("/renewAccess", a.renewAccess)
 	}
 }
 
@@ -82,10 +83,31 @@ func (a authRoutes) singIn(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, response.SignInRes{
-		AccessToken:          session.AccessToken,
-		AccessTokenExpireAt:  session.AccessTokenExpireAt,
-		RefreshToken:         session.RefreshToken,
-		RefreshTokenExpireAt: session.RefreshTokenExpireAt,
-	})
+	c.JSON(http.StatusOK, session)
+}
+
+// renewAccess -.
+func (a authRoutes) renewAccess(c *gin.Context) {
+	var req request.RenewTokenReq
+
+	//validator
+	if err := c.ShouldBind(&req); err != nil {
+		var ve validator.ValidationErrors
+		a.l.Error(err, "http - v1 - Auth")
+		if errors.As(err, &ve) {
+			errorValidateRes(c, ve)
+			return
+		}
+		errorResponse(c, http.StatusBadRequest, "Bad request")
+		return
+	}
+
+	session, err := a.au.RenewAccess(req)
+	if err != nil {
+		a.l.Error(err, "http - v1 - Auth")
+		errorResponse(c, http.StatusUnauthorized, _defaultUnauthorized)
+		return
+	}
+
+	c.JSON(http.StatusOK, session)
 }

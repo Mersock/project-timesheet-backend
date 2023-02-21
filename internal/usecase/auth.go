@@ -98,3 +98,25 @@ func (au *AuthUseCase) SignIn(req request.SignInReq) (response.SignInRes, error)
 
 	return session, nil
 }
+
+// RenewAccess -.
+func (au *AuthUseCase) RenewAccess(req request.RenewTokenReq) (response.RenewTokenRes, error) {
+	var session response.RenewTokenRes
+
+	refreshPayload, err := au.tokenMaker.VerifyToken(req.RefreshToken)
+	if err != nil {
+		return session, fmt.Errorf("AuthUseCase - RenewAccess - au.tokenMaker.VerifyToken: %w", err)
+	}
+
+	accessToken, accessTokenPayload, err := au.tokenMaker.CreateToken(refreshPayload.Username, au.cfg.AccessTokenDuration)
+	if err != nil {
+		return session, fmt.Errorf("AuthUseCase - RenewAccess - au.tokenMaker.CreateToken: %w", err)
+	}
+
+	session = response.RenewTokenRes{
+		AccessToken:         accessToken,
+		AccessTokenExpireAt: accessTokenPayload.ExpireAt,
+	}
+
+	return session, nil
+}

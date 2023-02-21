@@ -11,8 +11,9 @@ import (
 	"github.com/Mersock/project-timesheet-backend/pkg/token"
 )
 
+// default signup to project member role.
 const (
-	_defaultRoleID = 2
+	_defaultRoleID = 3
 )
 
 // AuthUseCase -.

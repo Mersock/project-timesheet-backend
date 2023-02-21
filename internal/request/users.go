@@ -33,6 +33,12 @@ type UpdateUserReq struct {
 	RoleID    int    `form:"role" json:"role" binding:"required,numeric"`
 }
 
+// UpdateUserPasswordReq -.
+type UpdateUserPasswordReq struct {
+	ID       int    `binding:"required,numeric"`
+	Password string `form:"password" json:"password" binding:"required,min=6"`
+}
+
 // GetUserByIDReq -.
 type GetUserByIDReq struct {
 	ID int `uri:"id" binding:"required,numeric"`

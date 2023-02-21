@@ -60,7 +60,7 @@ func (uc *UsersUseCase) UpdateUser(req request.UpdateUserReq) (int64, error) {
 
 	count, err := uc.repo.ChkUniqueUpdate(req)
 	if err != nil {
-		return rowAffected, fmt.Errorf("UsersUseCase - UpdateRole - uc.repo.ChkUniqueUpdate: %w", err)
+		return rowAffected, fmt.Errorf("UsersUseCase - UpdateUser - uc.repo.ChkUniqueUpdate: %w", err)
 	}
 
 	if count > 0 {
@@ -69,7 +69,26 @@ func (uc *UsersUseCase) UpdateUser(req request.UpdateUserReq) (int64, error) {
 
 	rowAffected, err = uc.repo.Update(req)
 	if err != nil {
-		return rowAffected, fmt.Errorf("UsersUseCase - UpdateRole - uc.repo.Update: %w", err)
+		return rowAffected, fmt.Errorf("UsersUseCase - UpdateUser - uc.repo.Update: %w", err)
+	}
+	return rowAffected, nil
+}
+
+// UpdateUserPassword -.
+func (uc *UsersUseCase) UpdateUserPassword(req request.UpdateUserPasswordReq) (int64, error) {
+	var rowAffected int64
+
+	_, err := uc.repo.SelectById(req.ID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return rowAffected, sql.ErrNoRows
+		}
+		return rowAffected, fmt.Errorf("UsersUseCase - UpdateUserPassword - uc.repo.SelectById: %w", err)
+	}
+
+	rowAffected, err = uc.repo.UpdatePassword(req)
+	if err != nil {
+		return rowAffected, fmt.Errorf("UsersUseCase - UpdateUserPassword - uc.repo.Update: %w", err)
 	}
 	return rowAffected, nil
 }

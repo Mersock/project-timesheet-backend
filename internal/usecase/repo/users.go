@@ -139,6 +139,21 @@ func (r *UsersRepo) Update(req request.UpdateUserReq) (int64, error) {
 	return rowAffected, nil
 }
 
+// UpdatePassword -.
+func (r *UsersRepo) UpdatePassword(req request.UpdateUserPasswordReq) (int64, error) {
+	var rowAffected int64
+	sqlRaw := "UPDATE users SET password = ?, updated_at = NOW() WHERE id = ?"
+	result, err := r.DB.Exec(sqlRaw, req.Password, req.ID)
+	if err != nil {
+		return rowAffected, fmt.Errorf("RolesRepo - Update - r.DB.Exec: %w", err)
+	}
+	rowAffected, err = result.RowsAffected()
+	if err != nil {
+		return rowAffected, fmt.Errorf("RolesRepo - Update - result.rowAffected: %w", err)
+	}
+	return rowAffected, nil
+}
+
 // Delete -.
 func (r *UsersRepo) Delete(req request.DeleteUserReq) (int64, error) {
 	var rowAffected int64

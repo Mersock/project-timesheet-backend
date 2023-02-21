@@ -21,6 +21,7 @@ type (
 		GetAllUsers(req request.GetUsersReq) ([]entity.Users, error)
 		GetUserByID(userID int) (entity.Users, error)
 		UpdateUser(req request.UpdateUserReq) (int64, error)
+		UpdateUserPassword(req request.UpdateUserPasswordReq) (int64, error)
 		DeleteUser(req request.DeleteUserReq) (int64, error)
 	}
 
@@ -33,6 +34,7 @@ type (
 		Insert(req request.CreateUserReq) (int64, error)
 		Delete(req request.DeleteUserReq) (int64, error)
 		Update(req request.UpdateUserReq) (int64, error)
+		UpdatePassword(req request.UpdateUserPasswordReq) (int64, error)
 		ChkUniqueUpdate(req request.UpdateUserReq) (int, error)
 		ChkUniqueInsert(req request.CreateUserReq) (int, error)
 	}

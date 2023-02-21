@@ -141,9 +141,7 @@ func (r rolesRoutes) createRole(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, response.CreateRoleRes{
-		ID: roleID,
-	})
+	response.ResponseByID(c, http.StatusCreated, roleID)
 }
 
 // updateRole -.
@@ -179,9 +177,7 @@ func (r rolesRoutes) updateRole(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, response.UpdateRoleRes{
-		RowAffected: rowAffected,
-	})
+	response.ResponseByRowAffect(c, http.StatusOK, rowAffected)
 }
 
 // deleteRole -.
@@ -211,7 +207,5 @@ func (r rolesRoutes) deleteRole(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, response.UpdateRoleRes{
-		RowAffected: rowAffected,
-	})
+	response.ResponseByRowAffect(c, http.StatusOK, rowAffected)
 }

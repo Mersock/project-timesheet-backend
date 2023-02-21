@@ -85,6 +85,23 @@ func (r *UsersRepo) SelectById(userID int) (entity.Users, error) {
 	return entity, nil
 }
 
+// Insert -.
+func (r *UsersRepo) Insert(req request.CreateUserReq) (int64, error) {
+	var insertId int64
+
+	sqlRaw := "INSERT INTO users (email,password,firstname,lastname,role_id,created_at) values (?,?,?,?,?,NOW()) "
+	result, err := r.DB.Exec(sqlRaw, req.Email, req.Password, req.Firstname, req.Lastname, req.RoleID)
+	if err != nil {
+		return insertId, fmt.Errorf("UsersRepo - Insert - r.DB.Exec: %w", err)
+	}
+	insertId, err = result.LastInsertId()
+	if err != nil {
+		return insertId, fmt.Errorf("UsersRepo - Insert - result.LastInsertId: %w", err)
+	}
+
+	return insertId, nil
+}
+
 // Delete -.
 func (r *UsersRepo) Delete(req request.DeleteUserReq) (int64, error) {
 	var rowAffected int64
@@ -98,6 +115,18 @@ func (r *UsersRepo) Delete(req request.DeleteUserReq) (int64, error) {
 		return rowAffected, fmt.Errorf("UsersRepo - Delete - result.rowAffected: %w", err)
 	}
 	return rowAffected, nil
+}
+
+// ChkUniqueInsert -.
+func (r *UsersRepo) ChkUniqueInsert(req request.CreateUserReq) (int, error) {
+	var count int
+	sqlRaw := fmt.Sprintf("SELECT  COUNT(*) FROM users WHERE email = '%s' ", req.Email)
+	err := r.DB.QueryRow(sqlRaw).Scan(&count)
+	if err != nil {
+		return count, fmt.Errorf("UsersRepo - ChkUniqueInsert - r.DB.QueryRow: %w", err)
+	}
+
+	return count, nil
 }
 
 // genRawSelectWithReq -.

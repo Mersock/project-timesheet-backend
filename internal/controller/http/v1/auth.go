@@ -54,12 +54,43 @@ func (a authRoutes) singUp(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, response.CreateRoleRes{
+	c.JSON(http.StatusCreated, response.SignUpRes{
 		ID: userID,
 	})
 }
 
 // singIn -.
 func (a authRoutes) singIn(c *gin.Context) {
-	c.Status(http.StatusOK)
+	var req request.SignInReq
+
+	//validator
+	if err := c.ShouldBind(&req); err != nil {
+		var ve validator.ValidationErrors
+		a.l.Error(err, "http - v1 - Auth")
+		if errors.As(err, &ve) {
+			errorValidateRes(c, ve)
+			return
+		}
+		errorResponse(c, http.StatusBadRequest, "Bad request")
+		return
+	}
+
+	session, err := a.au.SignIn(req)
+	if err != nil {
+		a.l.Error(err, "http - v1 - Roles")
+		if errors.As(err, &ErrDuplicateRow) {
+			errorResponse(c, http.StatusConflict, _defaultConflict)
+			return
+		}
+		errorResponse(c, http.StatusInternalServerError, _defaultInternalServerErr)
+		return
+	}
+
+	c.JSON(http.StatusCreated, response.SignInRes{
+		SessionID:            session.SessionID,
+		AccessToken:          session.AccessToken,
+		AccessTokenExpireAt:  session.AccessTokenExpireAt,
+		RefreshToken:         session.RefreshToken,
+		RefreshTokenExpireAt: session.RefreshTokenExpireAt,
+	})
 }

@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"github.com/ilyakaznacheev/cleanenv"
+	"time"
 )
 
 type (
@@ -13,6 +14,7 @@ type (
 		MYSQL `yaml:"mysql"`
 		LOG   `yaml:"logger"`
 		KEY   `yaml:"key"`
+		ALIVE `yaml:"alive"`
 	}
 
 	//APP -.
@@ -39,6 +41,12 @@ type (
 	//KEY -.
 	KEY struct {
 		TokenSymmetric string `env-required:"true" yaml:"token_symmetric" env:"TOKEN_SYMMETRIC"`
+	}
+
+	//ALIVE -.
+	ALIVE struct {
+		AccessTokenDuration  time.Duration `env-required:"true" yaml:"access_token_duration" env:"ACCESS_TOKEN_DURATION"`
+		RefreshTokenDuration time.Duration `env-required:"true" yaml:"refresh_token_duration" env:"REFRESH_TOKEN_DURATION"`
 	}
 )
 

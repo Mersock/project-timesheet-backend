@@ -11,6 +11,7 @@ type (
 		GetCount(req request.GetUsersReq) (int, error)
 		GetAllUsers(req request.GetUsersReq) ([]entity.Users, error)
 		GetUserByID(userID int) (entity.Users, error)
+		DeleteUser(req request.DeleteUserReq) (int64, error)
 	}
 
 	//UserRepo -.
@@ -18,6 +19,7 @@ type (
 		Count(req request.GetUsersReq) (int, error)
 		Select(req request.GetUsersReq) ([]entity.Users, error)
 		SelectById(userID int) (entity.Users, error)
+		Delete(req request.DeleteUserReq) (int64, error)
 	}
 
 	// Roles -.

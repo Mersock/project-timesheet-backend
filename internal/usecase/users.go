@@ -1,6 +1,8 @@
 package usecase
 
 import (
+	"database/sql"
+	"errors"
 	"fmt"
 	"github.com/Mersock/project-timesheet-backend/internal/entity"
 	"github.com/Mersock/project-timesheet-backend/internal/request"
@@ -42,4 +44,24 @@ func (uc *UsersUseCase) GetUserByID(userID int) (entity.Users, error) {
 		return user, fmt.Errorf("UsersUseCase - GetUserByID - uc.repo.SelectById: %w", err)
 	}
 	return user, nil
+}
+
+// DeleteUser -.
+func (uc *UsersUseCase) DeleteUser(req request.DeleteUserReq) (int64, error) {
+	var rowAffected int64
+
+	_, err := uc.repo.SelectById(req.ID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return rowAffected, sql.ErrNoRows
+		}
+		return rowAffected, fmt.Errorf("UsersUseCase - DeleteRole - uc.repo.SelectById: %w", err)
+	}
+
+	rowAffected, err = uc.repo.Delete(req)
+	if err != nil {
+		return rowAffected, fmt.Errorf("UsersUseCase - DeleteRole - uc.repo.Delete: %w", err)
+	}
+
+	return rowAffected, nil
 }

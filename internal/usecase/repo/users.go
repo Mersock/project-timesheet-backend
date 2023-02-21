@@ -85,6 +85,21 @@ func (r *UsersRepo) SelectById(userID int) (entity.Users, error) {
 	return entity, nil
 }
 
+// Delete -.
+func (r *UsersRepo) Delete(req request.DeleteUserReq) (int64, error) {
+	var rowAffected int64
+	sqlRaw := "DELETE FROM users WHERE id = ?"
+	result, err := r.DB.Exec(sqlRaw, req.ID)
+	if err != nil {
+		return rowAffected, fmt.Errorf("UsersRepo - Delete - r.DB.Exec: %w", err)
+	}
+	rowAffected, err = result.RowsAffected()
+	if err != nil {
+		return rowAffected, fmt.Errorf("UsersRepo - Delete - result.rowAffected: %w", err)
+	}
+	return rowAffected, nil
+}
+
 // genRawSelectWithReq -.
 func (r *UsersRepo) genRawSelectWithReq(sqlRaw string, req request.GetUsersReq) string {
 	if req.Email != "" {

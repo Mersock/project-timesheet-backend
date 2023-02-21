@@ -19,3 +19,8 @@ type GetUsersReq struct {
 type GetUserByIDReq struct {
 	ID int `uri:"id" binding:"required,numeric"`
 }
+
+// DeleteUserReq -.
+type DeleteUserReq struct {
+	ID int `uri:"id" binding:"required,numeric"`
+}

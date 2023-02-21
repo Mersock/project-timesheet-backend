@@ -28,6 +28,7 @@ func newUsersRoutes(handler *gin.RouterGroup, uu usecase.User, l logger.Interfac
 	{
 		h.GET("", u.getUsers)
 		h.GET("/:id", u.getUserByID)
+		h.DELETE("/:id", u.deleteRole)
 	}
 }
 
@@ -115,5 +116,37 @@ func (r usersRoutes) getUserByID(c *gin.Context) {
 
 	c.JSON(http.StatusOK, response.GetUserByIDRes{
 		User: user,
+	})
+}
+
+// deleteRole -.
+func (r usersRoutes) deleteRole(c *gin.Context) {
+	var req request.DeleteUserReq
+
+	//validator
+	if err := c.ShouldBindUri(&req); err != nil {
+		var ve validator.ValidationErrors
+		r.l.Error(err, "http - v1 - Users")
+		if errors.As(err, &ve) {
+			errorValidateRes(c, ve)
+			return
+		}
+		errorResponse(c, http.StatusBadRequest, _defaultBadReq)
+		return
+	}
+
+	rowAffected, err := r.uu.DeleteUser(req)
+	if err != nil {
+		r.l.Error(err, "http - v1 - Users")
+		if errors.Is(err, sql.ErrNoRows) {
+			errorResponse(c, http.StatusNotFound, _defaultNotFound)
+			return
+		}
+		errorResponse(c, http.StatusInternalServerError, _defaultInternalServerErr)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.UpdateRoleRes{
+		RowAffected: rowAffected,
 	})
 }

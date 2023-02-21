@@ -9,7 +9,15 @@ import (
 	"net/http"
 )
 
-func NewRouter(handler *gin.Engine, l logger.Interface, tokenMaker token.Maker, ru usecase.Roles, uu usecase.User, au usecase.Auth) {
+func NewRouter(
+	handler *gin.Engine,
+	l logger.Interface,
+	tokenMaker token.Maker,
+	ru usecase.Roles,
+	uu usecase.User,
+	au usecase.Auth,
+	pu usecase.Project,
+) {
 	//options
 	handler.Use(gin.Logger())
 	handler.Use(gin.Recovery())
@@ -22,7 +30,7 @@ func NewRouter(handler *gin.Engine, l logger.Interface, tokenMaker token.Maker, 
 	auth := handler.Group("/api/v1/auth")
 	newAuthRoutes(auth, au, l)
 
-	//routers
+	//routers require auth
 	h := handler.Group("/api/v1")
 	h.Use(middleware.AuthMiddleware(tokenMaker))
 	{

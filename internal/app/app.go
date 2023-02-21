@@ -40,10 +40,13 @@ func Run(cfg *config.Config) {
 		tokenMaker,
 		cfg,
 	)
+	projectUseCase := usecase.NewProjectsUseCase(
+		repo.NewProjectRepo(sql),
+	)
 
 	//HTTP server
 	handler := gin.New()
-	v1.NewRouter(handler, l, tokenMaker, rolesUseCase, userUseCase, authUseCase)
+	v1.NewRouter(handler, l, tokenMaker, rolesUseCase, userUseCase, authUseCase, projectUseCase)
 	httpServer := httpserver.New(handler, httpserver.Port(cfg.HTTP.Port))
 
 	//signal interrupt

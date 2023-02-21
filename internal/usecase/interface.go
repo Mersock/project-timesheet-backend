@@ -1,12 +1,23 @@
 package usecase
 
 import (
+	"database/sql"
 	"github.com/Mersock/project-timesheet-backend/internal/entity"
 	"github.com/Mersock/project-timesheet-backend/internal/request"
 	"github.com/Mersock/project-timesheet-backend/internal/response"
 )
 
 type (
+	//Project -.
+	Project interface {
+	}
+
+	//ProjectRepo -.
+	ProjectRepo interface {
+		BeginTx() (*sql.Tx, error)
+		Rollback(tx *sql.Tx) error
+		Commit(tx *sql.Tx) error
+	}
 
 	//Auth -.
 	Auth interface {

@@ -83,6 +83,29 @@ func (r *UsersRepo) SelectById(userID int) (entity.Users, error) {
 	return entity, nil
 }
 
+// SelectByEmail -.
+func (r *UsersRepo) SelectByEmail(email string) (entity.Users, error) {
+	var entity entity.Users
+
+	sqlRaw := "SELECT users.id, email, firstname, lastname, users.created_at, users.updated_at,roles.name as role "
+	sqlRaw += "FROM users "
+	sqlRaw += "INNER JOIN roles ON roles.id = users.id "
+	sqlRaw += "WHERE users.email = ? "
+	err := r.DB.QueryRow(sqlRaw, email).Scan(&entity.ID,
+		&entity.Email,
+		&entity.Firstname,
+		&entity.Lastname,
+		&entity.CreateAt,
+		&entity.UpdateAt,
+		&entity.Role,
+	)
+	if err != nil {
+		return entity, fmt.Errorf("UsersRepo - SelectByEmail - r.DB.QueryRow: %w", err)
+	}
+
+	return entity, nil
+}
+
 // Insert -.
 func (r *UsersRepo) Insert(req request.CreateUserReq) (int64, error) {
 	var insertId int64

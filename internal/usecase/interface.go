@@ -27,6 +27,7 @@ type (
 		Count(req request.GetUsersReq) (int, error)
 		Select(req request.GetUsersReq) ([]entity.Users, error)
 		SelectById(userID int) (entity.Users, error)
+		SelectByEmail(email string) (entity.Users, error)
 		Insert(req request.CreateUserReq) (int64, error)
 		Delete(req request.DeleteUserReq) (int64, error)
 		ChkUniqueInsert(req request.CreateUserReq) (int, error)

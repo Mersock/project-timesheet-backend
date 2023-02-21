@@ -8,8 +8,8 @@ CREATE TABLE IF NOT EXISTS `roles`(
     CONSTRAINT PK_Roles PRIMARY KEY (id)
 );
 
+INSERT INTO `roles` (name,created_at) values ('administrator',CURRENT_TIMESTAMP());
 INSERT INTO `roles` (name,created_at) values ('project manager',CURRENT_TIMESTAMP());
 INSERT INTO `roles` (name,created_at) values ('project member',CURRENT_TIMESTAMP());
-INSERT INTO `roles` (name,created_at) values ('administrator',CURRENT_TIMESTAMP());
 
 

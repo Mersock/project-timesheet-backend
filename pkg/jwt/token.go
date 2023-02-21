@@ -11,22 +11,22 @@ const (
 	minSecretKeySize = 32
 )
 
-// Token -.
-type Token struct {
+// JWTMaker -.
+type JWTMaker struct {
 	secretKey string
 }
 
 // NewJWTMaker -.
-func NewJWTMaker(secretKey string) (JWT, error) {
+func NewJWTMaker(secretKey string) (Maker, error) {
 	if len(secretKey) < minSecretKeySize {
 		return nil, fmt.Errorf("invalid key size less than %d character", minSecretKeySize)
 	}
 
-	return &Token{secretKey}, nil
+	return &JWTMaker{secretKey}, nil
 }
 
 // CreateToken -.
-func (t *Token) CreateToken(username string, duration time.Duration) (string, *Payload, error) {
+func (t *JWTMaker) CreateToken(username string, duration time.Duration) (string, *Payload, error) {
 	payload, err := NewPayload(username, duration)
 	if err != nil {
 		return "", payload, err
@@ -37,7 +37,7 @@ func (t *Token) CreateToken(username string, duration time.Duration) (string, *P
 }
 
 // VerifyToken -.
-func (t *Token) VerifyToken(token string) (*Payload, error) {
+func (t *JWTMaker) VerifyToken(token string) (*Payload, error) {
 	keyFunc := func(token *jwt.Token) (interface{}, error) {
 		_, ok := token.Method.(*jwt.SigningMethodHMAC)
 		if !ok {

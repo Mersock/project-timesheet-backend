@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	errDuplicateRow = errors.New("duplicate")
+	ErrDuplicateRow = errors.New("duplicate")
 )
 
 // RolesUseCase -.
@@ -60,7 +60,7 @@ func (uc *RolesUseCase) CreateRole(req request.CreateRoleReq) (int64, error) {
 	}
 
 	if count > 0 {
-		return roleID, errDuplicateRow
+		return roleID, ErrDuplicateRow
 	}
 
 	roleID, err = uc.repo.Insert(req)
@@ -88,7 +88,7 @@ func (uc *RolesUseCase) UpdateRole(req request.UpdateRoleReq) (int64, error) {
 	}
 
 	if count > 0 {
-		return rowAffected, errDuplicateRow
+		return rowAffected, ErrDuplicateRow
 	}
 
 	rowAffected, err = uc.repo.Update(req)

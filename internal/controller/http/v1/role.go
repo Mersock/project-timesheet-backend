@@ -133,7 +133,7 @@ func (r rolesRoutes) createRole(c *gin.Context) {
 	roleID, err := r.ru.CreateRole(req)
 	if err != nil {
 		r.l.Error(err, "http - v1 - Roles")
-		if errors.As(err, &errDuplicateRow) {
+		if errors.As(err, &ErrDuplicateRow) {
 			errorResponse(c, http.StatusConflict, _defaultConflict)
 			return
 		}
@@ -171,7 +171,7 @@ func (r rolesRoutes) updateRole(c *gin.Context) {
 			return
 		}
 
-		if errors.As(err, &errDuplicateRow) {
+		if errors.As(err, &ErrDuplicateRow) {
 			errorResponse(c, http.StatusConflict, _defaultConflict)
 			return
 		}

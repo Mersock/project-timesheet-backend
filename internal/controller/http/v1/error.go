@@ -15,7 +15,7 @@ const (
 	_defaultConflict          = "Conflict"
 )
 
-var errDuplicateRow = errors.New("duplicate")
+var ErrDuplicateRow = errors.New("duplicate")
 
 // response -.
 type errRes struct {

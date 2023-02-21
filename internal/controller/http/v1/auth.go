@@ -37,10 +37,10 @@ func (a authRoutes) singUp(c *gin.Context) {
 		var ve validator.ValidationErrors
 		a.l.Error(err, "http - v1 - Auth")
 		if errors.As(err, &ve) {
-			errorValidateRes(c, ve)
+			response.ErrorValidateRes(c, ve)
 			return
 		}
-		errorResponse(c, http.StatusBadRequest, "Bad request")
+		response.ErrorResponse(c, http.StatusBadRequest, "Bad request")
 		return
 	}
 
@@ -48,16 +48,14 @@ func (a authRoutes) singUp(c *gin.Context) {
 	if err != nil {
 		a.l.Error(err, "http - v1 - Roles")
 		if errors.As(err, &ErrDuplicateRow) {
-			errorResponse(c, http.StatusConflict, _defaultConflict)
+			response.ErrorResponse(c, http.StatusConflict, _defaultConflict)
 			return
 		}
-		errorResponse(c, http.StatusInternalServerError, _defaultInternalServerErr)
+		response.ErrorResponse(c, http.StatusInternalServerError, _defaultInternalServerErr)
 		return
 	}
 
-	c.JSON(http.StatusCreated, response.SignUpRes{
-		ID: userID,
-	})
+	response.ResByID(c, http.StatusCreated, userID)
 }
 
 // singIn -.
@@ -69,17 +67,17 @@ func (a authRoutes) singIn(c *gin.Context) {
 		var ve validator.ValidationErrors
 		a.l.Error(err, "http - v1 - Auth")
 		if errors.As(err, &ve) {
-			errorValidateRes(c, ve)
+			response.ErrorValidateRes(c, ve)
 			return
 		}
-		errorResponse(c, http.StatusBadRequest, "Bad request")
+		response.ErrorResponse(c, http.StatusBadRequest, "Bad request")
 		return
 	}
 
 	session, err := a.au.SignIn(req)
 	if err != nil {
 		a.l.Error(err, "http - v1 - Auth")
-		errorResponse(c, http.StatusUnauthorized, _defaultUnauthorized)
+		response.ErrorResponse(c, http.StatusUnauthorized, _defaultUnauthorized)
 		return
 	}
 
@@ -95,17 +93,17 @@ func (a authRoutes) renewAccess(c *gin.Context) {
 		var ve validator.ValidationErrors
 		a.l.Error(err, "http - v1 - Auth")
 		if errors.As(err, &ve) {
-			errorValidateRes(c, ve)
+			response.ErrorValidateRes(c, ve)
 			return
 		}
-		errorResponse(c, http.StatusBadRequest, "Bad request")
+		response.ErrorResponse(c, http.StatusBadRequest, "Bad request")
 		return
 	}
 
 	session, err := a.au.RenewAccess(req)
 	if err != nil {
 		a.l.Error(err, "http - v1 - Auth")
-		errorResponse(c, http.StatusUnauthorized, _defaultUnauthorized)
+		response.ErrorResponse(c, http.StatusUnauthorized, _defaultUnauthorized)
 		return
 	}
 

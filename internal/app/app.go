@@ -43,7 +43,7 @@ func Run(cfg *config.Config) {
 
 	//HTTP server
 	handler := gin.New()
-	v1.NewRouter(handler, l, rolesUseCase, userUseCase, authUseCase)
+	v1.NewRouter(handler, l, tokenMaker, rolesUseCase, userUseCase, authUseCase)
 	httpServer := httpserver.New(handler, httpserver.Port(cfg.HTTP.Port))
 
 	//signal interrupt

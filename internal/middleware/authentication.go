@@ -16,7 +16,7 @@ const (
 )
 
 // AuthMiddleware -.
-func AuthMiddleware(tokenMaker token.JWT) gin.HandlerFunc {
+func AuthMiddleware(tokenMaker token.Maker) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		authorizationHeader := ctx.GetHeader(authorizationHeaderKey)
 		if len(authorizationHeader) == 0 {
@@ -54,6 +54,6 @@ func AuthMiddleware(tokenMaker token.JWT) gin.HandlerFunc {
 // errRes -.
 func errRes(err error) gin.H {
 	return gin.H{
-		"error": err.Error(),
+		"errors": err.Error(),
 	}
 }

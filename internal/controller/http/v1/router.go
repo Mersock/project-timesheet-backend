@@ -1,13 +1,15 @@
 package v1
 
 import (
+	"github.com/Mersock/project-timesheet-backend/internal/middleware"
 	"github.com/Mersock/project-timesheet-backend/internal/usecase"
 	"github.com/Mersock/project-timesheet-backend/pkg/logger"
+	"github.com/Mersock/project-timesheet-backend/pkg/token"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
-func NewRouter(handler *gin.Engine, l logger.Interface, ru usecase.Roles, uu usecase.User, au usecase.Auth) {
+func NewRouter(handler *gin.Engine, l logger.Interface, tokenMaker token.Maker, ru usecase.Roles, uu usecase.User, au usecase.Auth) {
 	//options
 	handler.Use(gin.Logger())
 	handler.Use(gin.Recovery())
@@ -17,11 +19,14 @@ func NewRouter(handler *gin.Engine, l logger.Interface, ru usecase.Roles, uu use
 		c.Status(http.StatusOK)
 	})
 
+	auth := handler.Group("/api/v1/auth")
+	newAuthRoutes(auth, au, l)
+
 	//routers
 	h := handler.Group("/api/v1")
+	h.Use(middleware.AuthMiddleware(tokenMaker))
 	{
 		newRolesRoutes(h, ru, l)
 		newUsersRoutes(h, uu, l)
-		newAuthRoutes(h, au, l)
 	}
 }

@@ -28,6 +28,7 @@ func newUsersRoutes(handler *gin.RouterGroup, uu usecase.User, l logger.Interfac
 	h := handler.Group("/user")
 	{
 		h.GET("", u.getUsers)
+		h.POST("", u.createUser)
 		h.GET("/:id", u.getUserByID)
 		h.PUT("/:id", u.updateUser)
 		h.PUT("/password/:id", u.updateUserPassword)
@@ -122,6 +123,36 @@ func (r usersRoutes) getUserByID(c *gin.Context) {
 	})
 }
 
+// createUser -.
+func (r usersRoutes) createUser(c *gin.Context) {
+	var req request.CreateUserReq
+
+	//validator
+	if err := c.ShouldBind(&req); err != nil {
+		var ve validator.ValidationErrors
+		r.l.Error(err, "http - v1 - Roles")
+		if errors.As(err, &ve) {
+			errorValidateRes(c, ve)
+			return
+		}
+		errorResponse(c, http.StatusBadRequest, _defaultBadReq)
+		return
+	}
+
+	userID, err := r.uu.CreateUser(req)
+	if err != nil {
+		r.l.Error(err, "http - v1 - Roles")
+		if errors.As(err, &ErrDuplicateRow) {
+			errorResponse(c, http.StatusConflict, _defaultConflict)
+			return
+		}
+		errorResponse(c, http.StatusInternalServerError, _defaultInternalServerErr)
+		return
+	}
+
+	response.ResponseByID(c, http.StatusCreated, userID)
+}
+
 // updateUser -.
 func (r usersRoutes) updateUser(c *gin.Context) {
 	var req request.UpdateUserReq
@@ -155,9 +186,7 @@ func (r usersRoutes) updateUser(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, response.UpdateRoleRes{
-		RowAffected: rowAffected,
-	})
+	response.ResponseByRowAffect(c, http.StatusOK, rowAffected)
 }
 
 // updateUserPassword -.
@@ -188,9 +217,7 @@ func (r usersRoutes) updateUserPassword(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, response.UpdateRoleRes{
-		RowAffected: rowAffected,
-	})
+	response.ResponseByRowAffect(c, http.StatusOK, rowAffected)
 }
 
 // deleteRole -.
@@ -220,7 +247,5 @@ func (r usersRoutes) deleteRole(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, response.UpdateRoleRes{
-		RowAffected: rowAffected,
-	})
+	response.ResponseByRowAffect(c, http.StatusOK, rowAffected)
 }

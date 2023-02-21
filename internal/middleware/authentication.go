@@ -15,7 +15,8 @@ const (
 	authorizationPayloadKey   = "authorization_payload"
 )
 
-func authMiddleware(tokenMaker jwt.JWT) gin.HandlerFunc {
+// AuthMiddleware -.
+func AuthMiddleware(tokenMaker jwt.JWT) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		authorizationHeader := ctx.GetHeader(authorizationHeaderKey)
 		if len(authorizationHeader) == 0 {
@@ -50,6 +51,7 @@ func authMiddleware(tokenMaker jwt.JWT) gin.HandlerFunc {
 	}
 }
 
+// errRes -.
 func errRes(err error) gin.H {
 	return gin.H{
 		"error": err.Error(),

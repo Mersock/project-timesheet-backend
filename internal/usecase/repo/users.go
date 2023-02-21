@@ -18,7 +18,7 @@ func NewUsersRepo(db *sql.DB) *UsersRepo {
 }
 
 // Count -.
-func (r *UsersRepo) Count(req request.GetAllUsersReq) (int, error) {
+func (r *UsersRepo) Count(req request.GetUsersReq) (int, error) {
 	var count int
 
 	sqlRaw := "SELECT COUNT(*) "
@@ -37,8 +37,8 @@ func (r *UsersRepo) Count(req request.GetAllUsersReq) (int, error) {
 	return count, nil
 }
 
-// SelectAll -.
-func (r *UsersRepo) SelectAll(req request.GetAllUsersReq) ([]entity.Users, error) {
+// Select -.
+func (r *UsersRepo) Select(req request.GetUsersReq) ([]entity.Users, error) {
 	var entities []entity.Users
 
 	sqlRaw := "SELECT users.id, email, firstname, lastname, users.created_at, users.updated_at,roles.name as role "
@@ -62,15 +62,15 @@ func (r *UsersRepo) SelectAll(req request.GetAllUsersReq) ([]entity.Users, error
 	return entities, nil
 }
 
-// SelectUser -.
-func (r *UsersRepo) SelectUser(req request.GetUserReq) (entity.Users, error) {
+// SelectById -.
+func (r *UsersRepo) SelectById(userID int) (entity.Users, error) {
 	var entity entity.Users
 
 	sqlRaw := "SELECT users.id, email, firstname, lastname, users.created_at, users.updated_at,roles.name as role "
 	sqlRaw += "FROM users "
 	sqlRaw += "INNER JOIN roles ON roles.id = users.id "
 	sqlRaw += "WHERE users.id = ? "
-	err := r.DB.QueryRow(sqlRaw, req.ID).Scan(&entity.ID,
+	err := r.DB.QueryRow(sqlRaw, userID).Scan(&entity.ID,
 		&entity.Email,
 		&entity.Firstname,
 		&entity.Lastname,
@@ -130,7 +130,7 @@ func (r *UsersRepo) ChkUniqueInsert(req request.CreateUserReq) (int, error) {
 }
 
 // genRawSelectWithReq -.
-func (r *UsersRepo) genRawSelectWithReq(sqlRaw string, req request.GetAllUsersReq) string {
+func (r *UsersRepo) genRawSelectWithReq(sqlRaw string, req request.GetUsersReq) string {
 	if req.Email != "" {
 		sqlRaw = fmt.Sprintf("%s AND email LIKE '%%%s%%' ", sqlRaw, req.Email)
 	}
@@ -155,7 +155,7 @@ func (r *UsersRepo) genRawSelectWithReq(sqlRaw string, req request.GetAllUsersRe
 }
 
 // genPaginateQuery -.
-func (r *UsersRepo) genPaginateQuery(sqlRaw string, req request.GetAllUsersReq) string {
+func (r *UsersRepo) genPaginateQuery(sqlRaw string, req request.GetUsersReq) string {
 	if req.Limit != nil && req.Page != nil {
 		offset := (*req.Page - 1) * (*req.Limit)
 		sqlRaw = fmt.Sprintf("%s LIMIT %d OFFSET %d", sqlRaw, *req.Limit, offset)

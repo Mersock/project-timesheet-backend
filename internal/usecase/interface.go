@@ -3,7 +3,6 @@ package usecase
 import (
 	"github.com/Mersock/project-timesheet-backend/internal/entity"
 	"github.com/Mersock/project-timesheet-backend/internal/request"
-	"github.com/Mersock/project-timesheet-backend/internal/response"
 )
 
 type (
@@ -11,22 +10,21 @@ type (
 	//Auth -.
 	Auth interface {
 		Signup(req request.SignUpReq) (int64, error)
-		SignIn(req request.SignInReq) (response.SignInRes, error)
 	}
 
 	//User -.
 	User interface {
-		GetCount(req request.GetAllUsersReq) (int, error)
-		GetAllUsers(req request.GetAllUsersReq) ([]entity.Users, error)
-		GetUser(req request.GetUserReq) (entity.Users, error)
+		GetCount(req request.GetUsersReq) (int, error)
+		GetAllUsers(req request.GetUsersReq) ([]entity.Users, error)
+		GetUserByID(userID int) (entity.Users, error)
 		DeleteUser(req request.DeleteUserReq) (int64, error)
 	}
 
 	//UserRepo -.
 	UserRepo interface {
-		Count(req request.GetAllUsersReq) (int, error)
-		SelectAll(req request.GetAllUsersReq) ([]entity.Users, error)
-		SelectUser(req request.GetUserReq) (entity.Users, error)
+		Count(req request.GetUsersReq) (int, error)
+		Select(req request.GetUsersReq) ([]entity.Users, error)
+		SelectById(userID int) (entity.Users, error)
 		Insert(req request.CreateUserReq) (int64, error)
 		Delete(req request.DeleteUserReq) (int64, error)
 		ChkUniqueInsert(req request.CreateUserReq) (int, error)

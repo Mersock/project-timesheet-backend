@@ -19,7 +19,7 @@ func NewUsersUseCase(r UserRepo) *UsersUseCase {
 }
 
 // GetCount -.
-func (uc *UsersUseCase) GetCount(req request.GetAllUsersReq) (int, error) {
+func (uc *UsersUseCase) GetCount(req request.GetUsersReq) (int, error) {
 	rows, err := uc.repo.Count(req)
 	if err != nil {
 		return rows, fmt.Errorf("UsersUseCase - GetCount - uc.repo.Count: %w", err)
@@ -28,18 +28,18 @@ func (uc *UsersUseCase) GetCount(req request.GetAllUsersReq) (int, error) {
 }
 
 // GetAllUsers -.
-func (uc *UsersUseCase) GetAllUsers(req request.GetAllUsersReq) ([]entity.Users, error) {
-	users, err := uc.repo.SelectAll(req)
+func (uc *UsersUseCase) GetAllUsers(req request.GetUsersReq) ([]entity.Users, error) {
+	users, err := uc.repo.Select(req)
 	if err != nil {
 		return nil, fmt.Errorf("UsersUseCase - GetAllUsers - uc.repo.Select: %w", err)
 	}
 	return users, nil
 }
 
-// GetUser -.
-func (uc *UsersUseCase) GetUser(req request.GetUserReq) (entity.Users, error) {
+// GetUserByID -.
+func (uc *UsersUseCase) GetUserByID(userID int) (entity.Users, error) {
 	var user entity.Users
-	user, err := uc.repo.SelectUser(req)
+	user, err := uc.repo.SelectById(userID)
 	if err != nil {
 		return user, fmt.Errorf("UsersUseCase - GetUserByID - uc.repo.SelectById: %w", err)
 	}
@@ -50,11 +50,7 @@ func (uc *UsersUseCase) GetUser(req request.GetUserReq) (entity.Users, error) {
 func (uc *UsersUseCase) DeleteUser(req request.DeleteUserReq) (int64, error) {
 	var rowAffected int64
 
-	reqUser := request.GetUserReq{
-		ID: req.ID,
-	}
-
-	_, err := uc.repo.SelectUser(reqUser)
+	_, err := uc.repo.SelectById(req.ID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return rowAffected, sql.ErrNoRows

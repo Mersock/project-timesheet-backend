@@ -13,12 +13,12 @@ type IDRes struct {
 	ID int64 `json:"id"`
 }
 
-// RowAffectRest -.
+// RowAffectRes -.
 type RowAffectRes struct {
 	RowAffected int64 `json:"row_affected"`
 }
 
-// response -.
+// errRes -.
 type errRes struct {
 	Error string `json:"error" example:"message"`
 }

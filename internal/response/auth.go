@@ -1,7 +1,6 @@
 package response
 
 import (
-	"github.com/google/uuid"
 	"time"
 )
 
@@ -12,7 +11,6 @@ type SignUpRes struct {
 
 // SignInRes -.
 type SignInRes struct {
-	SessionID            uuid.UUID `json:"session_id"`
 	AccessToken          string    `json:"access_token"`
 	AccessTokenExpireAt  time.Time `json:"access_token_expires_at"`
 	RefreshToken         string    `json:"refresh_token"`

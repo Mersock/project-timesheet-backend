@@ -60,7 +60,6 @@ func (a authRoutes) singUp(c *gin.Context) {
 }
 
 // singIn -.
-// singIn -.
 func (a authRoutes) singIn(c *gin.Context) {
 	var req request.SignInReq
 
@@ -78,17 +77,12 @@ func (a authRoutes) singIn(c *gin.Context) {
 
 	session, err := a.au.SignIn(req)
 	if err != nil {
-		a.l.Error(err, "http - v1 - Roles")
-		if errors.As(err, &ErrDuplicateRow) {
-			errorResponse(c, http.StatusConflict, _defaultConflict)
-			return
-		}
-		errorResponse(c, http.StatusInternalServerError, _defaultInternalServerErr)
+		a.l.Error(err, "http - v1 - Auth")
+		errorResponse(c, http.StatusUnauthorized, _defaultUnauthorized)
 		return
 	}
 
-	c.JSON(http.StatusCreated, response.SignInRes{
-		SessionID:            session.SessionID,
+	c.JSON(http.StatusOK, response.SignInRes{
 		AccessToken:          session.AccessToken,
 		AccessTokenExpireAt:  session.AccessTokenExpireAt,
 		RefreshToken:         session.RefreshToken,

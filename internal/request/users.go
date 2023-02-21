@@ -27,10 +27,10 @@ type CreateUserReq struct {
 // UpdateUserReq -.
 type UpdateUserReq struct {
 	ID        int    `binding:"required,numeric"`
-	Email     string `form:"email" json:"email" binding:"omitempty,email,max=255"`
-	Firstname string `form:"firstname" json:"firstname" binding:"omitempty,max=255"`
-	Lastname  string `form:"lastname" json:"lastname" binding:"omitempty,max=255"`
-	RoleID    int    `form:"role" json:"role" binding:"omitempty,numeric"`
+	Email     string `form:"email" json:"email" binding:"required,email,max=255"`
+	Firstname string `form:"firstname" json:"firstname" binding:"required,max=255"`
+	Lastname  string `form:"lastname" json:"lastname" binding:"required,max=255"`
+	RoleID    int    `form:"role" json:"role" binding:"required,numeric"`
 }
 
 // GetUserByIDReq -.

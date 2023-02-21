@@ -47,6 +47,26 @@ func (uc *UsersUseCase) GetUserByID(userID int) (entity.Users, error) {
 	return user, nil
 }
 
+// CreateUser -.
+func (uc *UsersUseCase) CreateUser(req request.CreateUserReq) (int64, error) {
+	var roleID int64
+
+	count, err := uc.repo.ChkUniqueInsert(req)
+	if err != nil {
+		return roleID, fmt.Errorf("UsersUseCase - CreateUser - uc.repo.ChkUniqueInsert: %w", err)
+	}
+
+	if count > 0 {
+		return roleID, ErrDuplicateRow
+	}
+
+	roleID, err = uc.repo.Insert(req)
+	if err != nil {
+		return roleID, fmt.Errorf("UsersUseCase - CreateUser - uc.repo.Insert: %w", err)
+	}
+	return roleID, nil
+}
+
 // UpdateUser -.
 func (uc *UsersUseCase) UpdateUser(req request.UpdateUserReq) (int64, error) {
 	var rowAffected int64

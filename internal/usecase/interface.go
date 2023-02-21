@@ -20,6 +20,7 @@ type (
 		GetCount(req request.GetUsersReq) (int, error)
 		GetAllUsers(req request.GetUsersReq) ([]entity.Users, error)
 		GetUserByID(userID int) (entity.Users, error)
+		CreateUser(req request.CreateUserReq) (int64, error)
 		UpdateUser(req request.UpdateUserReq) (int64, error)
 		UpdateUserPassword(req request.UpdateUserPasswordReq) (int64, error)
 		DeleteUser(req request.DeleteUserReq) (int64, error)

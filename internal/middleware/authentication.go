@@ -3,6 +3,7 @@ package middleware
 import (
 	"errors"
 	"fmt"
+	"github.com/Mersock/project-timesheet-backend/internal/response"
 	token "github.com/Mersock/project-timesheet-backend/pkg/token"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -21,28 +22,28 @@ func AuthMiddleware(tokenMaker token.Maker) gin.HandlerFunc {
 		authorizationHeader := ctx.GetHeader(authorizationHeaderKey)
 		if len(authorizationHeader) == 0 {
 			err := errors.New("authorization header is null")
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, errRes(err))
+			response.ErrorResponse(ctx, http.StatusUnauthorized, err.Error())
 			return
 		}
 
 		fields := strings.Fields(authorizationHeader)
 		if len(fields) < 2 {
 			err := errors.New("authorization header is null")
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, errRes(err))
+			response.ErrorResponse(ctx, http.StatusUnauthorized, err.Error())
 			return
 		}
 
 		authorizationType := strings.ToLower(fields[0])
 		if authorizationType != authorizationHeaderBearer {
 			err := fmt.Errorf("authorization type not support")
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, errRes(err))
+			response.ErrorResponse(ctx, http.StatusUnauthorized, err.Error())
 			return
 		}
 
 		accessToken := fields[1]
 		payload, err := tokenMaker.VerifyToken(accessToken)
 		if err != nil {
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, errRes(err))
+			response.ErrorResponse(ctx, http.StatusUnauthorized, err.Error())
 			return
 		}
 		ctx.Set(authorizationPayloadKey, payload)

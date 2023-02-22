@@ -5,6 +5,7 @@ import (
 	"github.com/Mersock/project-timesheet-backend/internal/request"
 	"github.com/Mersock/project-timesheet-backend/internal/response"
 	"github.com/Mersock/project-timesheet-backend/internal/usecase"
+	"github.com/Mersock/project-timesheet-backend/internal/utils"
 	"github.com/Mersock/project-timesheet-backend/pkg/logger"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
@@ -35,7 +36,49 @@ func newProjectsRoutes(handler *gin.RouterGroup, pu usecase.Project, l logger.In
 
 // getProject -.
 func (r projectsRoutes) getProject(c *gin.Context) {
-	c.Status(http.StatusOK)
+	var req request.GetProjectsReq
+
+	//validator
+	if err := c.ShouldBind(&req); err != nil {
+		var ve validator.ValidationErrors
+		r.l.Error(err, "http - v1 - Projects")
+		if errors.As(err, &ve) {
+			response.ErrorValidateRes(c, ve)
+			return
+		}
+		response.ErrorResponse(c, http.StatusBadRequest, "Bad request")
+		return
+	}
+
+	//pagination
+	paginate := utils.GeneratePaginationFromRequest(c)
+	req.Limit = &paginate.Limit
+	req.Page = &paginate.Page
+
+	//total rows
+	total, err := r.pu.GetCount(req)
+	if err != nil {
+		r.l.Error(err, "http - v1 - Projects")
+		response.ErrorResponse(c, http.StatusInternalServerError, _defaultInternalServerErr)
+		return
+	}
+
+	projects, err := r.pu.GetAllProjects(req)
+	if err != nil {
+		r.l.Error(err, "http - v1 - Projects")
+		response.ErrorResponse(c, http.StatusInternalServerError, _defaultInternalServerErr)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.GetProjectsRes{
+		Projects: projects,
+		Total:    total,
+		PaginationRes: utils.PaginationRes{
+			Limit:    paginate.Limit,
+			Page:     paginate.Page,
+			LastPage: utils.GetPageCount(total, paginate.Limit),
+		},
+	})
 }
 
 // getProjectByID -.

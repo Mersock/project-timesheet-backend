@@ -53,7 +53,18 @@ func (pc *ProjectsUseCase) CreateProject(req request.CreateProjectReq) (int64, e
 	tx, err = pc.repo.InsertDuties(tx, projectID, req.UserOwnerID, true)
 	if err != nil {
 		tx.Rollback()
-		return projectID, fmt.Errorf("ProjectsUseCase - CreateProject - pc.repo.InsertDuties: %w", err)
+		return projectID, fmt.Errorf("ProjectsUseCase - CreateProject - pc.repo.InsertDuties - owner: %w", err)
+	}
+
+	//add member to project
+	if req.Members != nil {
+		for _, userID := range req.Members {
+			tx, err = pc.repo.InsertDuties(tx, projectID, *userID, false)
+			if err != nil {
+				tx.Rollback()
+				return projectID, fmt.Errorf("ProjectsUseCase - CreateProject - pc.repo.InsertDuties - member: %w", err)
+			}
+		}
 	}
 
 	tx.Commit()

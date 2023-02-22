@@ -8,6 +8,12 @@ import (
 )
 
 type (
+
+	// DutyRepo -.
+	DutyRepo interface {
+		Insert(tx *sql.Tx, projectID int64, userID int64, isOwner bool) (*sql.Tx, error)
+	}
+
 	//Project -.
 	Project interface {
 		GetCount(req request.GetProjectsReq) (int, error)
@@ -21,7 +27,6 @@ type (
 		Count(req request.GetProjectsReq) (int, error)
 		Select(req request.GetProjectsReq) ([]entity.Projects, error)
 		Insert(tx *sql.Tx, req request.CreateProjectReq) (*sql.Tx, int64, error)
-		InsertDuties(tx *sql.Tx, projectID int64, userID int64, isOwner bool) (*sql.Tx, error)
 	}
 
 	//Auth -.

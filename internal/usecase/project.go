@@ -8,12 +8,16 @@ import (
 
 // ProjectsUseCase -.
 type ProjectsUseCase struct {
-	repo ProjectRepo
+	repo     ProjectRepo
+	dutyRepo DutyRepo
 }
 
 // NewProjectsUseCase -.
-func NewProjectsUseCase(r ProjectRepo) *ProjectsUseCase {
-	return &ProjectsUseCase{repo: r}
+func NewProjectsUseCase(r ProjectRepo, dutyRepo DutyRepo) *ProjectsUseCase {
+	return &ProjectsUseCase{
+		repo:     r,
+		dutyRepo: dutyRepo,
+	}
 }
 
 // GetCount -.
@@ -50,7 +54,7 @@ func (pc *ProjectsUseCase) CreateProject(req request.CreateProjectReq) (int64, e
 	}
 
 	//create by owner
-	tx, err = pc.repo.InsertDuties(tx, projectID, req.UserOwnerID, true)
+	tx, err = pc.dutyRepo.Insert(tx, projectID, req.UserOwnerID, true)
 	if err != nil {
 		tx.Rollback()
 		return projectID, fmt.Errorf("ProjectsUseCase - CreateProject - pc.repo.InsertDuties - owner: %w", err)
@@ -59,7 +63,7 @@ func (pc *ProjectsUseCase) CreateProject(req request.CreateProjectReq) (int64, e
 	//add member to project
 	if req.Members != nil {
 		for _, userID := range req.Members {
-			tx, err = pc.repo.InsertDuties(tx, projectID, *userID, false)
+			tx, err = pc.dutyRepo.Insert(tx, projectID, *userID, false)
 			if err != nil {
 				tx.Rollback()
 				return projectID, fmt.Errorf("ProjectsUseCase - CreateProject - pc.repo.InsertDuties - member: %w", err)

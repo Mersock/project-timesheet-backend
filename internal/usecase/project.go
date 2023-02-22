@@ -73,6 +73,22 @@ func (pc *ProjectsUseCase) CreateProject(req request.CreateProjectReq) (int64, e
 		}
 	}
 
+	//add work type to project
+	if req.WorkTypes != nil {
+		for _, name := range req.WorkTypes {
+			reqWorkType := request.CreateWorkTypeReq{
+				ProjectID: projectID,
+				Name:      *name,
+			}
+
+			tx, _, err = pc.workTypeRepo.Insert(tx, reqWorkType)
+			if err != nil {
+				tx.Rollback()
+				return projectID, fmt.Errorf("ProjectsUseCase - CreateProject - pc.repo.InsertDuties - member: %w", err)
+			}
+		}
+	}
+
 	tx.Commit()
 
 	return projectID, nil

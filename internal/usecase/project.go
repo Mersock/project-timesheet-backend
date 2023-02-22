@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"fmt"
+	"github.com/Mersock/project-timesheet-backend/internal/entity"
 	"github.com/Mersock/project-timesheet-backend/internal/request"
 )
 
@@ -13,6 +14,24 @@ type ProjectsUseCase struct {
 // NewProjectsUseCase -.
 func NewProjectsUseCase(r ProjectRepo) *ProjectsUseCase {
 	return &ProjectsUseCase{repo: r}
+}
+
+// GetCount -.
+func (pc *ProjectsUseCase) GetCount(req request.GetProjectsReq) (int, error) {
+	rows, err := pc.repo.Count(req)
+	if err != nil {
+		return rows, fmt.Errorf("ProjectsUseCase - GetCount - uc.repo.Count: %w", err)
+	}
+	return rows, nil
+}
+
+// GetAllProjects -.
+func (pc *ProjectsUseCase) GetAllProjects(req request.GetProjectsReq) ([]entity.Projects, error) {
+	projects, err := pc.repo.Select(req)
+	if err != nil {
+		return nil, fmt.Errorf("GetAllProjects - GetAllRoles - uc.repo.Select: %w", err)
+	}
+	return projects, nil
 }
 
 // CreateProject -.

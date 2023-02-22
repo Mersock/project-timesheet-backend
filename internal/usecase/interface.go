@@ -10,6 +10,8 @@ import (
 type (
 	//Project -.
 	Project interface {
+		GetCount(req request.GetProjectsReq) (int, error)
+		GetAllProjects(req request.GetProjectsReq) ([]entity.Projects, error)
 		CreateProject(req request.CreateProjectReq) (int64, error)
 	}
 

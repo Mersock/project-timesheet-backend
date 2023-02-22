@@ -7,6 +7,7 @@ import (
 	"github.com/Mersock/project-timesheet-backend/pkg/token"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 	"strings"
 )
 
@@ -47,7 +48,9 @@ func AuthMiddleware(tokenMaker token.Maker) gin.HandlerFunc {
 			response.ErrorResponse(ctx, http.StatusUnauthorized, err.Error())
 			return
 		}
-		ctx.Request.Header.Set(authorizationUserID, string(payload.UserID))
+		strconv.Itoa(payload.UserID)
+
+		ctx.Request.Header.Set(authorizationUserID, strconv.Itoa(payload.UserID))
 		ctx.Request.Header.Set(authorizationRole, payload.Role)
 
 		ctx.Next()

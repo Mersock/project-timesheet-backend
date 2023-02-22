@@ -10,13 +10,14 @@ import (
 type (
 	//Project -.
 	Project interface {
+		CreateProject(req request.CreateProjectReq) (int64, error)
 	}
 
 	//ProjectRepo -.
 	ProjectRepo interface {
 		BeginTx() (*sql.Tx, error)
-		Rollback(tx *sql.Tx) error
-		Commit(tx *sql.Tx) error
+		Insert(tx *sql.Tx, req request.CreateProjectReq) (*sql.Tx, int64, error)
+		InsertDuties(tx *sql.Tx, projectID int64, userID int64, isOwner bool) (*sql.Tx, error)
 	}
 
 	//Auth -.

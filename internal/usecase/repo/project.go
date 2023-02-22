@@ -3,6 +3,7 @@ package repo
 import (
 	"database/sql"
 	"fmt"
+	"github.com/Mersock/project-timesheet-backend/internal/request"
 )
 
 // ProjectRepo -.
@@ -25,20 +26,34 @@ func (p *ProjectRepo) BeginTx() (*sql.Tx, error) {
 	return tx, nil
 }
 
-// Rollback -.
-func (p *ProjectRepo) Rollback(tx *sql.Tx) error {
-	err := tx.Rollback()
+// Insert -.
+func (p *ProjectRepo) Insert(tx *sql.Tx, req request.CreateProjectReq) (*sql.Tx, int64, error) {
+	var insertId int64
+
+	sqlRaw := "INSERT INTO projects (code,name,created_at) values (?,?,NOW()) "
+	result, err := tx.Exec(sqlRaw, req.Code, req.Name)
+
 	if err != nil {
-		return fmt.Errorf("ProjectRepo - Rollback - tx.Rollback(): %w", err)
+		return tx, insertId, fmt.Errorf("ProjectRepo - Insert - r.DB.Exec: %w", err)
 	}
-	return nil
+
+	insertId, err = result.LastInsertId()
+	if err != nil {
+		return tx, insertId, fmt.Errorf("ProjectRepo - Insert - result.LastInsertId: %w", err)
+	}
+
+	return tx, insertId, nil
 }
 
-// Commit -.
-func (p *ProjectRepo) Commit(tx *sql.Tx) error {
-	err := tx.Commit()
+// InsertDuties -.
+func (p *ProjectRepo) InsertDuties(tx *sql.Tx, projectID int64, userID int64, isOwner bool) (*sql.Tx, error) {
+
+	sqlRaw := "INSERT INTO duties (project_id,user_id,is_owner) values (?,?,NOW()) "
+	_, err := tx.Exec(sqlRaw, projectID, userID, isOwner)
+
 	if err != nil {
-		return fmt.Errorf("ProjectRepo - Commit - tx.Commit(): %w", err)
+		return tx, fmt.Errorf("ProjectRepo - InsertDuties - r.DB.Exec: %w", err)
 	}
-	return nil
+
+	return tx, nil
 }

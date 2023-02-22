@@ -16,6 +16,8 @@ type (
 	//ProjectRepo -.
 	ProjectRepo interface {
 		BeginTx() (*sql.Tx, error)
+		Count(req request.GetProjectsReq) (int, error)
+		Select(req request.GetProjectsReq) ([]entity.Projects, error)
 		Insert(tx *sql.Tx, req request.CreateProjectReq) (*sql.Tx, int64, error)
 		InsertDuties(tx *sql.Tx, projectID int64, userID int64, isOwner bool) (*sql.Tx, error)
 	}

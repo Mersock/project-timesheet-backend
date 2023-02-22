@@ -1,6 +1,18 @@
 package request
 
-import "github.com/google/uuid"
+import (
+	"github.com/Mersock/project-timesheet-backend/internal/utils"
+	"github.com/google/uuid"
+)
+
+// GetProjectsReq -.
+type GetProjectsReq struct {
+	Name     string `form:"name" binding:"omitempty"`
+	Code     string `form:"code" binding:"omitempty"`
+	SortBy   string `form:"sortBy" json:"-" binding:"omitempty,oneof=code name"`
+	SortType string `form:"sortType" json:"-" binding:"omitempty,oneof=asc desc"`
+	utils.PaginationReq
+}
 
 // CreateProjectReq -.
 type CreateProjectReq struct {

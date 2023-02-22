@@ -27,6 +27,7 @@ func newWorkTypesRoutes(handler *gin.RouterGroup, wu usecase.WorkTypes, l logger
 	{
 		h.GET("/:id", u.getWorkTypeByID)
 		h.PUT("/:id", u.updateWorkType)
+		h.DELETE("/:id", u.deleteWorkType)
 	}
 }
 
@@ -89,6 +90,36 @@ func (r workTypesRoutes) updateWorkType(c *gin.Context) {
 
 		if errors.As(err, &ErrDuplicateRow) {
 			response.ErrorResponse(c, http.StatusConflict, _defaultConflict)
+			return
+		}
+		response.ErrorResponse(c, http.StatusInternalServerError, _defaultInternalServerErr)
+		return
+	}
+
+	response.ResRowAffect(c, http.StatusOK, rowAffected)
+}
+
+// deleteWorkType -.
+func (r workTypesRoutes) deleteWorkType(c *gin.Context) {
+	var req request.DeleteWorkTypeReq
+
+	//validator
+	if err := c.ShouldBindUri(&req); err != nil {
+		var ve validator.ValidationErrors
+		r.l.Error(err, "http - v1 - WorkTypes")
+		if errors.As(err, &ve) {
+			response.ErrorValidateRes(c, ve)
+			return
+		}
+		response.ErrorResponse(c, http.StatusBadRequest, _defaultBadReq)
+		return
+	}
+
+	rowAffected, err := r.wu.DeleteWorkType(req)
+	if err != nil {
+		r.l.Error(err, "http - v1 - WorkTypes")
+		if errors.Is(err, sql.ErrNoRows) {
+			response.ErrorResponse(c, http.StatusNotFound, _defaultNotFound)
 			return
 		}
 		response.ErrorResponse(c, http.StatusInternalServerError, _defaultInternalServerErr)

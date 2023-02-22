@@ -43,6 +43,7 @@ func Run(cfg *config.Config) {
 	projectUseCase := usecase.NewProjectsUseCase(
 		repo.NewProjectRepo(sql),
 		repo.NewDutiesRepo(sql),
+		repo.NewWorkTypesRepo(sql),
 	)
 
 	//HTTP server

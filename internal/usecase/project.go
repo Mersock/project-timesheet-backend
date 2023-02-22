@@ -8,15 +8,17 @@ import (
 
 // ProjectsUseCase -.
 type ProjectsUseCase struct {
-	repo     ProjectRepo
-	dutyRepo DutyRepo
+	repo         ProjectRepo
+	dutyRepo     DutyRepo
+	workTypeRepo WorkTypeRepo
 }
 
 // NewProjectsUseCase -.
-func NewProjectsUseCase(r ProjectRepo, dutyRepo DutyRepo) *ProjectsUseCase {
+func NewProjectsUseCase(r ProjectRepo, dutyRepo DutyRepo, workTypeRepo WorkTypeRepo) *ProjectsUseCase {
 	return &ProjectsUseCase{
-		repo:     r,
-		dutyRepo: dutyRepo,
+		repo:         r,
+		dutyRepo:     dutyRepo,
+		workTypeRepo: workTypeRepo,
 	}
 }
 

@@ -11,8 +11,8 @@ type (
 	//WorkTypeRepo -.
 	WorkTypeRepo interface {
 		Insert(tx *sql.Tx, req request.CreateWorkTypeReq) (*sql.Tx, int64, error)
-		Update(req request.UpdateWorkTypeReq) (int64, error)
-		Delete(req request.DeleteUserReq) (int64, error)
+		//Update(req request.UpdateWorkTypeReq) (int64, error)
+		//Delete(req request.DeleteUserReq) (int64, error)
 	}
 
 	// DutyRepo -.

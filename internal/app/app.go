@@ -18,11 +18,11 @@ func Run(cfg *config.Config) {
 	l := logger.New(cfg.LOG.Level)
 
 	//Repository
-	sql, err := mysql.NewMysqlConn(cfg.MYSQL.URL)
+	db, err := mysql.NewMysqlConn(cfg.MYSQL.URL)
 	if err != nil {
 		l.Fatal(fmt.Errorf("app - RUN - mysql.NewMysqlConn: %w", err))
 	}
-	defer sql.Close()
+	defer db.Close()
 
 	tokenMaker, err := token.NewJWTMaker(cfg.KEY.TokenSymmetric)
 	if err != nil {
@@ -30,20 +30,20 @@ func Run(cfg *config.Config) {
 	}
 	//Use case
 	rolesUseCase := usecase.NewRolesUseCase(
-		repo.NewRolesRepo(sql),
+		repo.NewRolesRepo(db),
 	)
 	userUseCase := usecase.NewUsersUseCase(
-		repo.NewUsersRepo(sql),
+		repo.NewUsersRepo(db),
 	)
 	authUseCase := usecase.NewAuthUseCase(
-		repo.NewUsersRepo(sql),
+		repo.NewUsersRepo(db),
 		tokenMaker,
 		cfg,
 	)
 	projectUseCase := usecase.NewProjectsUseCase(
-		repo.NewProjectRepo(sql),
-		repo.NewDutiesRepo(sql),
-		repo.NewWorkTypesRepo(sql),
+		repo.NewProjectRepo(db),
+		repo.NewDutiesRepo(db),
+		repo.NewWorkTypesRepo(db),
 	)
 
 	//HTTP server

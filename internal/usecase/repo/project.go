@@ -32,7 +32,7 @@ func (r *ProjectRepo) Count(req request.GetProjectsReq) (int, error) {
 	var count int
 
 	sqlRaw := "SELECT COUNT(*) "
-	sqlRaw += "FROM project "
+	sqlRaw += "FROM projects "
 	sqlRaw += "INNER JOIN duties ON duties.project_id = projects.id "
 	sqlRaw += "WHERE 1=1 "
 	sqlCount := r.genRawSelectWithReq(sqlRaw, req)
@@ -49,13 +49,13 @@ func (r *ProjectRepo) Count(req request.GetProjectsReq) (int, error) {
 func (r *ProjectRepo) Select(req request.GetProjectsReq) ([]entity.Projects, error) {
 	var entities []entity.Projects
 
-	sqlRaw := "SELECT id,name,created_at,updated_at "
+	sqlRaw := "SELECT id,name,code,created_at,updated_at "
 	sqlRaw += "FROM projects "
-	sqlRaw += "INNER JOIN roles ON roles.id = users.id "
+	sqlRaw += "INNER JOIN duties ON duties.project_id = projects.id "
 	sqlRaw += "WHERE 1=1 "
 	sqlSelect := r.genRawSelectWithReq(sqlRaw, req)
 	mainQuery := r.genPaginateQuery(sqlSelect, req)
-
+	fmt.Println(mainQuery)
 	results, err := r.DB.Query(mainQuery)
 	if err != nil {
 		return nil, fmt.Errorf("ProjectRepo - Select - r.DB.Query: %w", err)

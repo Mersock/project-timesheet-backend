@@ -112,7 +112,7 @@ func (r *UsersRepo) Insert(req request.CreateUserReq) (int64, error) {
 	var insertId int64
 
 	sqlRaw := "INSERT INTO users (email,password,firstname,lastname,role_id,created_at) values (?,?,?,?,?,NOW()) "
-	result, err := r.DB.Exec(sqlRaw, req.Email, req.Password, req.Firstname, req.Lastname, req.RoleID)
+	result, err := r.DB.Exec(sqlRaw, req.Email, req.Password, req.Firstname, req.Lastname, req.Role)
 	if err != nil {
 		return insertId, fmt.Errorf("UsersRepo - Insert - r.DB.Exec: %w", err)
 	}

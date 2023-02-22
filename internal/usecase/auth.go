@@ -39,7 +39,7 @@ func (au *AuthUseCase) Signup(req request.SignUpReq) (int64, error) {
 		Email:     req.Email,
 		Firstname: req.Firstname,
 		Lastname:  req.Lastname,
-		RoleID:    _defaultRoleID,
+		Role:      _defaultRoleID,
 	}
 
 	count, err := au.repo.ChkUniqueInsert(reqCreateUser)

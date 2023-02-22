@@ -21,7 +21,7 @@ type CreateUserReq struct {
 	Password  string `form:"password" json:"password" binding:"required,min=6"`
 	Firstname string `form:"firstname" json:"firstname" binding:"required,max=255"`
 	Lastname  string `form:"lastname" json:"lastname" binding:"required,max=255"`
-	RoleID    int    `form:"role" json:"role" binding:"omitempty,numeric"`
+	Role      int    `form:"role" json:"role" binding:"required,numeric"`
 }
 
 // UpdateUserReq -.

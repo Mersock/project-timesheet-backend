@@ -49,22 +49,28 @@ func (uc *UsersUseCase) GetUserByID(userID int) (entity.Users, error) {
 
 // CreateUser -.
 func (uc *UsersUseCase) CreateUser(req request.CreateUserReq) (int64, error) {
-	var roleID int64
+	var userID int64
 
 	count, err := uc.repo.ChkUniqueInsert(req)
 	if err != nil {
-		return roleID, fmt.Errorf("UsersUseCase - CreateUser - uc.repo.ChkUniqueInsert: %w", err)
+		return userID, fmt.Errorf("UsersUseCase - CreateUser - uc.repo.ChkUniqueInsert: %w", err)
 	}
 
 	if count > 0 {
-		return roleID, ErrDuplicateRow
+		return userID, ErrDuplicateRow
 	}
 
-	roleID, err = uc.repo.Insert(req)
+	hashPassword, err := utils.HashPassword(req.Password)
 	if err != nil {
-		return roleID, fmt.Errorf("UsersUseCase - CreateUser - uc.repo.Insert: %w", err)
+		return userID, fmt.Errorf("AuthUseCase - Signup - utils.HashPassword: %w", err)
 	}
-	return roleID, nil
+	req.Password = hashPassword
+
+	userID, err = uc.repo.Insert(req)
+	if err != nil {
+		return userID, fmt.Errorf("UsersUseCase - CreateUser - uc.repo.Insert: %w", err)
+	}
+	return userID, nil
 }
 
 // UpdateUser -.

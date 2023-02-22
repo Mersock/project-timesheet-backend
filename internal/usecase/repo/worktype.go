@@ -21,7 +21,7 @@ func (r *WorkTypesRepo) Insert(tx *sql.Tx, req request.CreateWorkTypeReq) (*sql.
 	var insertId int64
 
 	sqlRaw := "INSERT INTO worktypes (name,project_id,created_at) values (?,?,NOW()) "
-	result, err := r.DB.Exec(sqlRaw, req.Name, req.ProjectID)
+	result, err := tx.Exec(sqlRaw, req.Name, req.ProjectID)
 	if err != nil {
 		return tx, insertId, fmt.Errorf("WorkTypesRepo - Insert - r.DB.Exec: %w", err)
 	}

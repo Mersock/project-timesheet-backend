@@ -22,7 +22,7 @@ func (r *DutiesRepo) Insert(tx *sql.Tx, projectID int64, userID int64, isOwner b
 	_, err := tx.Exec(sqlRaw, projectID, userID, isOwner)
 
 	if err != nil {
-		return tx, fmt.Errorf("ProjectRepo - InsertDuties - r.DB.Exec: %w", err)
+		return tx, fmt.Errorf("DutiesRepo - Insert - r.DB.Exec: %w", err)
 	}
 
 	return tx, nil

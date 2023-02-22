@@ -30,7 +30,8 @@ func (pc *ProjectsUseCase) CreateProject(req request.CreateProjectReq) (int64, e
 		return projectID, fmt.Errorf("ProjectsUseCase - CreateProject - pc.repo.Insert: %w", err)
 	}
 
-	tx, err = pc.repo.InsertDuties(tx, projectID, 123, true)
+	//create by owner
+	tx, err = pc.repo.InsertDuties(tx, projectID, req.UserOwnerID, true)
 	if err != nil {
 		tx.Rollback()
 		return projectID, fmt.Errorf("ProjectsUseCase - CreateProject - pc.repo.InsertDuties: %w", err)

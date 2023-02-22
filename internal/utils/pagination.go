@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"strconv"
 )
@@ -45,7 +44,5 @@ func GeneratePaginationFromRequest(c *gin.Context) PaginationRes {
 
 // GetPageCount -.
 func GetPageCount(total, limit int) int {
-	fmt.Println(total, limit)
-
 	return (total + limit - 1) / limit
 }

@@ -8,12 +8,20 @@ import (
 )
 
 type (
+	//WorkTypes -.
+	WorkTypes interface {
+		GetWorkTypeByID(workTypeID int) (entity.WorkTypes, error)
+		CreateWorkType(req request.CreateWorkTypeReq) (int64, error)
+		UpdateWorkType(req request.UpdateWorkTypeReq) (int64, error)
+		DeleteWorkType(req request.DeleteWorkTypeReq) (int64, error)
+	}
+
 	//WorkTypeRepo -.
 	WorkTypeRepo interface {
 		Insert(tx *sql.Tx, req request.CreateWorkTypeReq) (*sql.Tx, int64, error)
 		SelectById(workTypeID int) (entity.WorkTypes, error)
 		Update(req request.UpdateWorkTypeReq) (int64, error)
-		Delete(req request.DeleteUserReq) (int64, error)
+		Delete(req request.DeleteWorkTypeReq) (int64, error)
 	}
 
 	// DutyRepo -.

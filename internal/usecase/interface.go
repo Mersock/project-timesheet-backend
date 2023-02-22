@@ -33,6 +33,7 @@ type (
 	Project interface {
 		GetCount(req request.GetProjectsReq) (int, error)
 		GetAllProjects(req request.GetProjectsReq) ([]entity.Projects, error)
+		GetProjectsByID(req request.GetProjectByIDReq) (entity.Projects, error)
 		CreateProject(req request.CreateProjectReq) (int64, error)
 	}
 
@@ -41,6 +42,7 @@ type (
 		BeginTx() (*sql.Tx, error)
 		Count(req request.GetProjectsReq) (int, error)
 		Select(req request.GetProjectsReq) ([]entity.Projects, error)
+		SelectById(projectID int) (entity.Projects, error)
 		Insert(tx *sql.Tx, req request.CreateProjectReq) (*sql.Tx, int64, error)
 	}
 

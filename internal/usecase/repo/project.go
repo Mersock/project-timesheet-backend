@@ -70,6 +70,27 @@ func (r *ProjectRepo) Select(req request.GetProjectsReq) ([]entity.Projects, err
 	return entities, nil
 }
 
+// SelectById -.
+func (r *ProjectRepo) SelectById(projectID int) (entity.Projects, error) {
+	var entity entity.Projects
+
+	sqlRaw := "SELECT id,name,code,created_at,updated_at "
+	sqlRaw += "FROM projects "
+	sqlRaw += "INNER JOIN duties ON duties.project_id = projects.id "
+	sqlRaw += "WHERE id = ? "
+	err := r.DB.QueryRow(sqlRaw, projectID).Scan(&entity.ID,
+		&entity.Name,
+		&entity.Code,
+		&entity.CreateAt,
+		&entity.UpdateAt,
+	)
+	if err != nil {
+		return entity, fmt.Errorf("ProjectRepo - SelectById - r.DB.QueryRow: %w", err)
+	}
+
+	return entity, nil
+}
+
 // Insert -.
 func (r *ProjectRepo) Insert(tx *sql.Tx, req request.CreateProjectReq) (*sql.Tx, int64, error) {
 	var insertId int64

@@ -1,6 +1,7 @@
 package v1
 
 import (
+	"database/sql"
 	"errors"
 	"github.com/Mersock/project-timesheet-backend/internal/request"
 	"github.com/Mersock/project-timesheet-backend/internal/response"
@@ -83,7 +84,34 @@ func (r projectsRoutes) getProject(c *gin.Context) {
 
 // getProjectByID -.
 func (r projectsRoutes) getProjectByID(c *gin.Context) {
-	c.Status(http.StatusOK)
+	var req request.GetProjectByIDReq
+
+	//validator
+	if err := c.ShouldBindUri(&req); err != nil {
+		var ve validator.ValidationErrors
+		r.l.Error(err, "http - v1 - Projects")
+		if errors.As(err, &ve) {
+			response.ErrorValidateRes(c, ve)
+			return
+		}
+		response.ErrorResponse(c, http.StatusBadRequest, _defaultBadReq)
+		return
+	}
+
+	project, err := r.pu.GetProjectsByID(req)
+	if err != nil {
+		r.l.Error(err, "http - v1 - Projects")
+		if errors.Is(err, sql.ErrNoRows) {
+			response.ErrorResponse(c, http.StatusNotFound, _defaultNotFound)
+			return
+		}
+		response.ErrorResponse(c, http.StatusInternalServerError, _defaultInternalServerErr)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.GetProjectByIDRes{
+		Project: project,
+	})
 }
 
 // createProject -.

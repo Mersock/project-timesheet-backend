@@ -35,7 +35,16 @@ func (pc *ProjectsUseCase) GetCount(req request.GetProjectsReq) (int, error) {
 func (pc *ProjectsUseCase) GetAllProjects(req request.GetProjectsReq) ([]entity.Projects, error) {
 	projects, err := pc.repo.Select(req)
 	if err != nil {
-		return nil, fmt.Errorf("GetAllProjects - GetAllRoles - uc.repo.Select: %w", err)
+		return nil, fmt.Errorf("ProjectsUseCase - GetAllRoles - uc.repo.Select: %w", err)
+	}
+	return projects, nil
+}
+
+// GetProjectsByID -.
+func (pc *ProjectsUseCase) GetProjectsByID(req request.GetProjectByIDReq) (entity.Projects, error) {
+	projects, err := pc.repo.SelectById(req.ID)
+	if err != nil {
+		return projects, fmt.Errorf("ProjectsUseCase - GetProjectsByID - uc.repo.SelectById: %w", err)
 	}
 	return projects, nil
 }

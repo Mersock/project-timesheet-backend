@@ -11,3 +11,8 @@ type GetProjectsRes struct {
 	Total    int               `json:"total"`
 	utils.PaginationRes
 }
+
+// GetProjectByIDRes -.
+type GetProjectByIDRes struct {
+	Project entity.Projects `json:"data"`
+}

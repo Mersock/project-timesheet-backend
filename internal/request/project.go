@@ -14,6 +14,11 @@ type GetProjectsReq struct {
 	utils.PaginationReq
 }
 
+// GetProjectByIDReq -.
+type GetProjectByIDReq struct {
+	ID int `uri:"id" binding:"required,numeric"`
+}
+
 // CreateProjectReq -.
 type CreateProjectReq struct {
 	Name        string    `form:"name" json:"name" binding:"required,max=255"`

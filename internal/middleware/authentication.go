@@ -13,8 +13,8 @@ import (
 const (
 	authorizationHeaderKey    = "authorization"
 	authorizationHeaderBearer = "bearer"
-	authorizationUserID       = "user_id"
-	authorizationRole         = "role"
+	authorizationUserID       = "x-user-id"
+	authorizationRole         = "x-role"
 )
 
 // AuthMiddleware -.
@@ -47,8 +47,8 @@ func AuthMiddleware(tokenMaker token.Maker) gin.HandlerFunc {
 			response.ErrorResponse(ctx, http.StatusUnauthorized, err.Error())
 			return
 		}
-		ctx.Set(authorizationUserID, payload.UserID)
-		ctx.Set(authorizationRole, payload.Role)
+		ctx.Request.Header.Set(authorizationUserID, string(payload.UserID))
+		ctx.Request.Header.Set(authorizationRole, payload.Role)
 
 		ctx.Next()
 	}

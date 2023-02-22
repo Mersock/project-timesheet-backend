@@ -38,10 +38,10 @@ func (r *WorkTypesRepo) Insert(tx *sql.Tx, req request.CreateWorkTypeReq) (*sql.
 func (r *WorkTypesRepo) SelectById(workTypeID int) (entity.WorkTypes, error) {
 	var entity entity.WorkTypes
 
-	sqlRaw := "SELECT id, name, created_at, updated_at,projects.name as project"
+	sqlRaw := "SELECT worktypes.id, worktypes.name, worktypes.created_at, worktypes.updated_at, projects.name as project "
 	sqlRaw += "FROM worktypes "
-	sqlRaw += "INNER JOIN projects ON worktypes.id = projects.id"
-	sqlRaw += "WHERE id = ? "
+	sqlRaw += "INNER JOIN projects ON worktypes.project_id = projects.id "
+	sqlRaw += "WHERE worktypes.id = ? "
 	err := r.DB.QueryRow(sqlRaw, workTypeID).Scan(&entity.ID,
 		&entity.Name,
 		&entity.CreateAt,

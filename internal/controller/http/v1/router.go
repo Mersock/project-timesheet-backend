@@ -17,6 +17,7 @@ func NewRouter(
 	uu usecase.User,
 	au usecase.Auth,
 	pu usecase.Project,
+	wu usecase.WorkTypes,
 ) {
 	//options
 	handler.Use(gin.Logger())
@@ -37,5 +38,6 @@ func NewRouter(
 		newRolesRoutes(h, ru, l)
 		newUsersRoutes(h, uu, l)
 		newProjectsRoutes(h, pu, l)
+		newWorkTypesRoutes(h, wu, l)
 	}
 }

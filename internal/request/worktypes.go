@@ -6,6 +6,11 @@ type CreateWorkTypeReq struct {
 	ProjectID int64  `form:"project_id" json:"project_id" binding:"required,numeric"`
 }
 
+// GetWorkTypeByIDReq -.
+type GetWorkTypeByIDReq struct {
+	ID int `uri:"id" binding:"required,numeric"`
+}
+
 // UpdateWorkTypeReq -.
 type UpdateWorkTypeReq struct {
 	ID   int    `binding:"required,numeric"`

@@ -71,7 +71,7 @@ func (r *WorkTypesRepo) Update(req request.UpdateWorkTypeReq) (int64, error) {
 }
 
 // Delete -.
-func (r *WorkTypesRepo) Delete(req request.DeleteUserReq) (int64, error) {
+func (r *WorkTypesRepo) Delete(req request.DeleteWorkTypeReq) (int64, error) {
 	var rowAffected int64
 	sqlRaw := "DELETE FROM worktypes WHERE id = ?"
 	result, err := r.DB.Exec(sqlRaw, req.ID)

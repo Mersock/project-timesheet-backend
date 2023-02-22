@@ -45,10 +45,13 @@ func Run(cfg *config.Config) {
 		repo.NewDutiesRepo(db),
 		repo.NewWorkTypesRepo(db),
 	)
+	workTypeUseCase := usecase.NewWorkTypesUseCase(
+		repo.NewWorkTypesRepo(db),
+	)
 
 	//HTTP server
 	handler := gin.New()
-	v1.NewRouter(handler, l, tokenMaker, rolesUseCase, userUseCase, authUseCase, projectUseCase)
+	v1.NewRouter(handler, l, tokenMaker, rolesUseCase, userUseCase, authUseCase, projectUseCase, workTypeUseCase)
 	httpServer := httpserver.New(handler, httpserver.Port(cfg.HTTP.Port))
 
 	//signal interrupt

@@ -11,7 +11,6 @@ type (
 	//WorkTypes -.
 	WorkTypes interface {
 		GetWorkTypeByID(workTypeID int) (entity.WorkTypes, error)
-		CreateWorkType(req request.CreateWorkTypeReq) (int64, error)
 		UpdateWorkType(req request.UpdateWorkTypeReq) (int64, error)
 		DeleteWorkType(req request.DeleteWorkTypeReq) (int64, error)
 	}

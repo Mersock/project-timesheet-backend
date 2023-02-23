@@ -55,6 +55,14 @@ func (pc *ProjectsUseCase) GetProjectsByID(req request.GetProjectByIDReq) (entit
 func (pc *ProjectsUseCase) GetProjectsByIDWithUserWorkType(req request.GetProjectByIDReq) (entity.ProjectWithSliceUser, error) {
 	var projectWithUsers entity.ProjectWithSliceUser
 
+	_, err := pc.repo.SelectById(req.ID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return projectWithUsers, sql.ErrNoRows
+		}
+		return projectWithUsers, fmt.Errorf("ProjectsUseCase - UpdateProject - uc.repo.SelectById: %w", err)
+	}
+
 	selectProject, err := pc.repo.SelectByIdWithUser(req.ID)
 	if err != nil {
 		return projectWithUsers, fmt.Errorf("ProjectsUseCase - SelectByIdWithUser - uc.repo.SelectById: %w", err)
@@ -152,12 +160,12 @@ func (pc *ProjectsUseCase) DeleteProject(req request.DeleteProjectByReq) (int64,
 		if errors.Is(err, sql.ErrNoRows) {
 			return rowAffected, sql.ErrNoRows
 		}
-		return rowAffected, fmt.Errorf("RolesUseCase - DeleteRole - uc.repo.SelectById: %w", err)
+		return rowAffected, fmt.Errorf("ProjectsUseCase - DeleteRole - uc.repo.SelectById: %w", err)
 	}
 
 	rowAffected, err = pc.repo.Delete(req)
 	if err != nil {
-		return rowAffected, fmt.Errorf("RolesUseCase - DeleteRole - uc.repo.Delete: %w", err)
+		return rowAffected, fmt.Errorf("ProjectsUseCase - DeleteRole - uc.repo.Delete: %w", err)
 	}
 
 	return rowAffected, nil

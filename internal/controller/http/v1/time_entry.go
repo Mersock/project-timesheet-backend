@@ -9,6 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"net/http"
+	"strconv"
 )
 
 // timeEntryRoutes -.
@@ -21,7 +22,7 @@ type timeEntryRoutes struct {
 func newTimeEntryRoutes(handler *gin.RouterGroup, tu usecase.TimeEntry, l logger.Interface) {
 	r := timeEntryRoutes{tu, l}
 
-	h := handler.Group("/role")
+	h := handler.Group("/timeEntry")
 	{
 		h.POST("", r.createTimeEntry)
 	}
@@ -31,11 +32,14 @@ func newTimeEntryRoutes(handler *gin.RouterGroup, tu usecase.TimeEntry, l logger
 // createRole -.
 func (r timeEntryRoutes) createTimeEntry(c *gin.Context) {
 	var req request.CreateTimeEntryReq
+	userId, _ := strconv.ParseInt(c.Request.Header.Get("x-user-id"), 10, 64)
+
+	req.UserID = userId
 
 	//validator
 	if err := c.ShouldBind(&req); err != nil {
 		var ve validator.ValidationErrors
-		r.l.Error(err, "http - v1 - Roles")
+		r.l.Error(err, "http - v1 - Time Entry")
 		if errors.As(err, &ve) {
 			response.ErrorValidateRes(c, ve)
 			return
@@ -46,11 +50,7 @@ func (r timeEntryRoutes) createTimeEntry(c *gin.Context) {
 
 	timeEntryID, err := r.tu.CreateTimeEntry(req)
 	if err != nil {
-		r.l.Error(err, "http - v1 - Roles")
-		if errors.As(err, &ErrDuplicateRow) {
-			response.ErrorResponse(c, http.StatusConflict, _defaultConflict)
-			return
-		}
+		r.l.Error(err, "http - v1 - Time Entry")
 		response.ErrorResponse(c, http.StatusInternalServerError, _defaultInternalServerErr)
 		return
 	}

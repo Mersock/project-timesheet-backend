@@ -20,7 +20,12 @@ func NewTimeEntryRepoRepo(db *sql.DB) *TimeEntryRepo {
 // Count -.
 func (r *TimeEntryRepo) Count(req request.GetTimeEntryReq) (int, error) {
 	var count int
-	sqlRaw := "SELECT  COUNT(*) FROM time_entries WHERE 1=1 "
+	sqlRaw := "SELECT  COUNT(*) FROM time_entries "
+	sqlRaw += "INNER JOIN statuses ON time_entries.status_id = statuses.id "
+	sqlRaw += "INNER JOIN work_types ON time_entries.work_type_id = work_types.id "
+	sqlRaw += "INNER JOIN projects ON work_types.project_id = projects.id "
+	sqlRaw += "INNER JOIN users ON time_entries.user_id = users.id "
+	sqlRaw += "WHERE 1=1 "
 	sqlCount := r.genRawSelectWithReq(sqlRaw, req)
 	err := r.DB.QueryRow(sqlCount).Scan(&count)
 	if err != nil {
@@ -54,6 +59,7 @@ func (r *TimeEntryRepo) Select(req request.GetTimeEntryReq) ([]entity.TimeEntryL
 	sqlRaw += "WHERE 1=1 "
 	sqlSelect := r.genRawSelectWithReq(sqlRaw, req)
 	mainQuery := r.genPaginateQuery(sqlSelect, req)
+	fmt.Println(mainQuery)
 	results, err := r.DB.Query(mainQuery)
 	if err != nil {
 		return nil, fmt.Errorf("TimeEntryRepo - Select - r.DB.Query: %w", err)
@@ -62,7 +68,7 @@ func (r *TimeEntryRepo) Select(req request.GetTimeEntryReq) ([]entity.TimeEntryL
 	for results.Next() {
 		var e entity.TimeEntryList
 		err = results.Scan(&e.ID, &e.Status, &e.WorkType, &e.StartTime, &e.EndTime, &e.ProjectName,
-			&e.Email, e.Firstname, e.Lastname, e.CreateAt, e.UpdateAt)
+			&e.Email, &e.Firstname, &e.Lastname, &e.CreateAt, &e.UpdateAt)
 		entities = append(entities, e)
 	}
 
@@ -88,10 +94,22 @@ func (r *TimeEntryRepo) Insert(req request.CreateTimeEntryReq) (int64, error) {
 
 // genRawSelectWithReq -.
 func (r *TimeEntryRepo) genRawSelectWithReq(sqlRaw string, req request.GetTimeEntryReq) string {
-	//if req.Name != "" {
-	//	sqlRaw = fmt.Sprintf("%s AND name LIKE '%%%s%%' ", sqlRaw, req.Name)
-	//}
-	//
+	if req.ProjectName != "" {
+		sqlRaw = fmt.Sprintf("%s AND projects.name LIKE '%%%s%%' ", sqlRaw, req.ProjectName)
+	}
+	if req.Email != "" {
+		sqlRaw = fmt.Sprintf("%s AND users.email LIKE '%%%s%%' ", sqlRaw, req.Email)
+	}
+	if req.Firstname != "" {
+		sqlRaw = fmt.Sprintf("%s AND users.firstname LIKE '%%%s%%' ", sqlRaw, req.Firstname)
+	}
+	if req.Lastname != "" {
+		sqlRaw = fmt.Sprintf("%s AND users.lastname LIKE '%%%s%%' ", sqlRaw, req.Lastname)
+	}
+	if req.Status != "" {
+		sqlRaw = fmt.Sprintf("%s AND statuses.name LIKE '%%%s%%' ", sqlRaw, req.Status)
+	}
+
 	if req.SortBy != "" && req.SortType != "" {
 		sqlRaw = fmt.Sprintf("%s ORDER BY %s %s", sqlRaw, req.SortBy, req.SortType)
 	}

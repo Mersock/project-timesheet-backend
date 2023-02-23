@@ -5,7 +5,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"net/http"
-	"strings"
 )
 
 // IDRes -.
@@ -48,7 +47,7 @@ func ErrorResponse(c *gin.Context, code int, msg string) {
 func ErrorValidateRes(c *gin.Context, ve validator.ValidationErrors) {
 	out := make([]validateRes, len(ve))
 	for i, fe := range ve {
-		out[i] = validateRes{strings.ToLower(fe.Field()), utils.GetValidateTag(fe)}
+		out[i] = validateRes{fe.Field(), utils.GetValidateTag(fe)}
 	}
 	c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"errors": out})
 }

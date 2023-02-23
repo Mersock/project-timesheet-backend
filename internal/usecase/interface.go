@@ -8,16 +8,27 @@ import (
 )
 
 type (
+
+	//Status -.
+	Status interface {
+		GetCount(req request.GetStatusReq) (int, error)
+		GetAllStatus(req request.GetStatusReq) ([]entity.Status, error)
+		GetStatusByID(roleID int) (entity.Status, error)
+		CreateStatus(req request.CreateStatusReq) (int64, error)
+		UpdateStatus(req request.UpdateStatusReq) (int64, error)
+		DeleteStatus(req request.DeleteStatusReq) (int64, error)
+	}
+
 	//StatusRepo -.
 	StatusRepo interface {
-		Count(req request.GetRolesReq) (int, error)
-		Select(req request.GetRolesReq) ([]entity.Roles, error)
-		SelectById(roleID int) (entity.Roles, error)
-		Insert(req request.CreateRoleReq) (int64, error)
-		Update(req request.UpdateRoleReq) (int64, error)
-		Delete(req request.DeleteRoleReq) (int64, error)
-		ChkUniqueInsert(req request.CreateRoleReq) (int, error)
-		ChkUniqueUpdate(req request.UpdateRoleReq) (int, error)
+		Count(req request.GetStatusReq) (int, error)
+		Select(req request.GetStatusReq) ([]entity.Status, error)
+		SelectById(statusID int) (entity.Status, error)
+		Insert(req request.CreateStatusReq) (int64, error)
+		Update(req request.UpdateStatusReq) (int64, error)
+		Delete(req request.DeleteStatusReq) (int64, error)
+		ChkUniqueInsert(req request.CreateStatusReq) (int, error)
+		ChkUniqueUpdate(req request.UpdateStatusReq) (int, error)
 	}
 
 	//WorkTypes -.

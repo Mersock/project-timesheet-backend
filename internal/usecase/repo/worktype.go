@@ -62,7 +62,7 @@ func (r *WorkTypesRepo) SelectByProjectId(projectID int) ([]entity.WorkTypes, er
 	sqlRaw := "SELECT work_types.id, work_types.name, work_types.created_at, work_types.updated_at, projects.name as project "
 	sqlRaw += "FROM work_types "
 	sqlRaw += "INNER JOIN projects ON work_types.project_id = projects.id "
-	sqlRaw += "WHERE worktypes.project_id = ? "
+	sqlRaw += "WHERE work_types.project_id = ? "
 	results, err := r.DB.Query(sqlRaw, projectID)
 	if err != nil {
 		return entities, fmt.Errorf("WorkTypesRepo - SelectByProjectId - r.DB.Query: %w", err)

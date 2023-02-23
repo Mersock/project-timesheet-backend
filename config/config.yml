@@ -15,5 +15,5 @@ key:
   token_symmetric: Ik0clmMdcUCeuBLOuvq9dtSIrQYV5RvE
 
 alive:
-  access_token_duration: 15m
+  access_token_duration: 2h
   refresh_token_duration: 24h

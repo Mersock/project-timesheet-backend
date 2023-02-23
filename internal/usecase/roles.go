@@ -8,10 +8,6 @@ import (
 	"github.com/Mersock/project-timesheet-backend/internal/request"
 )
 
-var (
-	ErrDuplicateRow = errors.New("duplicate")
-)
-
 // RolesUseCase -.
 type RolesUseCase struct {
 	repo RolesRepo

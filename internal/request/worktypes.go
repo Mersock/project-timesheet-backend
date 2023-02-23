@@ -11,6 +11,11 @@ type GetWorkTypeByIDReq struct {
 	ID int `uri:"id" binding:"required,numeric"`
 }
 
+// GetWorkTypeByProjectReq -.
+type GetWorkTypeByProjectReq struct {
+	ProjectID int `uri:"projectID" binding:"required,numeric"`
+}
+
 // UpdateWorkTypeReq -.
 type UpdateWorkTypeReq struct {
 	ID   int    `binding:"required,numeric"`

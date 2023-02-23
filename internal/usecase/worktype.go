@@ -23,9 +23,19 @@ func (uc *WorkTypesUseCase) GetWorkTypeByID(workTypeID int) (entity.WorkTypes, e
 	var workType entity.WorkTypes
 	workType, err := uc.repo.SelectById(workTypeID)
 	if err != nil {
-		return workType, fmt.Errorf("RolesUseCase - GetRoleByID - uc.repo.SelectById: %w", err)
+		return workType, fmt.Errorf("WorkTypesUseCase - GetWorkTypeByID - uc.repo.SelectById: %w", err)
 	}
 	return workType, nil
+}
+
+// GetWorkTypeByProject -.
+func (uc *WorkTypesUseCase) GetWorkTypeByProject(projectID int) ([]entity.WorkTypes, error) {
+	var workTypes []entity.WorkTypes
+	workTypes, err := uc.repo.SelectByProjectId(projectID)
+	if err != nil {
+		return workTypes, fmt.Errorf("WorkTypesUseCase - GetRoleByID - uc.repo.SelectByProjectId: %w", err)
+	}
+	return workTypes, nil
 }
 
 // UpdateWorkType -.

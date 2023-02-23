@@ -3,7 +3,7 @@ package request
 // CreateWorkTypeReq -.
 type CreateWorkTypeReq struct {
 	Name      string `form:"name" json:"name" binding:"required,max=255"`
-	ProjectID int64  `form:"project_id" json:"project_id" binding:"required,numeric"`
+	ProjectID int64  `binding:"required,numeric"`
 }
 
 // GetWorkTypeByIDReq -.

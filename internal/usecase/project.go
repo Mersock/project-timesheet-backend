@@ -111,7 +111,7 @@ func (pc *ProjectsUseCase) CreateProject(req request.CreateProjectReq) (int64, e
 				Name:      *name,
 			}
 
-			tx, _, err = pc.workTypeRepo.Insert(tx, reqWorkType)
+			tx, _, err = pc.workTypeRepo.InsertWithProject(tx, reqWorkType)
 			if err != nil {
 				tx.Rollback()
 				return projectID, fmt.Errorf("ProjectsUseCase - CreateProject - pc.repo.InsertDuties - member: %w", err)

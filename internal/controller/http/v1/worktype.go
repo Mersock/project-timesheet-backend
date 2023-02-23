@@ -27,6 +27,7 @@ func newWorkTypesRoutes(handler *gin.RouterGroup, wu usecase.WorkTypes, l logger
 	{
 		h.GET("/:id", u.getWorkTypeByID)
 		h.GET("/project/:projectID", u.getWorkTypeByProject)
+		h.POST("/project/:projectID", u.createWorkType)
 		h.PUT("/:id", u.updateWorkType)
 		h.DELETE("/:id", u.deleteWorkType)
 	}
@@ -94,6 +95,37 @@ func (r workTypesRoutes) getWorkTypeByProject(c *gin.Context) {
 	c.JSON(http.StatusOK, response.GetWorkTypeByProjectRes{
 		WorkType: worktypes,
 	})
+}
+
+// createWorkType -.
+func (r workTypesRoutes) createWorkType(c *gin.Context) {
+	var req request.CreateWorkTypeReq
+	req.ProjectID, _ = strconv.ParseInt(c.Param("projectID"), 10, 64)
+
+	//validator
+	if err := c.ShouldBind(&req); err != nil {
+		var ve validator.ValidationErrors
+		r.l.Error(err, "http - v1 - Status")
+		if errors.As(err, &ve) {
+			response.ErrorValidateRes(c, ve)
+			return
+		}
+		response.ErrorResponse(c, http.StatusBadRequest, _defaultBadReq)
+		return
+	}
+
+	workTypeID, err := r.wu.CreateWorkType(req)
+	if err != nil {
+		r.l.Error(err, "http - v1 - Status")
+		if errors.As(err, &ErrDuplicateRow) {
+			response.ErrorResponse(c, http.StatusConflict, _defaultConflict)
+			return
+		}
+		response.ErrorResponse(c, http.StatusInternalServerError, _defaultInternalServerErr)
+		return
+	}
+
+	response.ResByID(c, http.StatusCreated, workTypeID)
 }
 
 // updateWorkType -.

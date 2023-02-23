@@ -18,7 +18,24 @@ func NewWorkTypesRepo(db *sql.DB) *WorkTypesRepo {
 }
 
 // Insert -.
-func (r *WorkTypesRepo) Insert(tx *sql.Tx, req request.CreateWorkTypeReq) (*sql.Tx, int64, error) {
+func (r *WorkTypesRepo) Insert(req request.CreateWorkTypeReq) (int64, error) {
+	var insertId int64
+
+	sqlRaw := "INSERT INTO work_types (name,project_id,created_at) values (?,?,NOW()) "
+	result, err := r.DB.Exec(sqlRaw, req.Name, req.ProjectID)
+	if err != nil {
+		return insertId, fmt.Errorf("WorkTypesRepo - Insert - r.DB.Exec: %w", err)
+	}
+	insertId, err = result.LastInsertId()
+	if err != nil {
+		return insertId, fmt.Errorf("WorkTypesRepo - Insert - result.LastInsertId: %w", err)
+	}
+
+	return insertId, nil
+}
+
+// InsertWithProject -.
+func (r *WorkTypesRepo) InsertWithProject(tx *sql.Tx, req request.CreateWorkTypeReq) (*sql.Tx, int64, error) {
 	var insertId int64
 
 	sqlRaw := "INSERT INTO work_types (name,project_id,created_at) values (?,?,NOW()) "

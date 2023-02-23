@@ -38,6 +38,17 @@ func (uc *WorkTypesUseCase) GetWorkTypeByProject(projectID int) ([]entity.WorkTy
 	return workTypes, nil
 }
 
+// CreateWorkType -.
+func (uc *WorkTypesUseCase) CreateWorkType(req request.CreateWorkTypeReq) (int64, error) {
+	var workTypeID int64
+
+	workTypeID, err := uc.repo.Insert(req)
+	if err != nil {
+		return workTypeID, fmt.Errorf("WorkTypesUseCase - CreateWorkType - uc.repo.Insert: %w", err)
+	}
+	return workTypeID, nil
+}
+
 // UpdateWorkType -.
 func (uc *WorkTypesUseCase) UpdateWorkType(req request.UpdateWorkTypeReq) (int64, error) {
 	var rowAffected int64

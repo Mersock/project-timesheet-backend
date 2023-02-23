@@ -44,13 +44,15 @@ type (
 	WorkTypes interface {
 		GetWorkTypeByID(workTypeID int) (entity.WorkTypes, error)
 		GetWorkTypeByProject(projectID int) ([]entity.WorkTypes, error)
+		CreateWorkType(req request.CreateWorkTypeReq) (int64, error)
 		UpdateWorkType(req request.UpdateWorkTypeReq) (int64, error)
 		DeleteWorkType(req request.DeleteWorkTypeReq) (int64, error)
 	}
 
 	//WorkTypeRepo -.
 	WorkTypeRepo interface {
-		Insert(tx *sql.Tx, req request.CreateWorkTypeReq) (*sql.Tx, int64, error)
+		InsertWithProject(tx *sql.Tx, req request.CreateWorkTypeReq) (*sql.Tx, int64, error)
+		Insert(req request.CreateWorkTypeReq) (int64, error)
 		SelectById(workTypeID int) (entity.WorkTypes, error)
 		SelectByProjectId(projectID int) ([]entity.WorkTypes, error)
 		Update(req request.UpdateWorkTypeReq) (int64, error)

@@ -13,8 +13,8 @@ type StatusRepo struct {
 }
 
 // NewStatusRepo -.
-func NewStatusRepo(db *sql.DB) *RolesRepo {
-	return &RolesRepo{db}
+func NewStatusRepo(db *sql.DB) *StatusRepo {
+	return &StatusRepo{db}
 }
 
 // Count -.
@@ -124,7 +124,7 @@ func (r *StatusRepo) ChkUniqueInsert(req request.CreateStatusReq) (int, error) {
 }
 
 // ChkUniqueUpdate -.
-func (r *StatusRepo) ChkUniqueUpdate(req request.UpdateRoleReq) (int, error) {
+func (r *StatusRepo) ChkUniqueUpdate(req request.UpdateStatusReq) (int, error) {
 	var count int
 	sqlRaw := fmt.Sprintf("SELECT  COUNT(*) FROM statuses WHERE name = '%s' AND id != %d", req.Name, req.ID)
 	fmt.Println(sqlRaw)

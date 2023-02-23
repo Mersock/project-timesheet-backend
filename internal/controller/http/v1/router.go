@@ -18,6 +18,7 @@ func NewRouter(
 	au usecase.Auth,
 	pu usecase.Project,
 	wu usecase.WorkTypes,
+	su usecase.Status,
 ) {
 	//options
 	handler.Use(gin.Logger())

@@ -1,7 +1,6 @@
 package v1
 
 import (
-	"github.com/Mersock/project-timesheet-backend/internal/middleware"
 	"github.com/Mersock/project-timesheet-backend/internal/usecase"
 	"github.com/Mersock/project-timesheet-backend/pkg/logger"
 	"github.com/Mersock/project-timesheet-backend/pkg/token"
@@ -34,7 +33,7 @@ func NewRouter(
 
 	//routers require auth
 	h := handler.Group("/api/v1")
-	h.Use(middleware.AuthMiddleware(tokenMaker))
+	//h.Use(middleware.AuthMiddleware(tokenMaker))
 	{
 		newRolesRoutes(h, ru, l)
 		newUsersRoutes(h, uu, l)

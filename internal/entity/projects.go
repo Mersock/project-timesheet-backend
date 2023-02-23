@@ -28,7 +28,8 @@ type ProjectsWithUser struct {
 // ProjectWithSliceUser -.
 type ProjectWithSliceUser struct {
 	Projects
-	Users []UsersInProject `json:"users"`
+	Users     []UsersInProject `json:"users"`
+	WorkTypes []WorkTypes      `json:"work_types"`
 }
 
 // UsersInProject -.

@@ -147,10 +147,66 @@ func (r projectsRoutes) createProject(c *gin.Context) {
 
 // updateProject -.
 func (r projectsRoutes) updateProject(c *gin.Context) {
-	c.Status(http.StatusOK)
+	var req request.UpdateProjectReq
+	req.ID, _ = strconv.Atoi(c.Param("id"))
+
+	//validator
+	if err := c.ShouldBind(&req); err != nil {
+		var ve validator.ValidationErrors
+		r.l.Error(err, "http - v1 - Projects")
+		if errors.As(err, &ve) {
+			response.ErrorValidateRes(c, ve)
+			return
+		}
+		response.ErrorResponse(c, http.StatusBadRequest, _defaultBadReq)
+		return
+	}
+
+	rowAffected, err := r.pu.UpdateProject(req)
+	if err != nil {
+		r.l.Error(err, "http - v1 - Projects")
+		if errors.Is(err, sql.ErrNoRows) {
+			response.ErrorResponse(c, http.StatusNotFound, _defaultNotFound)
+			return
+		}
+
+		if errors.As(err, &ErrDuplicateRow) {
+			response.ErrorResponse(c, http.StatusConflict, _defaultConflict)
+			return
+		}
+		response.ErrorResponse(c, http.StatusInternalServerError, _defaultInternalServerErr)
+		return
+	}
+
+	response.ResRowAffect(c, http.StatusOK, rowAffected)
 }
 
 // deleteProject -.
 func (r projectsRoutes) deleteProject(c *gin.Context) {
-	c.Status(http.StatusOK)
+	var req request.DeleteProjectByReq
+
+	//validator
+	if err := c.ShouldBindUri(&req); err != nil {
+		var ve validator.ValidationErrors
+		r.l.Error(err, "http - v1 - Projects")
+		if errors.As(err, &ve) {
+			response.ErrorValidateRes(c, ve)
+			return
+		}
+		response.ErrorResponse(c, http.StatusBadRequest, _defaultBadReq)
+		return
+	}
+
+	rowAffected, err := r.pu.DeleteProject(req)
+	if err != nil {
+		r.l.Error(err, "http - v1 - Projects")
+		if errors.Is(err, sql.ErrNoRows) {
+			response.ErrorResponse(c, http.StatusNotFound, _defaultNotFound)
+			return
+		}
+		response.ErrorResponse(c, http.StatusInternalServerError, _defaultInternalServerErr)
+		return
+	}
+
+	response.ResRowAffect(c, http.StatusOK, rowAffected)
 }

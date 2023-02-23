@@ -58,6 +58,9 @@ func Run(cfg *config.Config) {
 	statusUseCase := usecase.NewStatusUseCase(
 		repo.NewStatusRepo(db),
 	)
+	timeentryUseCase := usecase.NewTimeEntriesUseCase(
+		repo.NewTimeEntryRepoRepo(db),
+	)
 
 	//HTTP server
 	handler := gin.New()
@@ -71,6 +74,7 @@ func Run(cfg *config.Config) {
 		projectUseCase,
 		workTypeUseCase,
 		statusUseCase,
+		timeentryUseCase,
 	)
 	httpServer := httpserver.New(handler, httpserver.Port(cfg.HTTP.Port))
 

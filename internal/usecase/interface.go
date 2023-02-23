@@ -8,6 +8,15 @@ import (
 )
 
 type (
+	// TimeEntry -.
+	TimeEntry interface {
+		CreateTimeEntry(req request.CreateTimeEntryReq) (int64, error)
+	}
+
+	// TimeEntryRepo -.
+	TimeEntryRepo interface {
+		Insert(req request.CreateTimeEntryReq) (int64, error)
+	}
 
 	//Status -.
 	Status interface {

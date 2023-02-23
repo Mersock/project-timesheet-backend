@@ -19,6 +19,7 @@ func NewRouter(
 	pu usecase.Project,
 	wu usecase.WorkTypes,
 	su usecase.Status,
+	tu usecase.TimeEntry,
 ) {
 	//options
 	handler.Use(gin.Logger())

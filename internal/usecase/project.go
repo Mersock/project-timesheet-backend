@@ -49,6 +49,15 @@ func (pc *ProjectsUseCase) GetProjectsByID(req request.GetProjectByIDReq) (entit
 	return projects, nil
 }
 
+// GetProjectsByIDWithUser -.
+func (pc *ProjectsUseCase) GetProjectsByIDWithUser(req request.GetProjectByIDReq) ([]entity.ProjectsWithUser, error) {
+	projects, err := pc.repo.SelectByIdWithUser(req.ID)
+	if err != nil {
+		return projects, fmt.Errorf("ProjectsUseCase - SelectByIdWithUser - uc.repo.SelectById: %w", err)
+	}
+	return projects, nil
+}
+
 // CreateProject -.
 func (pc *ProjectsUseCase) CreateProject(req request.CreateProjectReq) (int64, error) {
 	var projectID int64

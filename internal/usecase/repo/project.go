@@ -55,7 +55,7 @@ func (r *ProjectRepo) Select(req request.GetProjectsReq) ([]entity.Projects, err
 	sqlRaw += "WHERE 1=1 "
 	sqlSelect := r.genRawSelectWithReq(sqlRaw, req)
 	mainQuery := r.genPaginateQuery(sqlSelect, req)
-	fmt.Println(mainQuery)
+
 	results, err := r.DB.Query(mainQuery)
 	if err != nil {
 		return nil, fmt.Errorf("ProjectRepo - Select - r.DB.Query: %w", err)
@@ -64,6 +64,9 @@ func (r *ProjectRepo) Select(req request.GetProjectsReq) ([]entity.Projects, err
 	for results.Next() {
 		var e entity.Projects
 		err = results.Scan(&e.ID, &e.Name, &e.Code, &e.CreateAt, &e.UpdateAt)
+		if err != nil {
+			return nil, fmt.Errorf("ProjectRepo - Select - r.DB.Query: %w", err)
+		}
 		entities = append(entities, e)
 	}
 
@@ -89,6 +92,34 @@ func (r *ProjectRepo) SelectById(projectID int) (entity.Projects, error) {
 	}
 
 	return entity, nil
+}
+
+// SelectByIdWithUser -.
+func (r *ProjectRepo) SelectByIdWithUser(projectID int) ([]entity.ProjectsWithUser, error) {
+	var entities []entity.ProjectsWithUser
+
+	sqlRaw := "SELECT projects.id,projects.code,projects.name,projects.created_at,projects.updated_at,"
+	sqlRaw += "users.id as user_id,users.email,users.firstname,users.lastname,roles.name as role_name "
+	sqlRaw += "FROM projects "
+	sqlRaw += "INNER JOIN duties ON duties.project_id = projects.id "
+	sqlRaw += "INNER JOIN users ON duties.user_id = users.id "
+	sqlRaw += "INNER JOIN roles ON users.role_id = roles.id "
+	sqlRaw += "WHERE projects.id = ? "
+	results, err := r.DB.Query(sqlRaw, projectID)
+	if err != nil {
+		return nil, fmt.Errorf("ProjectRepo - SelectByIdWithUser - r.DB.QueryRow: %w", err)
+	}
+
+	for results.Next() {
+		var e entity.ProjectsWithUser
+		err = results.Scan(&e.ID, &e.Code, &e.Name, &e.CreateAt, &e.UpdateAt, &e.UserID, &e.Email, &e.Firstname, &e.Lastname, &e.Role)
+		if err != nil {
+			return nil, fmt.Errorf("ProjectRepo - SelectByIdWithUser - r.DB.Query: %w", err)
+		}
+		entities = append(entities, e)
+	}
+
+	return entities, nil
 }
 
 // Insert -.

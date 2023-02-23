@@ -18,7 +18,7 @@ type ProjectsWithUser struct {
 	Code      *string    `json:"code"`
 	CreateAt  *time.Time `json:"created_at"`
 	UpdateAt  *time.Time `json:"updated_at,omitempty"`
-	UserID    *int       `json:"id"`
+	UserID    *int       `json:"user_id"`
 	Email     *string    `json:"email"`
 	Firstname *string    `json:"firstname"`
 	Lastname  *string    `json:"lastname"`

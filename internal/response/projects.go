@@ -14,5 +14,10 @@ type GetProjectsRes struct {
 
 // GetProjectByIDRes -.
 type GetProjectByIDRes struct {
-	Project entity.Projects `json:"data"`
+	Project []entity.ProjectsWithUser `json:"data"`
+}
+
+// GetProjectByIDWithUser -.
+type GetProjectByIDWithUser struct {
+	Data entity.ProjectWithSliceUser `json:"data"`
 }

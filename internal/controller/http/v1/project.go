@@ -109,8 +109,8 @@ func (r projectsRoutes) getProjectByID(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, response.GetProjectByIDRes{
-		Project: project,
+	c.JSON(http.StatusOK, response.GetProjectByIDWithUser{
+		Data: project,
 	})
 }
 

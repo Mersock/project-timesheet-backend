@@ -24,3 +24,18 @@ type ProjectsWithUser struct {
 	Lastname  *string    `json:"lastname"`
 	Role      *string    `json:"role"`
 }
+
+// ProjectWithSliceUser -.
+type ProjectWithSliceUser struct {
+	Projects
+	Users []UsersInProject `json:"users"`
+}
+
+// UsersInProject -.
+type UsersInProject struct {
+	UserID    int    `json:"user_id"`
+	Email     string `json:"email"`
+	Firstname string `json:"firstname"`
+	Lastname  string `json:"lastname"`
+	Role      string `json:"role"`
+}

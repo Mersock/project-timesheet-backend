@@ -50,12 +50,16 @@ func (pc *ProjectsUseCase) GetProjectsByID(req request.GetProjectByIDReq) (entit
 }
 
 // GetProjectsByIDWithUser -.
-func (pc *ProjectsUseCase) GetProjectsByIDWithUser(req request.GetProjectByIDReq) ([]entity.ProjectsWithUser, error) {
-	projects, err := pc.repo.SelectByIdWithUser(req.ID)
+func (pc *ProjectsUseCase) GetProjectsByIDWithUser(req request.GetProjectByIDReq) (entity.ProjectWithSliceUser, error) {
+	var projectWithUsers entity.ProjectWithSliceUser
+
+	selectProject, err := pc.repo.SelectByIdWithUser(req.ID)
 	if err != nil {
-		return projects, fmt.Errorf("ProjectsUseCase - SelectByIdWithUser - uc.repo.SelectById: %w", err)
+		return projectWithUsers, fmt.Errorf("ProjectsUseCase - SelectByIdWithUser - uc.repo.SelectById: %w", err)
 	}
-	return projects, nil
+	projectWithUsers = pc.mappingProjectsByIDWithUser(selectProject)
+
+	return projectWithUsers, nil
 }
 
 // CreateProject -.
@@ -110,4 +114,35 @@ func (pc *ProjectsUseCase) CreateProject(req request.CreateProjectReq) (int64, e
 	tx.Commit()
 
 	return projectID, nil
+}
+
+func (pc *ProjectsUseCase) mappingProjectsByIDWithUser(selectProject []entity.ProjectsWithUser) entity.ProjectWithSliceUser {
+	var projectWithUsers entity.ProjectWithSliceUser
+	var project entity.Projects
+	var users []entity.UsersInProject
+
+	for _, v := range selectProject {
+		project = entity.Projects{
+			ID:       v.ID,
+			Name:     v.Name,
+			Code:     v.Code,
+			CreateAt: v.CreateAt,
+			UpdateAt: v.UpdateAt,
+		}
+		user := entity.UsersInProject{
+			UserID:    *v.UserID,
+			Email:     *v.Email,
+			Firstname: *v.Firstname,
+			Lastname:  *v.Lastname,
+			Role:      *v.Role,
+		}
+		users = append(users, user)
+	}
+
+	projectWithUsers = entity.ProjectWithSliceUser{
+		Projects: project,
+		Users:    users,
+	}
+
+	return projectWithUsers
 }

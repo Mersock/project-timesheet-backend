@@ -46,6 +46,8 @@ type (
 		SelectById(projectID int) (entity.Projects, error)
 		SelectByIdWithUser(projectID int) ([]entity.ProjectsWithUser, error)
 		Insert(tx *sql.Tx, req request.CreateProjectReq) (*sql.Tx, int64, error)
+		Update(req request.UpdateProjectReq) (int64, error)
+		Delete(req request.DeleteProjectByReq) (int64, error)
 	}
 
 	//Auth -.

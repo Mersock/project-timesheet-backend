@@ -27,3 +27,14 @@ type CreateProjectReq struct {
 	Members     []*int64  `form:"members" json:"members" binding:"omitempty,min=1"`
 	WorkTypes   []*string `form:"work_types" json:"work_types" binding:"omitempty,min=1"`
 }
+
+// UpdateProjectReq -.
+type UpdateProjectReq struct {
+	ID   int    `binding:"required,numeric"`
+	Name string `form:"name" json:"name" binding:"required"`
+}
+
+// DeleteProjectReq -.
+type DeleteProjectByReq struct {
+	ID int `uri:"id" binding:"required,numeric"`
+}

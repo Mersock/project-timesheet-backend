@@ -141,6 +141,36 @@ func (r *ProjectRepo) Insert(tx *sql.Tx, req request.CreateProjectReq) (*sql.Tx,
 	return tx, insertId, nil
 }
 
+// Update -.
+func (r *ProjectRepo) Update(req request.UpdateProjectReq) (int64, error) {
+	var rowAffected int64
+	sqlRaw := "UPDATE projects SET name = ?, updated_at = NOW() WHERE id = ?"
+	result, err := r.DB.Exec(sqlRaw, req.Name, req.ID)
+	if err != nil {
+		return rowAffected, fmt.Errorf("ProjectRepo - Update - r.DB.Exec: %w", err)
+	}
+	rowAffected, err = result.RowsAffected()
+	if err != nil {
+		return rowAffected, fmt.Errorf("ProjectRepo - Update - result.rowAffected: %w", err)
+	}
+	return rowAffected, nil
+}
+
+// Delete -.
+func (r *ProjectRepo) Delete(req request.DeleteProjectByReq) (int64, error) {
+	var rowAffected int64
+	sqlRaw := "DELETE FROM projects WHERE id = ?"
+	result, err := r.DB.Exec(sqlRaw, req.ID)
+	if err != nil {
+		return rowAffected, fmt.Errorf("ProjectRepo - Delete - r.DB.Exec: %w", err)
+	}
+	rowAffected, err = result.RowsAffected()
+	if err != nil {
+		return rowAffected, fmt.Errorf("ProjectRepo - Delete - result.rowAffected: %w", err)
+	}
+	return rowAffected, nil
+}
+
 // genRawSelectWithReq -.
 func (r *ProjectRepo) genRawSelectWithReq(sqlRaw string, req request.GetProjectsReq) string {
 	if req.Name != "" {

@@ -1,6 +1,6 @@
-DROP TABLE IF EXISTS `worktypes`;
+DROP TABLE IF EXISTS `work_types`;
 
-CREATE TABLE IF NOT EXISTS `worktypes`(
+CREATE TABLE IF NOT EXISTS `work_types`(
     id int NOT NULL AUTO_INCREMENT,
     name varchar(255)  NOT NULL,
     created_at timestamp NOT NULL,

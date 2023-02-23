@@ -21,7 +21,7 @@ func NewWorkTypesRepo(db *sql.DB) *WorkTypesRepo {
 func (r *WorkTypesRepo) Insert(tx *sql.Tx, req request.CreateWorkTypeReq) (*sql.Tx, int64, error) {
 	var insertId int64
 
-	sqlRaw := "INSERT INTO worktypes (name,project_id,created_at) values (?,?,NOW()) "
+	sqlRaw := "INSERT INTO work_types (name,project_id,created_at) values (?,?,NOW()) "
 	result, err := tx.Exec(sqlRaw, req.Name, req.ProjectID)
 	if err != nil {
 		return tx, insertId, fmt.Errorf("WorkTypesRepo - Insert - r.DB.Exec: %w", err)
@@ -38,10 +38,10 @@ func (r *WorkTypesRepo) Insert(tx *sql.Tx, req request.CreateWorkTypeReq) (*sql.
 func (r *WorkTypesRepo) SelectById(workTypeID int) (entity.WorkTypes, error) {
 	var entity entity.WorkTypes
 
-	sqlRaw := "SELECT worktypes.id, worktypes.name, worktypes.created_at, worktypes.updated_at, projects.name as project "
-	sqlRaw += "FROM worktypes "
-	sqlRaw += "INNER JOIN projects ON worktypes.project_id = projects.id "
-	sqlRaw += "WHERE worktypes.id = ? "
+	sqlRaw := "SELECT work_types.id, work_types.name, work_types.created_at, work_types.updated_at, projects.name as project "
+	sqlRaw += "FROM work_types "
+	sqlRaw += "INNER JOIN projects ON work_types.project_id = projects.id "
+	sqlRaw += "WHERE work_types.id = ? "
 	err := r.DB.QueryRow(sqlRaw, workTypeID).Scan(&entity.ID,
 		&entity.Name,
 		&entity.CreateAt,
@@ -59,9 +59,9 @@ func (r *WorkTypesRepo) SelectById(workTypeID int) (entity.WorkTypes, error) {
 func (r *WorkTypesRepo) SelectByProjectId(projectID int) ([]entity.WorkTypes, error) {
 	var entities []entity.WorkTypes
 
-	sqlRaw := "SELECT worktypes.id, worktypes.name, worktypes.created_at, worktypes.updated_at, projects.name as project "
-	sqlRaw += "FROM worktypes "
-	sqlRaw += "INNER JOIN projects ON worktypes.project_id = projects.id "
+	sqlRaw := "SELECT work_types.id, work_types.name, work_types.created_at, work_types.updated_at, projects.name as project "
+	sqlRaw += "FROM work_types "
+	sqlRaw += "INNER JOIN projects ON work_types.project_id = projects.id "
 	sqlRaw += "WHERE worktypes.project_id = ? "
 	results, err := r.DB.Query(sqlRaw, projectID)
 	if err != nil {
@@ -80,7 +80,7 @@ func (r *WorkTypesRepo) SelectByProjectId(projectID int) ([]entity.WorkTypes, er
 // Update -.
 func (r *WorkTypesRepo) Update(req request.UpdateWorkTypeReq) (int64, error) {
 	var rowAffected int64
-	sqlRaw := "UPDATE worktypes SET name = ?, updated_at = NOW() WHERE id = ?"
+	sqlRaw := "UPDATE work_types SET name = ?, updated_at = NOW() WHERE id = ?"
 	result, err := r.DB.Exec(sqlRaw, req.Name, req.ID)
 	if err != nil {
 		return rowAffected, fmt.Errorf("WorkTypesRepo - Update - r.DB.Exec: %w", err)
@@ -95,7 +95,7 @@ func (r *WorkTypesRepo) Update(req request.UpdateWorkTypeReq) (int64, error) {
 // Delete -.
 func (r *WorkTypesRepo) Delete(req request.DeleteWorkTypeReq) (int64, error) {
 	var rowAffected int64
-	sqlRaw := "DELETE FROM worktypes WHERE id = ?"
+	sqlRaw := "DELETE FROM work_types WHERE id = ?"
 	result, err := r.DB.Exec(sqlRaw, req.ID)
 	if err != nil {
 		return rowAffected, fmt.Errorf("WorkTypesRepo - Delete - r.DB.Exec: %w", err)

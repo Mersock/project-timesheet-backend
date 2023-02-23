@@ -40,5 +40,6 @@ func NewRouter(
 		newUsersRoutes(h, uu, l)
 		newProjectsRoutes(h, pu, l)
 		newWorkTypesRoutes(h, wu, l)
+		newStatusRoutes(h, su, l)
 	}
 }

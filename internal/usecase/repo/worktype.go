@@ -56,24 +56,25 @@ func (r *WorkTypesRepo) SelectById(workTypeID int) (entity.WorkTypes, error) {
 }
 
 // SelectByProjectId -.
-func (r *WorkTypesRepo) SelectByProjectId(projectID int) (entity.WorkTypes, error) {
-	var entity entity.WorkTypes
+func (r *WorkTypesRepo) SelectByProjectId(projectID int) ([]entity.WorkTypes, error) {
+	var entities []entity.WorkTypes
 
 	sqlRaw := "SELECT worktypes.id, worktypes.name, worktypes.created_at, worktypes.updated_at, projects.name as project "
 	sqlRaw += "FROM worktypes "
 	sqlRaw += "INNER JOIN projects ON worktypes.project_id = projects.id "
 	sqlRaw += "WHERE worktypes.project_id = ? "
-	err := r.DB.QueryRow(sqlRaw, projectID).Scan(&entity.ID,
-		&entity.Name,
-		&entity.CreateAt,
-		&entity.UpdateAt,
-		&entity.Project,
-	)
+	results, err := r.DB.Query(sqlRaw, projectID)
 	if err != nil {
-		return entity, fmt.Errorf("WorkTypesRepo - SelectById - r.DB.QueryRow: %w", err)
+		return entities, fmt.Errorf("WorkTypesRepo - SelectByProjectId - r.DB.Query: %w", err)
 	}
 
-	return entity, nil
+	for results.Next() {
+		var e entity.WorkTypes
+		err = results.Scan(&e.ID, &e.Name, &e.CreateAt, &e.UpdateAt, &e.Project)
+		entities = append(entities, e)
+	}
+
+	return entities, nil
 }
 
 // Update -.

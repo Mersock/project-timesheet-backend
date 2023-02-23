@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS `roles`(
     name varchar(255) UNIQUE NOT NULL,
     created_at timestamp NOT NULL,
     updated_at timestamp,
-    CONSTRAINT PK_Roles PRIMARY KEY (id)
+    PRIMARY KEY (id)
 );
 
 INSERT INTO `roles` (name,created_at) values ('administrator',CURRENT_TIMESTAMP());

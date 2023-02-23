@@ -17,6 +17,8 @@ services:
       - ./pkg/mysql/4-init-projects.sql:/docker-entrypoint-initdb.d/4-init-projects.sql
       - ./pkg/mysql/5-init-worktypes.sql:/docker-entrypoint-initdb.d/5-init-worktypes.sql
       - ./pkg/mysql/6-init-duties.sql:/docker-entrypoint-initdb.d/6-init-duties.sql
+      - ./pkg/mysql/7-init-statuses.sql:/docker-entrypoint-initdb.d/7-init-statuses.sql
+      - ./pkg/mysql/8-init-time-entries.sql:/docker-entrypoint-initdb.d/8-init-time-entries.sql
     networks:
       - project-timesheet-db
 

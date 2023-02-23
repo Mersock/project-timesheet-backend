@@ -6,5 +6,5 @@ CREATE TABLE IF NOT EXISTS `projects`(
     name varchar(255)  NOT NULL,
     created_at timestamp NOT NULL,
     updated_at timestamp,
-    CONSTRAINT PK_Projects PRIMARY KEY (id)
+    PRIMARY KEY (id)
 );

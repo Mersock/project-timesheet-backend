@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS `users`(
     created_at timestamp NOT NULL,
     updated_at timestamp,
     role_id int NOT NULL,
-    CONSTRAINT PK_Users PRIMARY KEY (id),
+    PRIMARY KEY (id),
     FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE
 );
 

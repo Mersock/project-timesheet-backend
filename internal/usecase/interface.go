@@ -57,7 +57,7 @@ type (
 		GetCount(req request.GetProjectsReq) (int, error)
 		GetAllProjects(req request.GetProjectsReq) ([]entity.Projects, error)
 		GetProjectsByID(req request.GetProjectByIDReq) (entity.Projects, error)
-		GetProjectsByIDWithUser(req request.GetProjectByIDReq) (entity.ProjectWithSliceUser, error)
+		GetProjectsByIDWithUserWorkType(req request.GetProjectByIDReq) (entity.ProjectWithSliceUser, error)
 		CreateProject(req request.CreateProjectReq) (int64, error)
 		UpdateProject(req request.UpdateProjectReq) (int64, error)
 		DeleteProject(req request.DeleteProjectByReq) (int64, error)

@@ -98,7 +98,7 @@ func (r projectsRoutes) getProjectByID(c *gin.Context) {
 		return
 	}
 
-	project, err := r.pu.GetProjectsByIDWithUser(req)
+	project, err := r.pu.GetProjectsByIDWithUserWorkType(req)
 	if err != nil {
 		r.l.Error(err, "http - v1 - Projects")
 		if errors.Is(err, sql.ErrNoRows) {

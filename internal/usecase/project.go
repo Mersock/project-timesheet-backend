@@ -51,8 +51,8 @@ func (pc *ProjectsUseCase) GetProjectsByID(req request.GetProjectByIDReq) (entit
 	return projects, nil
 }
 
-// GetProjectsByIDWithUser -.
-func (pc *ProjectsUseCase) GetProjectsByIDWithUser(req request.GetProjectByIDReq) (entity.ProjectWithSliceUser, error) {
+// GetProjectsByIDWithUserWorkType -.
+func (pc *ProjectsUseCase) GetProjectsByIDWithUserWorkType(req request.GetProjectByIDReq) (entity.ProjectWithSliceUser, error) {
 	var projectWithUsers entity.ProjectWithSliceUser
 
 	selectProject, err := pc.repo.SelectByIdWithUser(req.ID)

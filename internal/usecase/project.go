@@ -1,6 +1,8 @@
 package usecase
 
 import (
+	"database/sql"
+	"errors"
 	"fmt"
 	"github.com/Mersock/project-timesheet-backend/internal/entity"
 	"github.com/Mersock/project-timesheet-backend/internal/request"
@@ -120,6 +122,45 @@ func (pc *ProjectsUseCase) CreateProject(req request.CreateProjectReq) (int64, e
 	tx.Commit()
 
 	return projectID, nil
+}
+
+// UpdateProject -.
+func (pc *ProjectsUseCase) UpdateProject(req request.UpdateProjectReq) (int64, error) {
+	var rowAffected int64
+
+	_, err := pc.repo.Update(req)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return rowAffected, sql.ErrNoRows
+		}
+		return rowAffected, fmt.Errorf("ProjectsUseCase - UpdateProject - uc.repo.SelectById: %w", err)
+	}
+
+	rowAffected, err = pc.repo.Update(req)
+	if err != nil {
+		return rowAffected, fmt.Errorf("ProjectsUseCase - UpdateProject - uc.repo.Update: %w", err)
+	}
+	return rowAffected, nil
+}
+
+// DeleteProject -.
+func (pc *ProjectsUseCase) DeleteProject(req request.DeleteProjectByReq) (int64, error) {
+	var rowAffected int64
+
+	_, err := pc.repo.SelectById(req.ID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return rowAffected, sql.ErrNoRows
+		}
+		return rowAffected, fmt.Errorf("RolesUseCase - DeleteRole - uc.repo.SelectById: %w", err)
+	}
+
+	rowAffected, err = pc.repo.Delete(req)
+	if err != nil {
+		return rowAffected, fmt.Errorf("RolesUseCase - DeleteRole - uc.repo.Delete: %w", err)
+	}
+
+	return rowAffected, nil
 }
 
 // mappingProjectsByIDWithUser -.

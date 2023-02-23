@@ -1,8 +1,13 @@
 package request
 
+import "github.com/Mersock/project-timesheet-backend/internal/utils"
+
 // GetTimeEntryReq -.
 type GetTimeEntryReq struct {
 	ProjectID string `form:"projectID" binding:"omitempty,numeric"`
+	SortBy    string `form:"sortBy" json:"-" binding:"omitempty,oneof=id name created_at updated_at"`
+	SortType  string `form:"sortType" json:"-" binding:"omitempty,oneof=asc desc"`
+	utils.PaginationReq
 }
 
 // CreateTimeEntryReq -.

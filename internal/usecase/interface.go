@@ -10,11 +10,15 @@ import (
 type (
 	// TimeEntry -.
 	TimeEntry interface {
+		GetCount(req request.GetTimeEntryReq) (int, error)
+		GetAllTimeEntries(req request.GetTimeEntryReq) ([]entity.TimeEntryList, error)
 		CreateTimeEntry(req request.CreateTimeEntryReq) (int64, error)
 	}
 
 	// TimeEntryRepo -.
 	TimeEntryRepo interface {
+		Count(req request.GetTimeEntryReq) (int, error)
+		Select(req request.GetTimeEntryReq) ([]entity.TimeEntryList, error)
 		Insert(req request.CreateTimeEntryReq) (int64, error)
 	}
 

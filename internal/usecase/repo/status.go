@@ -52,11 +52,11 @@ func (r *StatusRepo) Select(req request.GetStatusReq) ([]entity.Status, error) {
 }
 
 // SelectById -.
-func (r *StatusRepo) SelectById(roleID int) (entity.Status, error) {
+func (r *StatusRepo) SelectById(statusID int) (entity.Status, error) {
 	var entity entity.Status
 
 	sqlRaw := "SELECT id, name, created_at, updated_at FROM statuses WHERE id = ?"
-	err := r.DB.QueryRow(sqlRaw, roleID).Scan(&entity.ID, &entity.Name, &entity.CreateAt, &entity.UpdateAt)
+	err := r.DB.QueryRow(sqlRaw, statusID).Scan(&entity.ID, &entity.Name, &entity.CreateAt, &entity.UpdateAt)
 	if err != nil {
 		return entity, fmt.Errorf("StatusRepo - SelectById - r.DB.QueryRow: %w", err)
 	}

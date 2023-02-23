@@ -8,6 +8,18 @@ import (
 )
 
 type (
+	//StatusRepo -.
+	StatusRepo interface {
+		Count(req request.GetRolesReq) (int, error)
+		Select(req request.GetRolesReq) ([]entity.Roles, error)
+		SelectById(roleID int) (entity.Roles, error)
+		Insert(req request.CreateRoleReq) (int64, error)
+		Update(req request.UpdateRoleReq) (int64, error)
+		Delete(req request.DeleteRoleReq) (int64, error)
+		ChkUniqueInsert(req request.CreateRoleReq) (int, error)
+		ChkUniqueUpdate(req request.UpdateRoleReq) (int, error)
+	}
+
 	//WorkTypes -.
 	WorkTypes interface {
 		GetWorkTypeByID(workTypeID int) (entity.WorkTypes, error)

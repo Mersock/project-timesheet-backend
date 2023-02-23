@@ -11,6 +11,6 @@ CREATE TABLE IF NOT EXISTS `time_entries`(
     updated_at timestamp,
     PRIMARY KEY (id),
     FOREIGN KEY (status_id) REFERENCES statuses(id) ON DELETE CASCADE,
-    FOREIGN KEY (work_type_id) REFERENCES worktypes(id) ON DELETE CASCADE,
+    FOREIGN KEY (work_type_id) REFERENCES work_types(id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );

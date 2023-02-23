@@ -57,7 +57,13 @@ func (pc *ProjectsUseCase) GetProjectsByIDWithUser(req request.GetProjectByIDReq
 	if err != nil {
 		return projectWithUsers, fmt.Errorf("ProjectsUseCase - SelectByIdWithUser - uc.repo.SelectById: %w", err)
 	}
+	selectWorktypes, err := pc.workTypeRepo.SelectByProjectId(req.ID)
+	if err != nil {
+		return projectWithUsers, fmt.Errorf("ProjectsUseCase - SelectByIdWithUser - uc.repo.SelectById: %w", err)
+	}
+
 	projectWithUsers = pc.mappingProjectsByIDWithUser(selectProject)
+	projectWithUsers.WorkTypes = selectWorktypes
 
 	return projectWithUsers, nil
 }
@@ -116,6 +122,7 @@ func (pc *ProjectsUseCase) CreateProject(req request.CreateProjectReq) (int64, e
 	return projectID, nil
 }
 
+// mappingProjectsByIDWithUser -.
 func (pc *ProjectsUseCase) mappingProjectsByIDWithUser(selectProject []entity.ProjectsWithUser) entity.ProjectWithSliceUser {
 	var projectWithUsers entity.ProjectWithSliceUser
 	var project entity.Projects

@@ -128,7 +128,7 @@ func (pc *ProjectsUseCase) CreateProject(req request.CreateProjectReq) (int64, e
 func (pc *ProjectsUseCase) UpdateProject(req request.UpdateProjectReq) (int64, error) {
 	var rowAffected int64
 
-	_, err := pc.repo.Update(req)
+	_, err := pc.repo.SelectById(req.ID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return rowAffected, sql.ErrNoRows

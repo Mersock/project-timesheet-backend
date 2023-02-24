@@ -14,7 +14,7 @@ type reportRoutes struct {
 }
 
 // newReportRoutes -.
-func newReportRoutes(handler *gin.RouterGroup, ru usecase.Roles, l logger.Interface) {
+func newReportRoutes(handler *gin.RouterGroup, ru usecase.Report, l logger.Interface) {
 	r := reportRoutes{ru, l}
 
 	h := handler.Group("/report", r.getReport)

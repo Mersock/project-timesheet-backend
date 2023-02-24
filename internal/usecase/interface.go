@@ -15,6 +15,7 @@ type (
 		GetTimeEntryByID(timeEntryID int) (entity.TimeEntryList, error)
 		CreateTimeEntry(req request.CreateTimeEntryReq) (int64, error)
 		UpdateTimeEntry(req request.UpdateTimeEntryReq) (int64, error)
+		DeleteTimeEntry(req request.DeleteTimeEntryReq) (int64, error)
 	}
 
 	// TimeEntryRepo -.
@@ -24,6 +25,7 @@ type (
 		Insert(req request.CreateTimeEntryReq) (int64, error)
 		SelectByID(timeEntryID int) (entity.TimeEntryList, error)
 		Update(req request.UpdateTimeEntryReq) (int64, error)
+		Delete(req request.DeleteTimeEntryReq) (int64, error)
 	}
 
 	//Status -.

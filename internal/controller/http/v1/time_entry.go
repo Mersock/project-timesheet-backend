@@ -30,6 +30,7 @@ func newTimeEntryRoutes(handler *gin.RouterGroup, tu usecase.TimeEntry, l logger
 		h.GET("/:id", r.getTimeEntryByID)
 		h.PUT("/:id", r.updateTimeEntry)
 		h.POST("", r.createTimeEntry)
+		h.DELETE("/:id", r.deleteTimeEntry)
 	}
 
 }
@@ -169,6 +170,36 @@ func (r timeEntryRoutes) updateTimeEntry(c *gin.Context) {
 			return
 		}
 
+		response.ErrorResponse(c, http.StatusInternalServerError, _defaultInternalServerErr)
+		return
+	}
+
+	response.ResRowAffect(c, http.StatusOK, rowAffected)
+}
+
+// deleteTimeEntry -.
+func (r timeEntryRoutes) deleteTimeEntry(c *gin.Context) {
+	var req request.DeleteTimeEntryReq
+
+	//validator
+	if err := c.ShouldBindUri(&req); err != nil {
+		var ve validator.ValidationErrors
+		r.l.Error(err, "http - v1 - Time Entry")
+		if errors.As(err, &ve) {
+			response.ErrorValidateRes(c, ve)
+			return
+		}
+		response.ErrorResponse(c, http.StatusBadRequest, _defaultBadReq)
+		return
+	}
+
+	rowAffected, err := r.tu.DeleteTimeEntry(req)
+	if err != nil {
+		r.l.Error(err, "http - v1 - Time Entry")
+		if errors.Is(err, sql.ErrNoRows) {
+			response.ErrorResponse(c, http.StatusNotFound, _defaultNotFound)
+			return
+		}
 		response.ErrorResponse(c, http.StatusInternalServerError, _defaultInternalServerErr)
 		return
 	}

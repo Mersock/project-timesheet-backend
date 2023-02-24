@@ -37,3 +37,8 @@ type UpdateTimeEntryReq struct {
 	StartTime  string `form:"start_time" json:"start_time" binding:"required,iso8601date"`
 	EndTime    string `form:"end_time" json:"end_time" binding:"omitempty,iso8601date"`
 }
+
+// DeleteTimeEntryReq -.
+type DeleteTimeEntryReq struct {
+	ID int `uri:"id" binding:"required,numeric"`
+}

@@ -138,6 +138,21 @@ func (r *TimeEntryRepo) Update(req request.UpdateTimeEntryReq) (int64, error) {
 	return rowAffected, nil
 }
 
+// Delete -.
+func (r *TimeEntryRepo) Delete(req request.DeleteTimeEntryReq) (int64, error) {
+	var rowAffected int64
+	sqlRaw := "DELETE FROM time_entries WHERE id = ?"
+	result, err := r.DB.Exec(sqlRaw, req.ID)
+	if err != nil {
+		return rowAffected, fmt.Errorf("TimeEntryRepo - Delete - r.DB.Exec: %w", err)
+	}
+	rowAffected, err = result.RowsAffected()
+	if err != nil {
+		return rowAffected, fmt.Errorf("TimeEntryRepo - Delete - result.rowAffected: %w", err)
+	}
+	return rowAffected, nil
+}
+
 // genRawSelectWithReq -.
 func (r *TimeEntryRepo) genRawSelectWithReq(sqlRaw string, req request.GetTimeEntryReq) string {
 	if req.ProjectName != "" {

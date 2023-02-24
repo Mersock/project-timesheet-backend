@@ -75,3 +75,23 @@ func (uc *TimeEntriesUseCase) UpdateTimeEntry(req request.UpdateTimeEntryReq) (i
 	}
 	return rowAffected, nil
 }
+
+// DeleteTimeEntry -.
+func (uc *TimeEntriesUseCase) DeleteTimeEntry(req request.DeleteTimeEntryReq) (int64, error) {
+	var rowAffected int64
+
+	_, err := uc.repo.SelectByID(req.ID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return rowAffected, sql.ErrNoRows
+		}
+		return rowAffected, fmt.Errorf("TimeEntriesUseCase - DeleteRole - uc.repo.SelectById: %w", err)
+	}
+
+	rowAffected, err = uc.repo.Delete(req)
+	if err != nil {
+		return rowAffected, fmt.Errorf("TimeEntriesUseCase - DeleteRole - uc.repo.Delete: %w", err)
+	}
+
+	return rowAffected, nil
+}

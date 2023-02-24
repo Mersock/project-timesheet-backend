@@ -14,6 +14,11 @@ type GetTimeEntryReq struct {
 	utils.PaginationReq
 }
 
+// GetTimeEntryByIDReq -.
+type GetTimeEntryByIDReq struct {
+	ID int `uri:"id" binding:"required,numeric"`
+}
+
 // CreateTimeEntryReq -.
 type CreateTimeEntryReq struct {
 	StatusID   int    `form:"status_id" json:"status_id" binding:"required,numeric"`

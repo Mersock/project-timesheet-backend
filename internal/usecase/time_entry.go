@@ -36,6 +36,16 @@ func (uc *TimeEntriesUseCase) GetAllTimeEntries(req request.GetTimeEntryReq) ([]
 	return roles, nil
 }
 
+// GetTimeEntryByID -.
+func (uc *TimeEntriesUseCase) GetTimeEntryByID(timeEntryID int) (entity.TimeEntryList, error) {
+	var timeEntry entity.TimeEntryList
+	timeEntry, err := uc.repo.SelectByID(timeEntryID)
+	if err != nil {
+		return timeEntry, fmt.Errorf("TimeEntriesUseCase - GetTimeEntryByID - uc.repo.SelectById: %w", err)
+	}
+	return timeEntry, nil
+}
+
 // CreateTimeEntry -.
 func (uc *TimeEntriesUseCase) CreateTimeEntry(req request.CreateTimeEntryReq) (int64, error) {
 	var timeEntryID int64

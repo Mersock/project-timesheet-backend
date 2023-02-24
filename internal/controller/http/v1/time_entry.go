@@ -27,6 +27,7 @@ func newTimeEntryRoutes(handler *gin.RouterGroup, tu usecase.TimeEntry, l logger
 	h := handler.Group("/timeEntry")
 	{
 		h.GET("", r.getTimeEntries)
+		h.GET("/:id", r.getTimeEntryByID)
 		h.PUT("/:id", r.updateTimeEntry)
 		h.POST("", r.createTimeEntry)
 	}
@@ -77,6 +78,38 @@ func (r timeEntryRoutes) getTimeEntries(c *gin.Context) {
 			Page:     paginate.Page,
 			LastPage: utils.GetPageCount(total, paginate.Limit),
 		},
+	})
+}
+
+// getTimeEntryByID -.
+func (r timeEntryRoutes) getTimeEntryByID(c *gin.Context) {
+	var req request.GetTimeEntryByIDReq
+
+	//validator
+	if err := c.ShouldBindUri(&req); err != nil {
+		var ve validator.ValidationErrors
+		r.l.Error(err, "http - v1 - Time Entry")
+		if errors.As(err, &ve) {
+			response.ErrorValidateRes(c, ve)
+			return
+		}
+		response.ErrorResponse(c, http.StatusBadRequest, _defaultBadReq)
+		return
+	}
+
+	timeEntry, err := r.tu.GetTimeEntryByID(req.ID)
+	if err != nil {
+		r.l.Error(err, "http - v1 - Time Entry")
+		if errors.Is(err, sql.ErrNoRows) {
+			response.ErrorResponse(c, http.StatusNotFound, _defaultNotFound)
+			return
+		}
+		response.ErrorResponse(c, http.StatusInternalServerError, _defaultInternalServerErr)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.GetTimeEntryByIDRes{
+		TimeEntry: timeEntry,
 	})
 }
 

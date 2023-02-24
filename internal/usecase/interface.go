@@ -12,6 +12,7 @@ type (
 	TimeEntry interface {
 		GetCount(req request.GetTimeEntryReq) (int, error)
 		GetAllTimeEntries(req request.GetTimeEntryReq) ([]entity.TimeEntryList, error)
+		GetTimeEntryByID(timeEntryID int) (entity.TimeEntryList, error)
 		CreateTimeEntry(req request.CreateTimeEntryReq) (int64, error)
 		UpdateTimeEntry(req request.UpdateTimeEntryReq) (int64, error)
 	}

@@ -11,3 +11,8 @@ type GetTimeEntriesRes struct {
 	Total       int                    `json:"total"`
 	utils.PaginationRes
 }
+
+// GetTimeEntryByIDRes -.
+type GetTimeEntryByIDRes struct {
+	TimeEntry entity.TimeEntryList `json:"data"`
+}

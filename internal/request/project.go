@@ -44,3 +44,9 @@ type UpdateProjectAddMoreMemberReq struct {
 type DeleteProjectByReq struct {
 	ID int `uri:"id" binding:"required,numeric"`
 }
+
+// DeleteProjectMemberByReq -.
+type DeleteProjectMemberByReq struct {
+	ID     int `uri:"id" binding:"required,numeric"`
+	UserID int `uri:"userID" binding:"required,numeric"`
+}

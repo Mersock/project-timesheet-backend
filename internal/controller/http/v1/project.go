@@ -33,6 +33,7 @@ func newProjectsRoutes(handler *gin.RouterGroup, pu usecase.Project, l logger.In
 		h.PUT("/:id", r.updateProject)
 		h.DELETE("/:id", r.deleteProject)
 		h.PUT("/:id/members", r.updateProjectAddMoreMembers)
+		h.DELETE("/:id/members/:userID", r.deleteProjectMember)
 	}
 }
 
@@ -241,6 +242,32 @@ func (r projectsRoutes) deleteProject(c *gin.Context) {
 			response.ErrorResponse(c, http.StatusNotFound, _defaultNotFound)
 			return
 		}
+		response.ErrorResponse(c, http.StatusInternalServerError, _defaultInternalServerErr)
+		return
+	}
+
+	response.ResRowAffect(c, http.StatusOK, rowAffected)
+}
+
+// deleteProjectMember -.
+func (r projectsRoutes) deleteProjectMember(c *gin.Context) {
+	var req request.DeleteProjectMemberByReq
+
+	//validator
+	if err := c.ShouldBindUri(&req); err != nil {
+		var ve validator.ValidationErrors
+		r.l.Error(err, "http - v1 - Projects")
+		if errors.As(err, &ve) {
+			response.ErrorValidateRes(c, ve)
+			return
+		}
+		response.ErrorResponse(c, http.StatusBadRequest, _defaultBadReq)
+		return
+	}
+
+	rowAffected, err := r.pu.DeleteProjectMember(req)
+	if err != nil {
+		r.l.Error(err, "http - v1 - Projects")
 		response.ErrorResponse(c, http.StatusInternalServerError, _defaultInternalServerErr)
 		return
 	}

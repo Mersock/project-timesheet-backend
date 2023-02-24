@@ -27,3 +27,19 @@ func (r *DutiesRepo) Insert(tx *sql.Tx, projectID int64, userID int64, isOwner b
 
 	return tx, nil
 }
+
+// Delete -.
+func (r *DutiesRepo) Delete(projectID int64, userID int64) (int64, error) {
+	var rowAffected int64
+
+	sqlRaw := "DELETE FROM duties WHERE project_id = ? AND user_id = ?"
+	result, err := r.DB.Exec(sqlRaw, projectID, userID)
+	if err != nil {
+		return rowAffected, fmt.Errorf("DutiesRepo - Delete - r.DB.Exec: %w", err)
+	}
+	rowAffected, err = result.RowsAffected()
+	if err != nil {
+		return rowAffected, fmt.Errorf("DutiesRepo - Delete - result.rowAffected: %w", err)
+	}
+	return rowAffected, nil
+}

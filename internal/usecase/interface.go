@@ -72,6 +72,7 @@ type (
 	// DutyRepo -.
 	DutyRepo interface {
 		Insert(tx *sql.Tx, projectID int64, userID int64, isOwner bool) (*sql.Tx, error)
+		Delete(projectID int64, userID int64) (int64, error)
 	}
 
 	//Project -.
@@ -84,6 +85,7 @@ type (
 		UpdateProject(req request.UpdateProjectReq) (int64, error)
 		UpdateProjectAddMoreMember(req request.UpdateProjectAddMoreMemberReq) error
 		DeleteProject(req request.DeleteProjectByReq) (int64, error)
+		DeleteProjectMember(req request.DeleteProjectMemberByReq) (int64, error)
 	}
 
 	//ProjectRepo -.

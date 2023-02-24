@@ -183,6 +183,18 @@ func (pc *ProjectsUseCase) UpdateProjectAddMoreMember(req request.UpdateProjectA
 	return nil
 }
 
+// DeleteProjectMember -.
+func (pc *ProjectsUseCase) DeleteProjectMember(req request.DeleteProjectMemberByReq) (int64, error) {
+	var rowAffected int64
+
+	rowAffected, err := pc.dutyRepo.Delete(int64(req.ID), int64(req.UserID))
+	if err != nil {
+		return rowAffected, fmt.Errorf("ProjectsUseCase - DeleteProjectMember - pc.dutyRepo.Delete: %w", err)
+	}
+
+	return rowAffected, nil
+}
+
 // DeleteProject -.
 func (pc *ProjectsUseCase) DeleteProject(req request.DeleteProjectByReq) (int64, error) {
 	var rowAffected int64

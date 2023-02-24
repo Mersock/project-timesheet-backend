@@ -19,6 +19,16 @@ type CreateTimeEntryReq struct {
 	StatusID   int    `form:"status_id" json:"status_id" binding:"required,numeric"`
 	WorkTypeID int    `form:"work_type_id" json:"work_type_id" binding:"required,numeric"`
 	UserID     int64  `form:"-" json:"-" binding:"required,numeric"`
-	StartDate  string `form:"start_date" json:"start_date" binding:"required,iso8601date"`
-	EndDate    string `form:"end_date" json:"end_date" binding:"omitempty,iso8601date"`
+	StartTime  string `form:"start_time" json:"start_time" binding:"required,iso8601date"`
+	EndTime    string `form:"end_time" json:"end_time" binding:"omitempty,iso8601date"`
+}
+
+// UpdateTimeEntryReq -.
+type UpdateTimeEntryReq struct {
+	ID         int    `binding:"required,numeric"`
+	StatusID   int    `form:"status_id" json:"status_id" binding:"required,numeric"`
+	WorkTypeID int    `form:"work_type_id" json:"work_type_id" binding:"required,numeric"`
+	UserID     int64  `form:"-" json:"-" binding:"required,numeric"`
+	StartTime  string `form:"start_time" json:"start_time" binding:"required,iso8601date"`
+	EndTime    string `form:"end_time" json:"end_time" binding:"omitempty,iso8601date"`
 }

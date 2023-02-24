@@ -1,6 +1,7 @@
 package v1
 
 import (
+	"database/sql"
 	"errors"
 	"github.com/Mersock/project-timesheet-backend/internal/request"
 	"github.com/Mersock/project-timesheet-backend/internal/response"
@@ -26,6 +27,7 @@ func newTimeEntryRoutes(handler *gin.RouterGroup, tu usecase.TimeEntry, l logger
 	h := handler.Group("/timeEntry")
 	{
 		h.GET("", r.getTimeEntries)
+		h.PUT("/:id", r.updateTimeEntry)
 		h.POST("", r.createTimeEntry)
 	}
 
@@ -82,7 +84,6 @@ func (r timeEntryRoutes) getTimeEntries(c *gin.Context) {
 func (r timeEntryRoutes) createTimeEntry(c *gin.Context) {
 	var req request.CreateTimeEntryReq
 	userId, _ := strconv.ParseInt(c.Request.Header.Get("x-user-id"), 10, 64)
-
 	req.UserID = userId
 
 	//validator
@@ -105,4 +106,39 @@ func (r timeEntryRoutes) createTimeEntry(c *gin.Context) {
 	}
 
 	response.ResByID(c, http.StatusCreated, timeEntryID)
+}
+
+// updateTimeEntry -.
+func (r timeEntryRoutes) updateTimeEntry(c *gin.Context) {
+	var req request.UpdateTimeEntryReq
+	req.ID, _ = strconv.Atoi(c.Param("id"))
+	userId, _ := strconv.ParseInt(c.Request.Header.Get("x-user-id"), 10, 64)
+
+	req.UserID = userId
+
+	//validator
+	if err := c.ShouldBind(&req); err != nil {
+		var ve validator.ValidationErrors
+		r.l.Error(err, "http - v1 - Time Entry")
+		if errors.As(err, &ve) {
+			response.ErrorValidateRes(c, ve)
+			return
+		}
+		response.ErrorResponse(c, http.StatusBadRequest, _defaultBadReq)
+		return
+	}
+
+	rowAffected, err := r.tu.UpdateTimeEntry(req)
+	if err != nil {
+		r.l.Error(err, "http - v1 - Time Entry")
+		if errors.Is(err, sql.ErrNoRows) {
+			response.ErrorResponse(c, http.StatusNotFound, _defaultNotFound)
+			return
+		}
+
+		response.ErrorResponse(c, http.StatusInternalServerError, _defaultInternalServerErr)
+		return
+	}
+
+	response.ResRowAffect(c, http.StatusOK, rowAffected)
 }

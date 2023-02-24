@@ -1,6 +1,8 @@
 package usecase
 
 import (
+	"database/sql"
+	"errors"
 	"fmt"
 	"github.com/Mersock/project-timesheet-backend/internal/entity"
 	"github.com/Mersock/project-timesheet-backend/internal/request"
@@ -43,4 +45,23 @@ func (uc *TimeEntriesUseCase) CreateTimeEntry(req request.CreateTimeEntryReq) (i
 		return timeEntryID, fmt.Errorf("TimeEntriesUseCase - CreateTimeEntry - uc.repo.Insert: %w", err)
 	}
 	return timeEntryID, nil
+}
+
+// UpdateTimeEntry -.
+func (uc *TimeEntriesUseCase) UpdateTimeEntry(req request.UpdateTimeEntryReq) (int64, error) {
+	var rowAffected int64
+
+	_, err := uc.repo.SelectByID(req.ID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return rowAffected, sql.ErrNoRows
+		}
+		return rowAffected, fmt.Errorf("TimeEntriesUseCase - UpdateTimeEntry - uc.repo.SelectById: %w", err)
+	}
+
+	rowAffected, err = uc.repo.Update(req)
+	if err != nil {
+		return rowAffected, fmt.Errorf("TimeEntriesUseCase - UpdateTimeEntry - uc.repo.Update: %w", err)
+	}
+	return rowAffected, nil
 }

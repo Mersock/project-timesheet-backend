@@ -13,6 +13,7 @@ type (
 		GetCount(req request.GetTimeEntryReq) (int, error)
 		GetAllTimeEntries(req request.GetTimeEntryReq) ([]entity.TimeEntryList, error)
 		CreateTimeEntry(req request.CreateTimeEntryReq) (int64, error)
+		UpdateTimeEntry(req request.UpdateTimeEntryReq) (int64, error)
 	}
 
 	// TimeEntryRepo -.
@@ -20,6 +21,8 @@ type (
 		Count(req request.GetTimeEntryReq) (int, error)
 		Select(req request.GetTimeEntryReq) ([]entity.TimeEntryList, error)
 		Insert(req request.CreateTimeEntryReq) (int64, error)
+		SelectByID(timeEntryID int) (entity.TimeEntryList, error)
+		Update(req request.UpdateTimeEntryReq) (int64, error)
 	}
 
 	//Status -.

@@ -59,7 +59,7 @@ func (r *TimeEntryRepo) Select(req request.GetTimeEntryReq) ([]entity.TimeEntryL
 	sqlRaw += "WHERE 1=1 "
 	sqlSelect := r.genRawSelectWithReq(sqlRaw, req)
 	mainQuery := r.genPaginateQuery(sqlSelect, req)
-	fmt.Println(mainQuery)
+
 	results, err := r.DB.Query(mainQuery)
 	if err != nil {
 		return nil, fmt.Errorf("TimeEntryRepo - Select - r.DB.Query: %w", err)
@@ -75,12 +75,43 @@ func (r *TimeEntryRepo) Select(req request.GetTimeEntryReq) ([]entity.TimeEntryL
 	return entities, nil
 }
 
+// SelectByID -.
+func (r *TimeEntryRepo) SelectByID(timeEntryID int) (entity.TimeEntryList, error) {
+	var e entity.TimeEntryList
+
+	sqlRaw := "SELECT "
+	sqlRaw += "time_entries.id,"
+	sqlRaw += "statuses.name status, "
+	sqlRaw += "work_types.name work_type, "
+	sqlRaw += "time_entries.start_time, "
+	sqlRaw += "time_entries.end_time, "
+	sqlRaw += "projects.name project_name, "
+	sqlRaw += "users.email,"
+	sqlRaw += "users.firstname, "
+	sqlRaw += "users.lastname, "
+	sqlRaw += "time_entries.created_at,"
+	sqlRaw += "time_entries.updated_at "
+	sqlRaw += "FROM time_entries "
+	sqlRaw += "INNER JOIN statuses ON time_entries.status_id = statuses.id "
+	sqlRaw += "INNER JOIN work_types ON time_entries.work_type_id = work_types.id "
+	sqlRaw += "INNER JOIN projects ON work_types.project_id = projects.id "
+	sqlRaw += "INNER JOIN users ON time_entries.user_id = users.id "
+	sqlRaw += "WHERE time_entries.id = ?"
+	err := r.DB.QueryRow(sqlRaw, timeEntryID).Scan(&e.ID, &e.Status, &e.WorkType, &e.StartTime, &e.EndTime, &e.ProjectName,
+		&e.Email, &e.Firstname, &e.Lastname, &e.CreateAt, &e.UpdateAt)
+	if err != nil {
+		return e, fmt.Errorf("TimeEntryRepo - SelectByID - r.DB.Query: %w", err)
+	}
+
+	return e, nil
+}
+
 // Insert -.
 func (r *TimeEntryRepo) Insert(req request.CreateTimeEntryReq) (int64, error) {
 	var insertId int64
 
 	sqlRaw := "INSERT INTO time_entries (status_id,work_type_id,user_id,start_time,end_time,created_at) values (?,?,?,?,?,NOW()) "
-	result, err := r.DB.Exec(sqlRaw, req.StatusID, req.WorkTypeID, req.UserID, req.StartDate, req.EndDate)
+	result, err := r.DB.Exec(sqlRaw, req.StatusID, req.WorkTypeID, req.UserID, req.StartTime, req.EndTime)
 	if err != nil {
 		return insertId, fmt.Errorf("TimeEntryRepo - Insert - r.DB.Exec: %w", err)
 	}
@@ -90,6 +121,21 @@ func (r *TimeEntryRepo) Insert(req request.CreateTimeEntryReq) (int64, error) {
 	}
 
 	return insertId, nil
+}
+
+// Update -.
+func (r *TimeEntryRepo) Update(req request.UpdateTimeEntryReq) (int64, error) {
+	var rowAffected int64
+	sqlRaw := "UPDATE time_entries SET status_id = ?, work_type_id = ?, user_id = ?, start_time = ?,end_time = ?, updated_at = NOW() WHERE id = ?"
+	result, err := r.DB.Exec(sqlRaw, req.StatusID, req.WorkTypeID, req.UserID, req.StartTime, req.EndTime, req.ID)
+	if err != nil {
+		return rowAffected, fmt.Errorf("TimeEntryRepo - Update - r.DB.Exec: %w", err)
+	}
+	rowAffected, err = result.RowsAffected()
+	if err != nil {
+		return rowAffected, fmt.Errorf("TimeEntryRepo - Update - result.rowAffected: %w", err)
+	}
+	return rowAffected, nil
 }
 
 // genRawSelectWithReq -.

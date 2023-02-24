@@ -10,6 +10,14 @@ import (
 type (
 	// Report -.
 	Report interface {
+		GetAllWorkType(req request.GetWorkTypeReportReq) ([]entity.ReportWorkType, error)
+		GetWorkTypeCount(req request.GetWorkTypeReportReq) (int, error)
+	}
+
+	// ReportRepo -.
+	ReportRepo interface {
+		CountWorkType(req request.GetWorkTypeReportReq) (int, error)
+		SelectWorkType(req request.GetWorkTypeReportReq) ([]entity.ReportWorkType, error)
 	}
 
 	// TimeEntry -.

@@ -62,7 +62,7 @@ func Run(cfg *config.Config) {
 		repo.NewTimeEntryRepoRepo(db),
 	)
 	reportUseCase := usecase.NewReportUseCase(
-		repo.NewTimeEntryRepoRepo(db),
+		repo.NewReportRepo(db),
 	)
 
 	//HTTP server

@@ -20,6 +20,7 @@ func NewRouter(
 	wu usecase.WorkTypes,
 	su usecase.Status,
 	tu usecase.TimeEntry,
+	reu usecase.Report,
 ) {
 	//options
 	handler.Use(gin.Logger())

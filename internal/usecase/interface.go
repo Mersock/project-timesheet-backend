@@ -8,6 +8,10 @@ import (
 )
 
 type (
+	// Report -.
+	Report interface {
+	}
+
 	// TimeEntry -.
 	TimeEntry interface {
 		GetCount(req request.GetTimeEntryReq) (int, error)

@@ -82,6 +82,7 @@ type (
 		GetProjectsByIDWithUserWorkType(req request.GetProjectByIDReq) (entity.ProjectWithSliceUser, error)
 		CreateProject(req request.CreateProjectReq) (int64, error)
 		UpdateProject(req request.UpdateProjectReq) (int64, error)
+		UpdateProjectAddMoreMember(req request.UpdateProjectAddMoreMemberReq) error
 		DeleteProject(req request.DeleteProjectByReq) (int64, error)
 	}
 

@@ -151,6 +151,38 @@ func (pc *ProjectsUseCase) UpdateProject(req request.UpdateProjectReq) (int64, e
 	return rowAffected, nil
 }
 
+// UpdateProjectAddMoreMember -.
+func (pc *ProjectsUseCase) UpdateProjectAddMoreMember(req request.UpdateProjectAddMoreMemberReq) error {
+
+	_, err := pc.repo.SelectById(req.ID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return sql.ErrNoRows
+		}
+		return fmt.Errorf("ProjectsUseCase - UpdateProjectAddMoreMember - uc.repo.SelectById: %w", err)
+	}
+
+	tx, err := pc.repo.BeginTx()
+	if err != nil {
+		return fmt.Errorf("ProjectsUseCase - UpdateProjectAddMoreMember - pc.repo.BeginTx: %w", err)
+	}
+
+	//add member to project
+	if req.Members != nil {
+		for _, userID := range req.Members {
+			tx, err = pc.dutyRepo.Insert(tx, int64(req.ID), *userID, false)
+			if err != nil {
+				tx.Rollback()
+				return fmt.Errorf("ProjectsUseCase - UpdateProjectAddMoreMember - pc.repo.Insert - member: %w", err)
+			}
+		}
+	}
+
+	tx.Commit()
+
+	return nil
+}
+
 // DeleteProject -.
 func (pc *ProjectsUseCase) DeleteProject(req request.DeleteProjectByReq) (int64, error) {
 	var rowAffected int64

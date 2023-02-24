@@ -32,6 +32,7 @@ func newProjectsRoutes(handler *gin.RouterGroup, pu usecase.Project, l logger.In
 		h.POST("", r.createProject)
 		h.PUT("/:id", r.updateProject)
 		h.DELETE("/:id", r.deleteProject)
+		h.PUT("/:id/members", r.updateProjectAddMoreMembers)
 	}
 }
 
@@ -179,6 +180,42 @@ func (r projectsRoutes) updateProject(c *gin.Context) {
 	}
 
 	response.ResRowAffect(c, http.StatusOK, rowAffected)
+}
+
+// updateProject -.
+func (r projectsRoutes) updateProjectAddMoreMembers(c *gin.Context) {
+	var req request.UpdateProjectAddMoreMemberReq
+	req.ID, _ = strconv.Atoi(c.Param("id"))
+
+	//validator
+	if err := c.ShouldBind(&req); err != nil {
+		var ve validator.ValidationErrors
+		r.l.Error(err, "http - v1 - Projects")
+		if errors.As(err, &ve) {
+			response.ErrorValidateRes(c, ve)
+			return
+		}
+		response.ErrorResponse(c, http.StatusBadRequest, _defaultBadReq)
+		return
+	}
+
+	err := r.pu.UpdateProjectAddMoreMember(req)
+	if err != nil {
+		r.l.Error(err, "http - v1 - Projects")
+		if errors.Is(err, sql.ErrNoRows) {
+			response.ErrorResponse(c, http.StatusNotFound, _defaultNotFound)
+			return
+		}
+
+		if errors.As(err, &ErrDuplicateRow) {
+			response.ErrorResponse(c, http.StatusConflict, _defaultConflict)
+			return
+		}
+		response.ErrorResponse(c, http.StatusInternalServerError, _defaultInternalServerErr)
+		return
+	}
+
+	response.ResRowAffect(c, http.StatusOK, int64(len(req.Members)))
 }
 
 // deleteProject -.

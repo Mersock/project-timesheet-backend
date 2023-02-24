@@ -34,7 +34,13 @@ type UpdateProjectReq struct {
 	Name string `form:"name" json:"name" binding:"required"`
 }
 
-// DeleteProjectReq -.
+// UpdateProjectAddMoreMemberReq -.
+type UpdateProjectAddMoreMemberReq struct {
+	ID      int      `binding:"required,numeric"`
+	Members []*int64 `form:"members" json:"members" binding:"required,min=1"`
+}
+
+// DeleteProjectByReq -.
 type DeleteProjectByReq struct {
 	ID int `uri:"id" binding:"required,numeric"`
 }

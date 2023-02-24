@@ -53,7 +53,7 @@ func (r *ReportRepo) SelectWorkType(req request.GetWorkTypeReportReq) ([]entity.
 	}
 	for results.Next() {
 		var e entity.ReportWorkType
-		err = results.Scan(&e.WorkTypeID, &e.WorkTypeName, &e.ProjectName, &e.Total)
+		err = results.Scan(&e.WorkTypeID, &e.WorkTypeName, &e.ProjectName, &e.TotalSeconds)
 		entities = append(entities, e)
 	}
 

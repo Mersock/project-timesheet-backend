@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/Mersock/project-timesheet-backend/internal/entity"
 	"github.com/Mersock/project-timesheet-backend/internal/request"
+	"time"
 )
 
 // ReportUseCase -.
@@ -33,5 +34,13 @@ func (pc *ReportUseCase) GetAllWorkType(req request.GetWorkTypeReportReq) ([]ent
 	if err != nil {
 		return nil, fmt.Errorf("ProjectsUseCase - GetAllRoles - uc.repo.Select: %w", err)
 	}
+
+	//mapping time
+	for i, workType := range workTypes {
+		t := time.Unix(int64(*workType.TotalSeconds), 10)
+		totalTime := t.UTC().Format("15:04:05")
+		workTypes[i].TotalTime = &totalTime
+	}
+
 	return workTypes, nil
 }

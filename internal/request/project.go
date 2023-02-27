@@ -37,7 +37,7 @@ type UpdateProjectReq struct {
 // UpdateProjectAddMoreMemberReq -.
 type UpdateProjectAddMoreMemberReq struct {
 	ID      int      `binding:"required,numeric"`
-	Members []*int64 `form:"members" json:"members" binding:"required,min=1"`
+	Members []string `form:"members" json:"members" binding:"required,min=1"`
 }
 
 // DeleteProjectByReq -.

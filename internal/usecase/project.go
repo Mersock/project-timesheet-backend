@@ -166,15 +166,13 @@ func (pc *ProjectsUseCase) UpdateProjectAddMoreMember(req request.UpdateProjectA
 	}
 
 	//add member to project
-	//if req.Members != nil {
-	//	for _, userID := range req.Members {
-	//		tx, err = pc.dutyRepo.Insert(tx, int64(req.ID), *userID, false)
-	//		if err != nil {
-	//			tx.Rollback()
-	//			return fmt.Errorf("ProjectsUseCase - UpdateProjectAddMoreMember - pc.repo.Insert - member: %w", err)
-	//		}
-	//	}
-	//}
+	if req.Members != nil {
+		tx, err = pc.dutyRepo.InsertMember(tx, int64(req.ID), req.Members)
+		if err != nil {
+			tx.Rollback()
+			return fmt.Errorf("ProjectsUseCase - UpdateProjectAddMoreMember - pc.repo.Insert - member: %w", err)
+		}
+	}
 
 	tx.Commit()
 

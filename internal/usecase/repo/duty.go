@@ -32,8 +32,10 @@ func (r *DutiesRepo) InsertOwner(tx *sql.Tx, projectID int64, OwnerUserID int64)
 // InsertMember -.
 func (r *DutiesRepo) InsertMember(tx *sql.Tx, projectID int64, members []string) (*sql.Tx, error) {
 
-	sqlRaw := "INSERT INTO duties (project_id,user_id,is_owner) SELECT ? as project_id, users.id, false as is_owner from users where users.email in (?)"
-	_, err := tx.Exec(sqlRaw, projectID, strings.Join(members, ","))
+	sqlRaw := "INSERT INTO duties (project_id,user_id,is_owner) "
+	sqlRaw += "SELECT ? AS project_id, users.id, false AS is_owner FROM users WHERE users.email IN (?)"
+	sqlRaw += "AND users.id NOT IN (SELECT user_id FROM duties WHERE users.id = duties.user_id AND duties.project_id = ?)"
+	_, err := tx.Exec(sqlRaw, projectID, strings.Join(members, ","), projectID)
 
 	if err != nil {
 		return tx, fmt.Errorf("DutiesRepo - InsertMember - r.DB.Exec: %w", err)

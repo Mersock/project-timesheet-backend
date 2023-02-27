@@ -123,7 +123,7 @@ func (r projectsRoutes) createProject(c *gin.Context) {
 	code, _ := uuid.NewRandom()
 	userId, _ := strconv.ParseInt(c.Request.Header.Get("x-user-id"), 10, 64)
 	req.Code = code
-	req.UserOwnerID = userId
+	req.OwnerUserID = userId
 
 	//validator
 	if err := c.ShouldBind(&req); err != nil {

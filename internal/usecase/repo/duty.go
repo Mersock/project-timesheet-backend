@@ -3,6 +3,7 @@ package repo
 import (
 	"database/sql"
 	"fmt"
+	"strings"
 )
 
 // DutiesRepo -.
@@ -15,14 +16,27 @@ func NewDutiesRepo(db *sql.DB) *DutiesRepo {
 	return &DutiesRepo{db}
 }
 
-// Insert -.
-func (r *DutiesRepo) Insert(tx *sql.Tx, projectID int64, userID int64, isOwner bool) (*sql.Tx, error) {
+// InsertOwner -.
+func (r *DutiesRepo) InsertOwner(tx *sql.Tx, projectID int64, OwnerUserID int64) (*sql.Tx, error) {
 
 	sqlRaw := "INSERT INTO duties (project_id,user_id,is_owner) values (?,?,?) "
-	_, err := tx.Exec(sqlRaw, projectID, userID, isOwner)
+	_, err := tx.Exec(sqlRaw, projectID, OwnerUserID, true)
 
 	if err != nil {
-		return tx, fmt.Errorf("DutiesRepo - Insert - r.DB.Exec: %w", err)
+		return tx, fmt.Errorf("DutiesRepo - InsertOwner - r.DB.Exec: %w", err)
+	}
+
+	return tx, nil
+}
+
+// InsertMember -.
+func (r *DutiesRepo) InsertMember(tx *sql.Tx, projectID int64, members []string) (*sql.Tx, error) {
+
+	sqlRaw := "INSERT INTO duties (project_id,user_id,is_owner) SELECT ? as project_id, users.id, false as is_owner from users where users.email in (?)"
+	_, err := tx.Exec(sqlRaw, projectID, strings.Join(members, ","))
+
+	if err != nil {
+		return tx, fmt.Errorf("DutiesRepo - InsertMember - r.DB.Exec: %w", err)
 	}
 
 	return tx, nil

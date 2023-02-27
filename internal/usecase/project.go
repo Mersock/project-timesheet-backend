@@ -94,29 +94,27 @@ func (pc *ProjectsUseCase) CreateProject(req request.CreateProjectReq) (int64, e
 	}
 
 	//create by owner
-	tx, err = pc.dutyRepo.Insert(tx, projectID, req.UserOwnerID, true)
+	tx, err = pc.dutyRepo.InsertOwner(tx, projectID, req.OwnerUserID)
 	if err != nil {
 		tx.Rollback()
-		return projectID, fmt.Errorf("ProjectsUseCase - CreateProject - pc.repo.InsertDuties - owner: %w", err)
+		return projectID, fmt.Errorf("ProjectsUseCase - CreateProject - pc.repo.InsertOwner - owner: %w", err)
 	}
 
 	//add member to project
-	if req.Members != nil {
-		for _, userID := range req.Members {
-			tx, err = pc.dutyRepo.Insert(tx, projectID, *userID, false)
-			if err != nil {
-				tx.Rollback()
-				return projectID, fmt.Errorf("ProjectsUseCase - CreateProject - pc.repo.InsertDuties - member: %w", err)
-			}
+	if len(req.Members) != 0 {
+		tx, err = pc.dutyRepo.InsertMember(tx, projectID, req.Members)
+		if err != nil {
+			tx.Rollback()
+			return projectID, fmt.Errorf("ProjectsUseCase - CreateProject - pc.repo.InsertDuties - member: %w", err)
 		}
 	}
 
 	//add work type to project
-	if req.WorkTypes != nil {
+	if len(req.WorkTypes) != 0 {
 		for _, name := range req.WorkTypes {
 			reqWorkType := request.CreateWorkTypeReq{
 				ProjectID: projectID,
-				Name:      *name,
+				Name:      name,
 			}
 
 			tx, _, err = pc.workTypeRepo.InsertWithProject(tx, reqWorkType)
@@ -168,15 +166,15 @@ func (pc *ProjectsUseCase) UpdateProjectAddMoreMember(req request.UpdateProjectA
 	}
 
 	//add member to project
-	if req.Members != nil {
-		for _, userID := range req.Members {
-			tx, err = pc.dutyRepo.Insert(tx, int64(req.ID), *userID, false)
-			if err != nil {
-				tx.Rollback()
-				return fmt.Errorf("ProjectsUseCase - UpdateProjectAddMoreMember - pc.repo.Insert - member: %w", err)
-			}
-		}
-	}
+	//if req.Members != nil {
+	//	for _, userID := range req.Members {
+	//		tx, err = pc.dutyRepo.Insert(tx, int64(req.ID), *userID, false)
+	//		if err != nil {
+	//			tx.Rollback()
+	//			return fmt.Errorf("ProjectsUseCase - UpdateProjectAddMoreMember - pc.repo.Insert - member: %w", err)
+	//		}
+	//	}
+	//}
 
 	tx.Commit()
 

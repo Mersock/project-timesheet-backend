@@ -64,6 +64,6 @@ func (r reportRoutes) getWorkTypeReport(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, response.GetReportWorkTypeRes{
-		WorkTypeReport: workTypeReport,
+		Data: workTypeReport,
 	})
 }

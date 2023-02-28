@@ -10,7 +10,7 @@ import (
 type (
 	// Report -.
 	Report interface {
-		GetAllWorkType(req request.GetWorkTypeReportReq) ([]entity.ReportWorkType, error)
+		GetAllWorkType(req request.GetWorkTypeReportReq) (response.GroupWorkTypeReport, error)
 		GetWorkTypeCount(req request.GetWorkTypeReportReq) (int, error)
 	}
 

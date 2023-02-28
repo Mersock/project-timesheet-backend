@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/Mersock/project-timesheet-backend/internal/entity"
 	"github.com/Mersock/project-timesheet-backend/internal/request"
+	"github.com/Mersock/project-timesheet-backend/internal/response"
 	"time"
 )
 
@@ -29,14 +30,18 @@ func (pc *ReportUseCase) GetWorkTypeCount(req request.GetWorkTypeReportReq) (int
 }
 
 // GetAllWorkType -.
-func (pc *ReportUseCase) GetAllWorkType(req request.GetWorkTypeReportReq) ([]entity.ReportWorkType, error) {
+func (pc *ReportUseCase) GetAllWorkType(req request.GetWorkTypeReportReq) (response.GroupWorkTypeReport, error) {
+	var res response.GroupWorkTypeReport
+
 	workTypes, err := pc.repo.SelectWorkType(req)
 	if err != nil {
-		return nil, fmt.Errorf("ProjectsUseCase - GetAllRoles - uc.repo.Select: %w", err)
+		return res, fmt.Errorf("ProjectsUseCase - GetAllRoles - uc.repo.Select: %w", err)
 	}
 	workTypes = pc.calWorkTypeTotalTime(workTypes)
 
-	return workTypes, nil
+	res = pc.groupWorkTypeReport(workTypes)
+
+	return res, nil
 }
 
 // calWorkTypeTotalTime
@@ -48,4 +53,22 @@ func (pc *ReportUseCase) calWorkTypeTotalTime(workTypes []entity.ReportWorkType)
 		workTypes[i].TotalTime = &totalTime
 	}
 	return workTypes
+}
+
+// groupWorkTypeReport
+func (pc *ReportUseCase) groupWorkTypeReport(workTypes []entity.ReportWorkType) response.GroupWorkTypeReport {
+	var res response.GroupWorkTypeReport
+
+	for _, workType := range workTypes {
+		var report response.WorkTypesReport
+		res.ProjectID = *workType.ProjectID
+		res.ProjectName = *workType.ProjectName
+		report.WorkTypeID = *workType.WorkTypeID
+		report.WorkTypeName = *workType.WorkTypeName
+		report.TotalSeconds = *workType.TotalSeconds
+		report.TotalTime = *workType.TotalTime
+		res.WorkTypes = append(res.WorkTypes, report)
+	}
+
+	return res
 }

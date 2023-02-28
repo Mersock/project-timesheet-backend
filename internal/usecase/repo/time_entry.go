@@ -46,6 +46,7 @@ func (r *TimeEntryRepo) Select(req request.GetTimeEntryReq) ([]entity.TimeEntryL
 	sqlRaw += "time_entries.start_time, "
 	sqlRaw += "time_entries.end_time, "
 	sqlRaw += "projects.name project_name, "
+	sqlRaw += "projects.code project_code, "
 	sqlRaw += "users.email,"
 	sqlRaw += "users.firstname, "
 	sqlRaw += "users.lastname, "
@@ -68,7 +69,7 @@ func (r *TimeEntryRepo) Select(req request.GetTimeEntryReq) ([]entity.TimeEntryL
 	for results.Next() {
 		var e entity.TimeEntryList
 		err = results.Scan(&e.ID, &e.Status, &e.WorkType, &e.StartTime, &e.EndTime, &e.ProjectName,
-			&e.Email, &e.Firstname, &e.Lastname, &e.CreateAt, &e.UpdateAt)
+			&e.ProjectCode, &e.Email, &e.Firstname, &e.Lastname, &e.CreateAt, &e.UpdateAt)
 		entities = append(entities, e)
 	}
 

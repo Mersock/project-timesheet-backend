@@ -20,6 +20,7 @@ type TimeEntryList struct {
 	StartTime   *time.Time `json:"start_time"`
 	EndTime     *time.Time `json:"end_time"`
 	WorkType    *string    `json:"work_type"`
+	ProjectCode *string    `json:"project_code"`
 	ProjectName *string    `json:"project_name"`
 	Email       *string    `json:"email"`
 	Firstname   *string    `json:"firstname"`

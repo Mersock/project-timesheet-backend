@@ -22,7 +22,6 @@ type TimeEntryList struct {
 	WorkType    *string    `json:"work_type"`
 	ProjectCode *string    `json:"project_code"`
 	ProjectName *string    `json:"project_name"`
-	Email       *string    `json:"email"`
 	Firstname   *string    `json:"firstname"`
 	Lastname    *string    `json:"lastname"`
 	CreateAt    *time.Time `json:"created_at"`

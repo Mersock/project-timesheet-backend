@@ -47,7 +47,6 @@ func (r *TimeEntryRepo) Select(req request.GetTimeEntryReq) ([]entity.TimeEntryL
 	sqlRaw += "time_entries.end_time, "
 	sqlRaw += "projects.name project_name, "
 	sqlRaw += "projects.code project_code, "
-	sqlRaw += "users.email,"
 	sqlRaw += "users.firstname, "
 	sqlRaw += "users.lastname, "
 	sqlRaw += "time_entries.created_at,"
@@ -69,7 +68,7 @@ func (r *TimeEntryRepo) Select(req request.GetTimeEntryReq) ([]entity.TimeEntryL
 	for results.Next() {
 		var e entity.TimeEntryList
 		err = results.Scan(&e.ID, &e.Status, &e.WorkType, &e.StartTime, &e.EndTime, &e.ProjectName,
-			&e.ProjectCode, &e.Email, &e.Firstname, &e.Lastname, &e.CreateAt, &e.UpdateAt)
+			&e.ProjectCode, &e.Firstname, &e.Lastname, &e.CreateAt, &e.UpdateAt)
 		entities = append(entities, e)
 	}
 
@@ -87,7 +86,7 @@ func (r *TimeEntryRepo) SelectByID(timeEntryID int) (entity.TimeEntryList, error
 	sqlRaw += "time_entries.start_time, "
 	sqlRaw += "time_entries.end_time, "
 	sqlRaw += "projects.name project_name, "
-	sqlRaw += "users.email,"
+	sqlRaw += "projects.code project_code, "
 	sqlRaw += "users.firstname, "
 	sqlRaw += "users.lastname, "
 	sqlRaw += "time_entries.created_at,"
@@ -99,7 +98,7 @@ func (r *TimeEntryRepo) SelectByID(timeEntryID int) (entity.TimeEntryList, error
 	sqlRaw += "INNER JOIN users ON time_entries.user_id = users.id "
 	sqlRaw += "WHERE time_entries.id = ?"
 	err := r.DB.QueryRow(sqlRaw, timeEntryID).Scan(&e.ID, &e.Status, &e.WorkType, &e.StartTime, &e.EndTime, &e.ProjectName,
-		&e.Email, &e.Firstname, &e.Lastname, &e.CreateAt, &e.UpdateAt)
+		&e.ProjectCode, &e.Firstname, &e.Lastname, &e.CreateAt, &e.UpdateAt)
 	if err != nil {
 		return e, fmt.Errorf("TimeEntryRepo - SelectByID - r.DB.Query: %w", err)
 	}

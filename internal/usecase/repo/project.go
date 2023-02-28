@@ -51,7 +51,6 @@ func (r *ProjectRepo) Select(req request.GetProjectsReq) ([]entity.Projects, err
 
 	sqlRaw := "SELECT id,name,code,created_at,updated_at "
 	sqlRaw += "FROM projects "
-	sqlRaw += "INNER JOIN duties ON duties.project_id = projects.id "
 	sqlRaw += "WHERE 1=1 "
 	sqlSelect := r.genRawSelectWithReq(sqlRaw, req)
 	mainQuery := r.genPaginateQuery(sqlSelect, req)

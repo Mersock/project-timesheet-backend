@@ -34,13 +34,18 @@ func (pc *ReportUseCase) GetAllWorkType(req request.GetWorkTypeReportReq) ([]ent
 	if err != nil {
 		return nil, fmt.Errorf("ProjectsUseCase - GetAllRoles - uc.repo.Select: %w", err)
 	}
+	workTypes = pc.calWorkTypeTotalTime(workTypes)
 
+	return workTypes, nil
+}
+
+// calWorkTypeTotalTime
+func (pc *ReportUseCase) calWorkTypeTotalTime(workTypes []entity.ReportWorkType) []entity.ReportWorkType {
 	//mapping time
 	for i, workType := range workTypes {
 		t := time.Unix(int64(*workType.TotalSeconds), 10)
 		totalTime := t.UTC().Format("15:04:05")
 		workTypes[i].TotalTime = &totalTime
 	}
-
-	return workTypes, nil
+	return workTypes
 }

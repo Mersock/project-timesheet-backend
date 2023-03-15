@@ -24,12 +24,12 @@ func newReportRoutes(handler *gin.RouterGroup, ru usecase.Report, l logger.Inter
 
 	h := handler.Group("/report")
 	{
-		h.POST("/workType", r.getWorkTypeReport)
+		h.POST("/totalTime", r.getTotalReport)
 	}
 }
 
 // getReport -.
-func (r reportRoutes) getWorkTypeReport(c *gin.Context) {
+func (r reportRoutes) getTotalReport(c *gin.Context) {
 	var req request.GetWorkTypeReportReq
 
 	//validator

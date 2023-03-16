@@ -33,7 +33,6 @@ func (r *ProjectRepo) Count(req request.GetProjectsReq) (int, error) {
 
 	sqlRaw := "SELECT COUNT(*) "
 	sqlRaw += "FROM projects "
-	sqlRaw += "INNER JOIN duties ON duties.project_id = projects.id "
 	sqlRaw += "WHERE 1=1 "
 	sqlCount := r.genRawSelectWithReq(sqlRaw, req)
 
@@ -78,7 +77,6 @@ func (r *ProjectRepo) SelectById(projectID int) (entity.Projects, error) {
 
 	sqlRaw := "SELECT id,name,code,created_at,updated_at "
 	sqlRaw += "FROM projects "
-	sqlRaw += "INNER JOIN duties ON duties.project_id = projects.id "
 	sqlRaw += "WHERE id = ? "
 	err := r.DB.QueryRow(sqlRaw, projectID).Scan(&entity.ID,
 		&entity.Name,

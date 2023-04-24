@@ -2,6 +2,8 @@ package app
 
 import (
 	"fmt"
+	"os"
+
 	"github.com/Mersock/project-timesheet-backend/config"
 	v1 "github.com/Mersock/project-timesheet-backend/internal/controller/http/v1"
 	"github.com/Mersock/project-timesheet-backend/internal/usecase"
@@ -11,10 +13,10 @@ import (
 	"github.com/Mersock/project-timesheet-backend/pkg/logger"
 	"github.com/Mersock/project-timesheet-backend/pkg/mysql"
 	"github.com/Mersock/project-timesheet-backend/pkg/token"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"github.com/go-playground/validator/v10"
-	"os"
 )
 
 func Run(cfg *config.Config) {
@@ -67,6 +69,14 @@ func Run(cfg *config.Config) {
 
 	//HTTP server
 	handler := gin.New()
+
+	// allow cors
+	handler.Use(cors.New(cors.Config{
+		AllowOrigins: []string{"*"},
+		AllowMethods: []string{"POST", "PUT", "PATCH", "DELETE"},
+		AllowHeaders: []string{"Content-Type,access-control-allow-origin, access-control-allow-headers"},
+	}))
+
 	v1.NewRouter(
 		handler,
 		l,

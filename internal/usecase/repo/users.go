@@ -3,6 +3,7 @@ package repo
 import (
 	"database/sql"
 	"fmt"
+
 	"github.com/Mersock/project-timesheet-backend/internal/entity"
 	"github.com/Mersock/project-timesheet-backend/internal/request"
 )
@@ -41,7 +42,7 @@ func (r *UsersRepo) Select(req request.GetUsersReq) ([]entity.Users, error) {
 
 	sqlRaw := "SELECT users.id, email, firstname, lastname, users.created_at, users.updated_at,roles.name as role "
 	sqlRaw += "FROM users "
-	sqlRaw += "INNER JOIN roles ON roles.id = users.id "
+	sqlRaw += "INNER JOIN roles ON roles.id = users.role_id "
 	sqlRaw += "WHERE 1=1 "
 	sqlSelect := r.genRawSelectWithReq(sqlRaw, req)
 	mainQuery := r.genPaginateQuery(sqlSelect, req)

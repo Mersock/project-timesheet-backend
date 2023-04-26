@@ -3,6 +3,9 @@ package v1
 import (
 	"database/sql"
 	"errors"
+	"net/http"
+	"strconv"
+
 	"github.com/Mersock/project-timesheet-backend/internal/request"
 	"github.com/Mersock/project-timesheet-backend/internal/response"
 	"github.com/Mersock/project-timesheet-backend/internal/usecase"
@@ -10,8 +13,6 @@ import (
 	"github.com/Mersock/project-timesheet-backend/pkg/logger"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
-	"net/http"
-	"strconv"
 )
 
 // rolesRoutes -.
@@ -29,7 +30,7 @@ func newRolesRoutes(handler *gin.RouterGroup, ru usecase.Roles, l logger.Interfa
 		h.GET("", r.getRoles)
 		h.GET("/:id", r.getRoleByID)
 		h.POST("", r.createRole)
-		h.PATCH("/:id", r.updateRole)
+		h.PUT("/:id", r.updateRole)
 		h.DELETE("/:id", r.deleteRole)
 	}
 

@@ -3,6 +3,9 @@ package v1
 import (
 	"database/sql"
 	"errors"
+	"net/http"
+	"strconv"
+
 	"github.com/Mersock/project-timesheet-backend/internal/request"
 	"github.com/Mersock/project-timesheet-backend/internal/response"
 	"github.com/Mersock/project-timesheet-backend/internal/usecase"
@@ -10,8 +13,6 @@ import (
 	"github.com/Mersock/project-timesheet-backend/pkg/logger"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
-	"net/http"
-	"strconv"
 )
 
 // statusRoutes -.
@@ -29,7 +30,7 @@ func newStatusRoutes(handler *gin.RouterGroup, su usecase.Status, l logger.Inter
 		h.GET("", r.getStatus)
 		h.GET("/:id", r.getStatusByID)
 		h.POST("", r.createStatus)
-		h.PATCH("/:id", r.updateStatus)
+		h.PUT("/:id", r.updateStatus)
 		h.DELETE("/:id", r.deleteStatus)
 	}
 

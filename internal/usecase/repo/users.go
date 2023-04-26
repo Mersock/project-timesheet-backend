@@ -67,7 +67,7 @@ func (r *UsersRepo) SelectById(userID int) (entity.Users, error) {
 
 	sqlRaw := "SELECT users.id, email, firstname, lastname, users.created_at, users.updated_at,roles.name as role "
 	sqlRaw += "FROM users "
-	sqlRaw += "INNER JOIN roles ON roles.id = users.id "
+	sqlRaw += "INNER JOIN roles ON roles.id = users.role_id "
 	sqlRaw += "WHERE users.id = ? "
 	err := r.DB.QueryRow(sqlRaw, userID).Scan(&entity.ID,
 		&entity.Email,

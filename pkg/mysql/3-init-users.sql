@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS `users`(
     updated_at timestamp,
     role_id int NOT NULL,
     PRIMARY KEY (id),
-    FOREIGN KEY (role_id) REFERENCES roles(id)
+    FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE
 );
 
 INSERT INTO project_timesheet.users (email, password, firstname, lastname, created_at, role_id) VALUES('admin@admin.com', '$2a$10$gAreEmMmURzzwIwUtYWabupsgI4/MgVnIP5cpCQ2tUFMeMqMmDOOC', 'admin', 'admin', CURRENT_TIMESTAMP(), 1);

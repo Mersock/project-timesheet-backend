@@ -3,6 +3,7 @@ package repo
 import (
 	"database/sql"
 	"fmt"
+
 	"github.com/Mersock/project-timesheet-backend/internal/entity"
 	"github.com/Mersock/project-timesheet-backend/internal/request"
 )
@@ -41,14 +42,46 @@ func (r *WorkTypesRepo) InsertWithProject(tx *sql.Tx, req request.CreateWorkType
 	sqlRaw := "INSERT INTO work_types (name,project_id,created_at) values (?,?,NOW()) "
 	result, err := tx.Exec(sqlRaw, req.Name, req.ProjectID)
 	if err != nil {
-		return tx, insertId, fmt.Errorf("WorkTypesRepo - Insert - r.DB.Exec: %w", err)
+		return tx, insertId, fmt.Errorf("WorkTypesRepo - InsertWithProject - r.DB.Exec: %w", err)
 	}
 	insertId, err = result.LastInsertId()
 	if err != nil {
-		return tx, insertId, fmt.Errorf("WorkTypesRepo - Insert - result.LastInsertId: %w", err)
+		return tx, insertId, fmt.Errorf("WorkTypesRepo - InsertWithProject - result.LastInsertId: %w", err)
 	}
 
 	return tx, insertId, nil
+}
+
+// UpdateWithProject -.
+func (r *WorkTypesRepo) UpdateWithProject(tx *sql.Tx, req request.UpdateWorkTypeReq) (*sql.Tx, int64, error) {
+	var insertId int64
+
+	sqlRaw := "UPDATE work_types SET name = ?, updated_at = NOW() WHERE id = ?"
+	result, err := tx.Exec(sqlRaw, req.Name, req.ID)
+	if err != nil {
+		return tx, insertId, fmt.Errorf("WorkTypesRepo - UpdateWithProject - r.DB.Exec: %w", err)
+	}
+	insertId, err = result.LastInsertId()
+	if err != nil {
+		return tx, insertId, fmt.Errorf("WorkTypesRepo - UpdateWithProject - result.LastInsertId: %w", err)
+	}
+
+	return tx, insertId, nil
+}
+
+// Delete -.
+func (r *WorkTypesRepo) DeleteWithProject(tx *sql.Tx, req request.DeleteWorkTypeReq) (*sql.Tx, int64, error) {
+	var rowAffected int64
+	sqlRaw := "DELETE FROM work_types WHERE id = ?"
+	result, err := tx.Exec(sqlRaw, req.ID)
+	if err != nil {
+		return tx, rowAffected, fmt.Errorf("WorkTypesRepo - Delete - r.DB.Exec: %w", err)
+	}
+	rowAffected, err = result.RowsAffected()
+	if err != nil {
+		return tx, rowAffected, fmt.Errorf("WorkTypesRepo - Delete - result.rowAffected: %w", err)
+	}
+	return tx, rowAffected, nil
 }
 
 // SelectById -.

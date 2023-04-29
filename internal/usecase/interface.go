@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"database/sql"
+
 	"github.com/Mersock/project-timesheet-backend/internal/entity"
 	"github.com/Mersock/project-timesheet-backend/internal/request"
 	"github.com/Mersock/project-timesheet-backend/internal/response"
@@ -74,6 +75,8 @@ type (
 	//WorkTypeRepo -.
 	WorkTypeRepo interface {
 		InsertWithProject(tx *sql.Tx, req request.CreateWorkTypeReq) (*sql.Tx, int64, error)
+		UpdateWithProject(tx *sql.Tx, req request.UpdateWorkTypeReq) (*sql.Tx, int64, error)
+		DeleteWithProject(tx *sql.Tx, req request.DeleteWorkTypeReq) (*sql.Tx, int64, error)
 		Insert(req request.CreateWorkTypeReq) (int64, error)
 		SelectById(workTypeID int) (entity.WorkTypes, error)
 		SelectByProjectId(projectID int) ([]entity.WorkTypes, error)
@@ -109,7 +112,7 @@ type (
 		SelectById(projectID int) (entity.Projects, error)
 		SelectByIdWithUser(projectID int) ([]entity.ProjectsWithUser, error)
 		Insert(tx *sql.Tx, req request.CreateProjectReq) (*sql.Tx, int64, error)
-		Update(req request.UpdateProjectReq) (int64, error)
+		Update(tx *sql.Tx, req request.UpdateProjectReq) (*sql.Tx, int64, error)
 		Delete(req request.DeleteProjectByReq) (int64, error)
 	}
 

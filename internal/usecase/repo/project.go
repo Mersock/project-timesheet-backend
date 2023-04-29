@@ -3,6 +3,7 @@ package repo
 import (
 	"database/sql"
 	"fmt"
+
 	"github.com/Mersock/project-timesheet-backend/internal/entity"
 	"github.com/Mersock/project-timesheet-backend/internal/request"
 )
@@ -139,18 +140,18 @@ func (r *ProjectRepo) Insert(tx *sql.Tx, req request.CreateProjectReq) (*sql.Tx,
 }
 
 // Update -.
-func (r *ProjectRepo) Update(req request.UpdateProjectReq) (int64, error) {
+func (r *ProjectRepo) Update(tx *sql.Tx, req request.UpdateProjectReq) (*sql.Tx, int64, error) {
 	var rowAffected int64
 	sqlRaw := "UPDATE projects SET name = ?, updated_at = NOW() WHERE id = ?"
-	result, err := r.DB.Exec(sqlRaw, req.Name, req.ID)
+	result, err := tx.Exec(sqlRaw, req.Name, req.ID)
 	if err != nil {
-		return rowAffected, fmt.Errorf("ProjectRepo - Update - r.DB.Exec: %w", err)
+		return tx, rowAffected, fmt.Errorf("ProjectRepo - Update - r.DB.Exec: %w", err)
 	}
 	rowAffected, err = result.RowsAffected()
 	if err != nil {
-		return rowAffected, fmt.Errorf("ProjectRepo - Update - result.rowAffected: %w", err)
+		return tx, rowAffected, fmt.Errorf("ProjectRepo - Update - result.rowAffected: %w", err)
 	}
-	return rowAffected, nil
+	return tx, rowAffected, nil
 }
 
 // Delete -.

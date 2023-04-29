@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+
 	"github.com/Mersock/project-timesheet-backend/internal/entity"
 	"github.com/Mersock/project-timesheet-backend/internal/request"
 )
@@ -142,10 +143,62 @@ func (pc *ProjectsUseCase) UpdateProject(req request.UpdateProjectReq) (int64, e
 		return rowAffected, fmt.Errorf("ProjectsUseCase - UpdateProject - uc.repo.SelectById: %w", err)
 	}
 
-	rowAffected, err = pc.repo.Update(req)
+	tx, err := pc.repo.BeginTx()
+	if err != nil {
+		return rowAffected, fmt.Errorf("ProjectsUseCase - UpdateProject - pc.repo.BeginTx: %w", err)
+	}
+
+	tx, rowAffected, err = pc.repo.Update(tx, req)
 	if err != nil {
 		return rowAffected, fmt.Errorf("ProjectsUseCase - UpdateProject - uc.repo.Update: %w", err)
 	}
+
+	//add work type to project
+	if len(req.AddWorkTypes) != 0 {
+		for _, name := range req.AddWorkTypes {
+			reqWorkType := request.CreateWorkTypeReq{
+				Name:      name,
+				ProjectID: int64(req.ID),
+			}
+
+			tx, _, err = pc.workTypeRepo.InsertWithProject(tx, reqWorkType)
+			if err != nil {
+				tx.Rollback()
+				return rowAffected, fmt.Errorf("ProjectsUseCase - CreateProject - pc.workTypeRepo.InsertWithProject - member: %w", err)
+			}
+		}
+	}
+
+	//update work to project
+	if len(req.EditWorkTypes) != 0 {
+		for _, obj := range req.EditWorkTypes {
+			reqWorkType := request.UpdateWorkTypeReq{
+				Name: obj.Name,
+				ID:   obj.ID,
+			}
+
+			tx, _, err = pc.workTypeRepo.UpdateWithProject(tx, reqWorkType)
+			if err != nil {
+				tx.Rollback()
+				return rowAffected, fmt.Errorf("ProjectsUseCase - CreateProject - pc.workTypeRepo.UpdateWithProject - member: %w", err)
+			}
+		}
+	}
+
+	//delete worktype
+	if len(req.DeleteWorkTypes) != 0 {
+		for _, id := range req.DeleteWorkTypes {
+			reqWorkType := request.DeleteWorkTypeReq{
+				ID: id,
+			}
+			tx, _, err = pc.workTypeRepo.DeleteWithProject(tx, reqWorkType)
+			if err != nil {
+				tx.Rollback()
+				return rowAffected, fmt.Errorf("ProjectsUseCase - CreateProject - pc.workTypeRepo.UpdateWithProject - member: %w", err)
+			}
+		}
+	}
+
 	return rowAffected, nil
 }
 

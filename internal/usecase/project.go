@@ -103,10 +103,12 @@ func (pc *ProjectsUseCase) CreateProject(req request.CreateProjectReq) (int64, e
 
 	//add member to project
 	if len(req.Members) != 0 {
-		tx, err = pc.dutyRepo.InsertMember(tx, projectID, req.Members)
-		if err != nil {
-			tx.Rollback()
-			return projectID, fmt.Errorf("ProjectsUseCase - CreateProject - pc.repo.InsertDuties - member: %w", err)
+		for _, member := range req.Members {
+			tx, err = pc.dutyRepo.InsertMember(tx, projectID, member)
+			if err != nil {
+				tx.Rollback()
+				return projectID, fmt.Errorf("ProjectsUseCase - CreateProject - pc.repo.InsertDuties - member: %w", err)
+			}
 		}
 	}
 
@@ -152,6 +154,17 @@ func (pc *ProjectsUseCase) UpdateProject(req request.UpdateProjectReq) (int64, e
 	if err != nil {
 		tx.Rollback()
 		return rowAffected, fmt.Errorf("ProjectsUseCase - UpdateProject - uc.repo.Update: %w", err)
+	}
+
+	//add member to project
+	if len(req.Members) != 0 {
+		for _, member := range req.Members {
+			tx, err = pc.dutyRepo.InsertMember(tx, int64(req.ID), member)
+			if err != nil {
+				tx.Rollback()
+				return rowAffected, fmt.Errorf("ProjectsUseCase - UpdateProject - pc.repo.InsertMember - member: %w", err)
+			}
+		}
 	}
 
 	//add work type to project
@@ -223,10 +236,12 @@ func (pc *ProjectsUseCase) UpdateProjectAddMoreMember(req request.UpdateProjectA
 
 	//add member to project
 	if req.Members != nil {
-		tx, err = pc.dutyRepo.InsertMember(tx, int64(req.ID), req.Members)
-		if err != nil {
-			tx.Rollback()
-			return fmt.Errorf("ProjectsUseCase - UpdateProjectAddMoreMember - pc.repo.Insert - member: %w", err)
+		for _, member := range req.Members {
+			tx, err = pc.dutyRepo.InsertMember(tx, int64(req.ID), member)
+			if err != nil {
+				tx.Rollback()
+				return fmt.Errorf("ProjectsUseCase - UpdateProjectAddMoreMember - pc.repo.Insert - member: %w", err)
+			}
 		}
 	}
 

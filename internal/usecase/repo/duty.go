@@ -3,7 +3,6 @@ package repo
 import (
 	"database/sql"
 	"fmt"
-	"strings"
 )
 
 // DutiesRepo -.
@@ -30,12 +29,12 @@ func (r *DutiesRepo) InsertOwner(tx *sql.Tx, projectID int64, OwnerUserID int64)
 }
 
 // InsertMember -.
-func (r *DutiesRepo) InsertMember(tx *sql.Tx, projectID int64, members []string) (*sql.Tx, error) {
+func (r *DutiesRepo) InsertMember(tx *sql.Tx, projectID int64, member string) (*sql.Tx, error) {
 
 	sqlRaw := "INSERT INTO duties (project_id,user_id,is_owner) "
 	sqlRaw += "SELECT ? AS project_id, users.id, false AS is_owner FROM users WHERE users.email IN (?)"
 	sqlRaw += "AND users.id NOT IN (SELECT user_id FROM duties WHERE users.id = duties.user_id AND duties.project_id = ?)"
-	_, err := tx.Exec(sqlRaw, projectID, strings.Join(members, ","), projectID)
+	_, err := tx.Exec(sqlRaw, projectID, member, projectID)
 
 	if err != nil {
 		return tx, fmt.Errorf("DutiesRepo - InsertMember - r.DB.Exec: %w", err)

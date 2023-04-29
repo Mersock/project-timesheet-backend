@@ -87,7 +87,7 @@ type (
 	// DutyRepo -.
 	DutyRepo interface {
 		InsertOwner(tx *sql.Tx, projectID, ownerUserID int64) (*sql.Tx, error)
-		InsertMember(tx *sql.Tx, projectID int64, member []string) (*sql.Tx, error)
+		InsertMember(tx *sql.Tx, projectID int64, member string) (*sql.Tx, error)
 		Delete(projectID int64, userID int64) (int64, error)
 	}
 

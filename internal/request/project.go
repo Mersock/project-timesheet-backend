@@ -30,8 +30,16 @@ type CreateProjectReq struct {
 
 // UpdateProjectReq -.
 type UpdateProjectReq struct {
-	ID   int    `binding:"required,numeric"`
-	Name string `form:"name" json:"name" binding:"required"`
+	ID              int                         `binding:"required,numeric"`
+	Name            string                      `form:"name" json:"name" binding:"required"`
+	AddWorkTypes    []string                    `form:"add_work_types" json:"add_work_types" binding:"omitempty,min=1"`
+	DeleteWorkTypes []int                       `form:"delete_work_types" json:"delete_work_types" binding:"omitempty,min=1"`
+	EditWorkTypes   []UpdateProjectWithWorkType `form:"edit_work_types" json:"edit_work_types" binding:"omitempty,min=1"`
+}
+
+type UpdateProjectWithWorkType struct {
+	ID   int    `form:"id" json:"id"`
+	Name string `form:"name" json:"name"`
 }
 
 // UpdateProjectAddMoreMemberReq -.

@@ -150,6 +150,7 @@ func (pc *ProjectsUseCase) UpdateProject(req request.UpdateProjectReq) (int64, e
 
 	tx, rowAffected, err = pc.repo.Update(tx, req)
 	if err != nil {
+		tx.Rollback()
 		return rowAffected, fmt.Errorf("ProjectsUseCase - UpdateProject - uc.repo.Update: %w", err)
 	}
 
@@ -198,6 +199,8 @@ func (pc *ProjectsUseCase) UpdateProject(req request.UpdateProjectReq) (int64, e
 			}
 		}
 	}
+
+	tx.Commit()
 
 	return rowAffected, nil
 }

@@ -32,7 +32,7 @@ type CreateProjectReq struct {
 type UpdateProjectReq struct {
 	ID              int                         `binding:"required,numeric"`
 	Name            string                      `form:"name" json:"name" binding:"required"`
-	AddWorkTypes    []string                    `form:"add_work_types" json:"add_work_types" binding:"omitempty,min=1"`
+	AddWorkTypes    []string                    `form:"add_work_types" json:"add_work_types" binding:"omitempty"`
 	DeleteWorkTypes []int                       `form:"delete_work_types" json:"delete_work_types" binding:"omitempty"`
 	EditWorkTypes   []UpdateProjectWithWorkType `form:"edit_work_types" json:"edit_work_types" binding:"omitempty"`
 }

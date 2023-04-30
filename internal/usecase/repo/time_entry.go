@@ -161,10 +161,10 @@ func (r *TimeEntryRepo) Delete(req request.DeleteTimeEntryReq) (int64, error) {
 // genRawSelectWithReq -.
 func (r *TimeEntryRepo) genRawSelectWithReq(sqlRaw string, req request.GetTimeEntryReq) string {
 	if req.ProjectCode != "" {
-		sqlRaw = fmt.Sprintf("%s AND projects.code = %s ", sqlRaw, req.ProjectCode)
+		sqlRaw = fmt.Sprintf("%s AND projects.code = '%s' ", sqlRaw, req.ProjectCode)
 	}
 	if req.Email != "" {
-		sqlRaw = fmt.Sprintf("%s AND users.email = %s ", sqlRaw, req.Email)
+		sqlRaw = fmt.Sprintf("%s AND users.email = '%s' ", sqlRaw, req.Email)
 	}
 	if req.Firstname != "" {
 		sqlRaw = fmt.Sprintf("%s AND users.firstname LIKE '%%%s%%' ", sqlRaw, req.Firstname)

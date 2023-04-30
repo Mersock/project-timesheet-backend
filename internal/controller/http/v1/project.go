@@ -30,6 +30,7 @@ func newProjectsRoutes(handler *gin.RouterGroup, pu usecase.Project, l logger.In
 	{
 		h.GET("", r.getProject)
 		h.GET("/:id", r.getProjectByID)
+		h.GET("/count", r.getProjectCount)
 		h.GET("/code/:code", r.getProjectByCode)
 		h.POST("", r.createProject)
 		h.PUT("/:id", r.updateProject)
@@ -37,6 +38,23 @@ func newProjectsRoutes(handler *gin.RouterGroup, pu usecase.Project, l logger.In
 		h.PUT("/:id/members", r.updateProjectAddMoreMembers)
 		h.DELETE("/:id/members/:userID", r.deleteProjectMember)
 	}
+}
+
+// getProjectCount -.
+func (r projectsRoutes) getProjectCount(c *gin.Context) {
+	var req request.GetProjectsReq
+
+	//total rows
+	total, err := r.pu.GetCount(req)
+	if err != nil {
+		r.l.Error(err, "http - v1 - Projects")
+		response.ErrorResponse(c, http.StatusInternalServerError, _defaultInternalServerErr)
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"total": total,
+	})
 }
 
 // getProject -.

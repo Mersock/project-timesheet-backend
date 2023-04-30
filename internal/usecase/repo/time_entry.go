@@ -3,6 +3,7 @@ package repo
 import (
 	"database/sql"
 	"fmt"
+
 	"github.com/Mersock/project-timesheet-backend/internal/entity"
 	"github.com/Mersock/project-timesheet-backend/internal/request"
 )
@@ -42,9 +43,11 @@ func (r *TimeEntryRepo) Select(req request.GetTimeEntryReq) ([]entity.TimeEntryL
 	sqlRaw := "SELECT "
 	sqlRaw += "time_entries.id,"
 	sqlRaw += "statuses.name status, "
-	sqlRaw += "work_types.name work_type, "
+	sqlRaw += "work_types.id work_type_id, "
+	sqlRaw += "work_types.name work_type_name, "
 	sqlRaw += "time_entries.start_time, "
 	sqlRaw += "time_entries.end_time, "
+	sqlRaw += "projects.id project_id, "
 	sqlRaw += "projects.name project_name, "
 	sqlRaw += "projects.code project_code, "
 	sqlRaw += "users.firstname, "
@@ -67,7 +70,7 @@ func (r *TimeEntryRepo) Select(req request.GetTimeEntryReq) ([]entity.TimeEntryL
 
 	for results.Next() {
 		var e entity.TimeEntryList
-		err = results.Scan(&e.ID, &e.Status, &e.WorkType, &e.StartTime, &e.EndTime, &e.ProjectName,
+		err = results.Scan(&e.ID, &e.Status, &e.WorkTypeId, &e.WorkTypeName, &e.StartTime, &e.EndTime, &e.ProjectId, &e.ProjectName,
 			&e.ProjectCode, &e.Firstname, &e.Lastname, &e.CreateAt, &e.UpdateAt)
 		entities = append(entities, e)
 	}
@@ -82,9 +85,11 @@ func (r *TimeEntryRepo) SelectByID(timeEntryID int) (entity.TimeEntryList, error
 	sqlRaw := "SELECT "
 	sqlRaw += "time_entries.id,"
 	sqlRaw += "statuses.name status, "
-	sqlRaw += "work_types.name work_type, "
+	sqlRaw += "work_types.id work_type_id, "
+	sqlRaw += "work_types.name work_type_name, "
 	sqlRaw += "time_entries.start_time, "
 	sqlRaw += "time_entries.end_time, "
+	sqlRaw += "projects.id project_id, "
 	sqlRaw += "projects.name project_name, "
 	sqlRaw += "projects.code project_code, "
 	sqlRaw += "users.firstname, "
@@ -97,8 +102,8 @@ func (r *TimeEntryRepo) SelectByID(timeEntryID int) (entity.TimeEntryList, error
 	sqlRaw += "INNER JOIN projects ON work_types.project_id = projects.id "
 	sqlRaw += "INNER JOIN users ON time_entries.user_id = users.id "
 	sqlRaw += "WHERE time_entries.id = ?"
-	err := r.DB.QueryRow(sqlRaw, timeEntryID).Scan(&e.ID, &e.Status, &e.WorkType, &e.StartTime, &e.EndTime, &e.ProjectName,
-		&e.ProjectCode, &e.Firstname, &e.Lastname, &e.CreateAt, &e.UpdateAt)
+	err := r.DB.QueryRow(sqlRaw, timeEntryID).Scan(&e.ID, &e.Status, &e.WorkTypeId, &e.WorkTypeName, &e.StartTime, &e.EndTime, &e.ProjectId,
+		&e.ProjectName, &e.ProjectCode, &e.Firstname, &e.Lastname, &e.CreateAt, &e.UpdateAt)
 	if err != nil {
 		return e, fmt.Errorf("TimeEntryRepo - SelectByID - r.DB.Query: %w", err)
 	}

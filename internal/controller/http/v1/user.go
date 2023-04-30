@@ -3,6 +3,11 @@ package v1
 import (
 	"database/sql"
 	"errors"
+	"fmt"
+	"net/http"
+	"strconv"
+	"strings"
+
 	"github.com/Mersock/project-timesheet-backend/internal/request"
 	"github.com/Mersock/project-timesheet-backend/internal/response"
 	"github.com/Mersock/project-timesheet-backend/internal/usecase"
@@ -10,9 +15,6 @@ import (
 	"github.com/Mersock/project-timesheet-backend/pkg/logger"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
-	"net/http"
-	"strconv"
-	"strings"
 )
 
 // usersRoutes -.
@@ -27,6 +29,7 @@ func newUsersRoutes(handler *gin.RouterGroup, uu usecase.User, l logger.Interfac
 
 	h := handler.Group("/user")
 	{
+		h.GET("/count", u.getCountUser)
 		h.GET("", u.getUsers)
 		h.POST("", u.createUser)
 		h.GET("/:id", u.getUserByID)
@@ -34,6 +37,23 @@ func newUsersRoutes(handler *gin.RouterGroup, uu usecase.User, l logger.Interfac
 		h.PUT("/password/:id", u.updateUserPassword)
 		h.DELETE("/:id", u.deleteRole)
 	}
+}
+
+// getUsers -.
+func (r usersRoutes) getCountUser(c *gin.Context) {
+	var req request.GetUsersReq
+
+	//total rows
+	total, err := r.uu.GetCount(req)
+	if err != nil {
+		r.l.Error(err, "http - v1 - Users")
+		response.ErrorResponse(c, http.StatusInternalServerError, _defaultInternalServerErr)
+		return
+	}
+	fmt.Println(total)
+	c.JSON(http.StatusOK, gin.H{
+		"total": total,
+	})
 }
 
 // getUsers -.

@@ -19,6 +19,11 @@ type GetProjectByIDReq struct {
 	ID int `uri:"id" binding:"required,numeric"`
 }
 
+// GetProjectByCodeReq -.
+type GetProjectByCodeReq struct {
+	Code string `uri:"code" binding:"required"`
+}
+
 // CreateProjectReq -.
 type CreateProjectReq struct {
 	Name        string    `form:"name" json:"name" binding:"required,max=255"`

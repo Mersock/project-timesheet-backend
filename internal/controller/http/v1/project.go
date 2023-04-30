@@ -3,6 +3,9 @@ package v1
 import (
 	"database/sql"
 	"errors"
+	"net/http"
+	"strconv"
+
 	"github.com/Mersock/project-timesheet-backend/internal/request"
 	"github.com/Mersock/project-timesheet-backend/internal/response"
 	"github.com/Mersock/project-timesheet-backend/internal/usecase"
@@ -11,8 +14,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
-	"net/http"
-	"strconv"
 )
 
 // projectsRoutes -.
@@ -29,6 +30,7 @@ func newProjectsRoutes(handler *gin.RouterGroup, pu usecase.Project, l logger.In
 	{
 		h.GET("", r.getProject)
 		h.GET("/:id", r.getProjectByID)
+		h.GET("/code/:code", r.getProjectByCode)
 		h.POST("", r.createProject)
 		h.PUT("/:id", r.updateProject)
 		h.DELETE("/:id", r.deleteProject)
@@ -101,6 +103,38 @@ func (r projectsRoutes) getProjectByID(c *gin.Context) {
 	}
 
 	project, err := r.pu.GetProjectsByIDWithUserWorkType(req)
+	if err != nil {
+		r.l.Error(err, "http - v1 - Projects")
+		if errors.Is(err, sql.ErrNoRows) {
+			response.ErrorResponse(c, http.StatusNotFound, _defaultNotFound)
+			return
+		}
+		response.ErrorResponse(c, http.StatusInternalServerError, _defaultInternalServerErr)
+		return
+	}
+
+	c.JSON(http.StatusOK, response.GetProjectByIDWithUser{
+		Data: project,
+	})
+}
+
+// getProjectByCode -.
+func (r projectsRoutes) getProjectByCode(c *gin.Context) {
+	var req request.GetProjectByCodeReq
+
+	//validator
+	if err := c.ShouldBindUri(&req); err != nil {
+		var ve validator.ValidationErrors
+		r.l.Error(err, "http - v1 - Projects")
+		if errors.As(err, &ve) {
+			response.ErrorValidateRes(c, ve)
+			return
+		}
+		response.ErrorResponse(c, http.StatusBadRequest, _defaultBadReq)
+		return
+	}
+
+	project, err := r.pu.GetProjectsByCode(req)
 	if err != nil {
 		r.l.Error(err, "http - v1 - Projects")
 		if errors.Is(err, sql.ErrNoRows) {

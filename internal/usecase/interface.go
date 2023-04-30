@@ -97,6 +97,7 @@ type (
 		GetAllProjects(req request.GetProjectsReq) ([]entity.Projects, error)
 		GetProjectsByID(req request.GetProjectByIDReq) (entity.Projects, error)
 		GetProjectsByIDWithUserWorkType(req request.GetProjectByIDReq) (entity.ProjectWithSliceUser, error)
+		GetProjectsByCode(req request.GetProjectByCodeReq) (entity.ProjectWithSliceUser, error)
 		CreateProject(req request.CreateProjectReq) (int64, error)
 		UpdateProject(req request.UpdateProjectReq) (int64, error)
 		UpdateProjectAddMoreMember(req request.UpdateProjectAddMoreMemberReq) error
@@ -110,7 +111,9 @@ type (
 		Count(req request.GetProjectsReq) (int, error)
 		Select(req request.GetProjectsReq) ([]entity.Projects, error)
 		SelectById(projectID int) (entity.Projects, error)
+		SelectByCode(projectCode string) (entity.Projects, error)
 		SelectByIdWithUser(projectID int) ([]entity.ProjectsWithUser, error)
+		SelectByCodeWithUser(projectCode string) ([]entity.ProjectsWithUser, error)
 		Insert(tx *sql.Tx, req request.CreateProjectReq) (*sql.Tx, int64, error)
 		Update(tx *sql.Tx, req request.UpdateProjectReq) (*sql.Tx, int64, error)
 		Delete(req request.DeleteProjectByReq) (int64, error)

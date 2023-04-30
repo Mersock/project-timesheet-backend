@@ -92,6 +92,26 @@ func (r *ProjectRepo) SelectById(projectID int) (entity.Projects, error) {
 	return entity, nil
 }
 
+// SelectByCode -.
+func (r *ProjectRepo) SelectByCode(projectCode string) (entity.Projects, error) {
+	var entity entity.Projects
+
+	sqlRaw := "SELECT id,name,code,created_at,updated_at "
+	sqlRaw += "FROM projects "
+	sqlRaw += "WHERE code = ? "
+	err := r.DB.QueryRow(sqlRaw, projectCode).Scan(&entity.ID,
+		&entity.Name,
+		&entity.Code,
+		&entity.CreateAt,
+		&entity.UpdateAt,
+	)
+	if err != nil {
+		return entity, fmt.Errorf("ProjectRepo - SelectById - r.DB.QueryRow: %w", err)
+	}
+
+	return entity, nil
+}
+
 // SelectByIdWithUser -.
 func (r *ProjectRepo) SelectByIdWithUser(projectID int) ([]entity.ProjectsWithUser, error) {
 	var entities []entity.ProjectsWithUser
@@ -113,6 +133,34 @@ func (r *ProjectRepo) SelectByIdWithUser(projectID int) ([]entity.ProjectsWithUs
 		err = results.Scan(&e.ID, &e.Code, &e.Name, &e.CreateAt, &e.UpdateAt, &e.UserID, &e.Email, &e.Firstname, &e.Lastname, &e.Role)
 		if err != nil {
 			return nil, fmt.Errorf("ProjectRepo - SelectByIdWithUser - r.DB.Query: %w", err)
+		}
+		entities = append(entities, e)
+	}
+
+	return entities, nil
+}
+
+// SelectByProjectCodeWithUser -.
+func (r *ProjectRepo) SelectByCodeWithUser(projectCode string) ([]entity.ProjectsWithUser, error) {
+	var entities []entity.ProjectsWithUser
+
+	sqlRaw := "SELECT projects.id,projects.code,projects.name,projects.created_at,projects.updated_at,"
+	sqlRaw += "users.id as user_id,users.email,users.firstname,users.lastname,roles.name as role_name "
+	sqlRaw += "FROM projects "
+	sqlRaw += "INNER JOIN duties ON duties.project_id = projects.id "
+	sqlRaw += "INNER JOIN users ON duties.user_id = users.id "
+	sqlRaw += "INNER JOIN roles ON users.role_id = roles.id "
+	sqlRaw += "WHERE projects.code = ? "
+	results, err := r.DB.Query(sqlRaw, projectCode)
+	if err != nil {
+		return nil, fmt.Errorf("ProjectRepo - SelectByIdWithUser - r.DB.QueryRow: %w", err)
+	}
+
+	for results.Next() {
+		var e entity.ProjectsWithUser
+		err = results.Scan(&e.ID, &e.Code, &e.Name, &e.CreateAt, &e.UpdateAt, &e.UserID, &e.Email, &e.Firstname, &e.Lastname, &e.Role)
+		if err != nil {
+			return nil, fmt.Errorf("ProjectRepo - SelectByProjectCodeWithUser - r.DB.Query: %w", err)
 		}
 		entities = append(entities, e)
 	}

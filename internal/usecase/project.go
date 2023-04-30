@@ -79,6 +79,28 @@ func (pc *ProjectsUseCase) GetProjectsByIDWithUserWorkType(req request.GetProjec
 	return projectWithUsers, nil
 }
 
+// GetProjectsByCodeWithUserWorkType -.
+func (pc *ProjectsUseCase) GetProjectsByCode(req request.GetProjectByCodeReq) (entity.ProjectWithSliceUser, error) {
+	var projectWithUsers entity.ProjectWithSliceUser
+
+	_, err := pc.repo.SelectByCode(req.Code)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return projectWithUsers, sql.ErrNoRows
+		}
+		return projectWithUsers, fmt.Errorf("ProjectsUseCase - UpdateProject - uc.repo.SelectById: %w", err)
+	}
+
+	selectProject, err := pc.repo.SelectByCodeWithUser(req.Code)
+	if err != nil {
+		return projectWithUsers, fmt.Errorf("ProjectsUseCase - SelectByIdWithUser - uc.repo.SelectById: %w", err)
+	}
+
+	projectWithUsers = pc.mappingProjectsByIDWithUser(selectProject)
+
+	return projectWithUsers, nil
+}
+
 // CreateProject -.
 func (pc *ProjectsUseCase) CreateProject(req request.CreateProjectReq) (int64, error) {
 	var projectID int64
